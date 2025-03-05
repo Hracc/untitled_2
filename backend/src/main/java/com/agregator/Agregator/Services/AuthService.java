@@ -51,7 +51,7 @@ public class AuthService {
 
         // Логируем вместо отправки SMS (замени на реальную отправку)
 
-        //emailService.sendCodeToEmail(email,code);
+        emailService.sendCodeToEmail(email,code);
         logger.info("Отправлен код: " + code + " на почту: " + email);
         return "Код отправлен";
     }
