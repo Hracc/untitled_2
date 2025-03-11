@@ -6,23 +6,29 @@ import lombok.Setter;
 
 import java.io.Serializable;
 @Entity
-public class Customer {
+public class AggregatorSpecialist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int customerId;
+    private int aggregatorSpecialistsId;
 
     @Column(nullable = false, length = 50)
-    private String customerSurname;
+    private String aggregatorSpecialistSurname;
 
     @Column(nullable = false, length = 50)
-    private String customerName;
+    private String aggregatorSpecialistName;
 
     @Column(length = 50)
-    private String customerPatronymic;
+    private String aggregatorSpecialistPatronymic;
+
+    @Column(nullable = false, length = 30)
+    private String aggregatorSpecialistsDepartment;
 
     @Column(nullable = false, length = 20)
-    private String customerPhoneNumber;
+    private String aggregatorSpecialistsPosition;
+
+    @Column(nullable = false, length = 20)
+    private String aggregatorSpecialistsPhoneNumber;
 
     @Column(length = 250)
     private String addInfo;
