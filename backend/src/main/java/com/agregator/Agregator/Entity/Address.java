@@ -4,36 +4,36 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 @Entity
-@Table(name = "Address")
-@Getter
-@Setter
 public class Address {
-    @EmbeddedId
-    private AddressId id;
 
-    // Связь с организацией. organization_id уже является частью составного ключа,
-    // поэтому здесь используется insertable = false, updatable = false
-    //@ManyToOne
-   // @JoinColumn(name = "organization_id", insertable = false, updatable = false)
-    //private Organization organization;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int addressId;
+
     @ManyToOne
-    @JoinColumn(name = "address_type_id", referencedColumnName = "address_type_id", insertable = false, updatable = false)
+    @JoinColumn(name = "organization_id", nullable = false)
+    private Organization organization;
+
+    @ManyToOne
+    @JoinColumn(name = "address_type_id", nullable = false)
     private AddressType addressType;
 
-    @Column(name = "subject_name", length = 50)
+    @Column(nullable = false, length = 50)
     private String subjectName;
 
-    @Column(name = "city_name", length = 50)
+    @Column(nullable = false, length = 50)
     private String cityName;
 
-    @Column(name = "street_name", length = 50)
+    @Column(nullable = false, length = 50)
     private String streetName;
 
-    @Column(name = "house_number", length = 10)
+    @Column(nullable = false, length = 10)
     private String houseNumber;
 
-    @Column(name = "add_info", length = 250)
-    private String additionalInfo;
-}
+    @Column(length = 250)
+    private String addInfo;
 
+    // геттеры и сеттеры
+}
