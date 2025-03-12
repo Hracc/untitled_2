@@ -1,0 +1,99 @@
+@use '../variables' as *;
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 1.5rem;
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.modal-input {
+  width: 100%;
+  height: 40px;
+  padding: 0.5rem;
+  border: none;
+  margin: 0.5rem 0;
+  background-color: #EEEEEE;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  &:focus {
+    opacity: 0.8;
+    border: none;
+    outline: none;
+  }
+}
+
+.modal-checkbox {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.modal-checkbox-label {
+  margin-left: 0.5rem;
+}
+
+.privacy-link {
+  color: blue;
+  text-decoration: none;
+}
+
+.modal-send-btn, .modal-confirm-btn {
+  background-color: $primary-color;
+  color: white;
+  padding: 0.5rem;
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.3s;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.3;
+  }
+
+  &:not(:disabled):hover {
+    filter: brightness(1.1) contrast(1.1);
+  }
+}
+
+.modal-resend-btn {
+  margin-top: 1rem;
+  padding: 0;
+  text-decoration: none;
+  text-align: right;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: $ligt-gray-color;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.3;
+  }
+  &:not(:disabled):hover {
+    color: $dark-gray-color;
+  }
+}

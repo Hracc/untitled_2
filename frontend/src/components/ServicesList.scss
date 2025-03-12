@@ -1,0 +1,30 @@
+@use '../variables' as *;
+
+.services-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 колонки по 1fr для больших экранов */
+  gap: 3rem;
+  padding: 1.5rem 0;
+  font-size: larger;
+}
+
+@media (max-width: 768px) {
+  .services-list {
+    grid-template-columns: repeat(2, 1fr); /* 2 колонки */
+  }
+}
+
+@media (max-width: 480px) {
+  .services-list {
+    grid-template-columns: 1fr; /* 1 колонка */
+  }
+}
+
+.service-item {
+  color: $ligt-gray-color;
+  text-decoration: none;
+
+  &:hover {
+    color: $dark-gray-color;
+  }
+}

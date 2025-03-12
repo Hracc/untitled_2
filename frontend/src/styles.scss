@@ -1,0 +1,33 @@
+@use './variables' as *; // Импортируем переменные, чтобы они были доступны везде
+
+* {box-sizing: border-box;}
+body {
+  font-family: $font-family;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: $container-max-width;
+  width: 100%;
+  margin: 0 auto;
+
+}
+.content {
+  background-color: white;
+  width: 100%;
+  padding: 2rem;
+  font-size: 1.25rem;
+}
+h1,h3 {
+  color: #222222;
+}
+h5 {
+  color: #666666;
+  font-weight: 300;
+  margin: 0;
+}

@@ -1,0 +1,15 @@
+.search-bar {
+  height: 50px;
+  width: 100%;
+  padding: 0.5rem;
+  border: none;
+  background-color: #EEEEEE;
+  font-size: 1.25rem;
+  margin: 3rem 0;
+
+  &:focus {
+    opacity: 0.8;
+    border: none;
+    outline: none;
+  }
+}
