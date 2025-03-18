@@ -5,8 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
+@Getter
+@Setter
 public class Organization {
 
     @Id
@@ -46,5 +49,4 @@ public class Organization {
     @Column(length = 250)
     private String addInfo;
 
-    // геттеры и сеттеры
 }

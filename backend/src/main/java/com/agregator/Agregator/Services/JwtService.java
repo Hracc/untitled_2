@@ -1,5 +1,6 @@
 package com.agregator.Agregator.Services;
 
+import com.agregator.Agregator.Enums.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -19,15 +21,17 @@ public class JwtService {
 
     private static String secretKey = "53A73E5F1C4E0A2D3B5F2D784E6A1B423D6F247D1F6E5C3A596D635A75327855";
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
+
     private static Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
     // Генерация JWT токена
-    public static String generateToken(String phone) {
+    public static String generateToken(String phone, UserRole role) {
         return Jwts.builder()
                 .setSubject(phone)
+                .claim("role",role.name())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000))  // Истечение через 24 часа
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -59,5 +63,10 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    public String extractRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
+    }
+
 }
 

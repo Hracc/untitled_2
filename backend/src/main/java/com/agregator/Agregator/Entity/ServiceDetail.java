@@ -7,6 +7,8 @@ import lombok.Setter;
 import java.io.Serializable;
 
 @Entity
+@Getter
+@Setter
 public class ServiceDetail {
 
     @Id

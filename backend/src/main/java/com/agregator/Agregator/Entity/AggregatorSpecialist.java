@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import java.io.Serializable;
 @Entity
+@Getter
+@Setter
 public class AggregatorSpecialist {
 
     @Id

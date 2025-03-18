@@ -1,6 +1,7 @@
 package com.agregator.Agregator.Controllers;
 
 import com.agregator.Agregator.DTO.VerificationRequest;
+import com.agregator.Agregator.Enums.UserRole;
 import com.agregator.Agregator.Services.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -41,8 +42,10 @@ public class AuthController {
         logger.info("code " + code);
         logger.info("email "+ email);
 
+
         String token = authService.verifyCode(email, code);
         if (authService.verifyCode(email, code)!="false") {
+        if (token!="false") {
             return ResponseEntity.ok(token);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Неверный код");
