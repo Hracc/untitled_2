@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
 public class AuthController {
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
     private final AuthService authService;
@@ -34,7 +33,6 @@ public class AuthController {
     }
 
 
-
     @PostMapping("/verify")
     public ResponseEntity<String> verifyCode(@RequestBody VerificationRequest verificationRequest) {
         String email = verificationRequest.getEmail();
@@ -45,7 +43,6 @@ public class AuthController {
 
 
         String token = authService.verifyCode(email, code);
-        if (authService.verifyCode(email, code)!="false") {
         if (token!="false") {
             return ResponseEntity.ok(token);
         } else {
