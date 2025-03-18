@@ -1,6 +1,7 @@
 package com.agregator.Agregator.Controllers;
 
 import com.agregator.Agregator.DTO.VerificationRequest;
+import com.agregator.Agregator.Entity.User;
 import com.agregator.Agregator.Enums.UserRole;
 import com.agregator.Agregator.Services.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
