@@ -19,6 +19,4 @@ public class ServiceType {
 
     @Column(nullable = false, length = 30)
     private String typeName;
-
-    // геттеры и сеттеры
 }

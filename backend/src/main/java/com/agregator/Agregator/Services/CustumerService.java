@@ -1,0 +1,115 @@
+package com.agregator.Agregator.Services;
+
+import com.agregator.Agregator.DTO.CustumerDTO;
+import com.agregator.Agregator.Entity.Customer;
+import com.agregator.Agregator.Entity.ServiceRequest;
+import com.agregator.Agregator.Entity.ServiceRequestDetail;
+import com.agregator.Agregator.Repositories.CustomerRepositiry;
+import com.agregator.Agregator.Repositories.ServiceRequestDetailRepository;
+import com.agregator.Agregator.Repositories.ServiceRequestRepository;
+import com.agregator.Agregator.Repositories.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class CustumerService {
+    private static final Logger log = LoggerFactory.getLogger(CustumerService.class);
+    @Autowired
+    private CustomerRepositiry customerRepositiry;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private ServiceRequestRepository serviceRequestRepository;
+    @Autowired
+    private ServiceRequestDetailRepository serviceRequestDetailRepository;
+
+    public Customer findCustomerByEmail(String email) {
+        return customerRepositiry.findByEmail(email).orElse(null);
+    }
+
+    public String editCustumers(CustumerDTO custumerDTO, String email){
+        try {
+            Optional<Customer> customerOpt  = customerRepositiry.findByEmail(email);
+            if (customerOpt.isEmpty()) {
+                log.error("Покупатель не найден по email: {}", email);
+                throw new RuntimeException("Покупатель не найден по email");
+            }
+            Customer customer = customerOpt.get();
+
+            if (custumerDTO.getCustomerName() != null && !custumerDTO.getCustomerName().isEmpty()) {
+                customer.setCustomerName(custumerDTO.getCustomerName());
+            }
+            if (custumerDTO.getCustomerPatronymic() != null && !custumerDTO.getCustomerPatronymic().isEmpty()) {
+                customer.setCustomerPatronymic(custumerDTO.getCustomerPatronymic());
+            }
+            if (custumerDTO.getCustomerSurname() != null && !custumerDTO.getCustomerSurname().isEmpty()) {
+                customer.setCustomerSurname(custumerDTO.getCustomerSurname());
+            }
+            if (custumerDTO.getAddInfo() != null && !custumerDTO.getAddInfo().isEmpty()) {
+                customer.setAddInfo(custumerDTO.getAddInfo());
+            }
+            String newEmail = email;
+
+            if (custumerDTO.getEmail() != null && !custumerDTO.getEmail().isEmpty() && !custumerDTO.getEmail().equals(email)) {
+                customer.setEmail(custumerDTO.getEmail());
+                // Обновим email и в таблице users
+                userRepository.findByEmail(email).ifPresent(user -> {
+                    user.setEmail(custumerDTO.getEmail());
+                    userRepository.save(user);
+                });
+                newEmail = custumerDTO.getEmail();
+            }
+
+            customerRepositiry.save(customer);
+            log.info("Покупатель успешно обновлен");
+
+            if (!newEmail.equals(email)) {
+                var user = userRepository.findByEmail(newEmail).orElseThrow(() -> new RuntimeException("User not found for token refresh"));
+                return jwtService.generateToken(newEmail, user.getRole());
+            }
+
+            return null;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            log.error("Ошибка при изменении пользователя");
+            return "Ошибка при изменении пользователя";
+        }
+    }
+    public void deleteCustomerByEmail(String email) {
+        Optional<Customer> customerOpt = customerRepositiry.findByEmail(email);
+        if (customerOpt.isEmpty()) {
+            log.error("Покупатель не найден по почте: {}", email);
+            throw new RuntimeException("Покупатель не найден");
+        }
+        // Обновляем все записи в ServiceRequest, связанные с этим клиентом
+        List<ServiceRequest> serviceRequests = serviceRequestRepository.findByCustomer(customerOpt.get());
+        if (!serviceRequests.isEmpty()) {
+            // Обновляем customerId на NULL или на нового клиента (зависит от бизнес-логики)
+            for (ServiceRequest serviceRequest : serviceRequests) {
+                List<ServiceRequestDetail> serviceRequestDetails = serviceRequestDetailRepository.findByServiceRequest_ServiceRequestId(serviceRequest.getServiceRequestId());
+                for (ServiceRequestDetail server : serviceRequestDetails){
+                    serviceRequestDetailRepository.delete(server);
+                }
+                serviceRequestRepository.delete(serviceRequest);
+            }
+            log.info("Запросы обслуживания для клиента {} обновлены", email);
+        }
+
+        // Удаляем Customer
+        customerRepositiry.delete(customerOpt.get());
+        log.info("Покупатель {} удален", email);
+
+        // Также можно удалить пользователя из users, если он есть
+        userRepository.findByEmail(email).ifPresent(user -> {
+            userRepository.delete(user);
+            log.info("Пользователь {} удален", email);
+        });
+    }
+}

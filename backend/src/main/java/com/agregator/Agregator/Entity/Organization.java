@@ -48,5 +48,4 @@ public class Organization {
 
     @Column(length = 250)
     private String addInfo;
-
 }

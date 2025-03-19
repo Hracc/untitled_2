@@ -29,6 +29,4 @@ public class ServiceRequest {
 
     @Column(length = 250)
     private String addInfo;
-
-    // геттеры и сеттеры
 }

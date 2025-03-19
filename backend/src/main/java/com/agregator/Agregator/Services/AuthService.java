@@ -45,21 +45,15 @@ public class AuthService {
             Optional<User> user = userRepository.findByEmail(email);
             if (user.isEmpty()) {
                 logger.info(email);
-                try {
-                    User newUser = new User();
-                    newUser.setEmail(email);
-                    newUser.setRole(UserRole.CUSTOMER);
-                    userRepository.save(newUser);
-                }catch (Exception e){
-                    logger.info("Ошибка " + e);
-                }
-                try {
-                    Customer newcustomer = new Customer();
-                    newcustomer.setEmail(email);
-                    customerRepository.save(newcustomer);
-                }catch (Exception exception){
-                    logger.info("Ошибка " + exception);
-                }
+                User newUser = new User();
+                newUser.setEmail(email);
+                newUser.setRole(UserRole.CUSTOMER);
+                userRepository.save(newUser);
+
+
+                Customer newcustomer = new Customer();
+                newcustomer.setEmail(email);
+                customerRepository.save(newcustomer);
             }
         } catch (Exception e) {
             return "Ошибка при проверке пользователя";
