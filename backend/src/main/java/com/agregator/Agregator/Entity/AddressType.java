@@ -20,6 +20,4 @@ public class AddressType {
 
     @Column(length = 250)
     private String addInfo;
-
-    // геттеры и сеттеры
 }
