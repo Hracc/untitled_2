@@ -5,6 +5,7 @@ import { useParams, Link } from "react-router-dom";
 import { Header } from "../components/Header";
 import {SearchBar} from "../components/SearchBar.jsx";
 import "../styles.scss";
+import Calendar from "../components/Calendar.jsx";
 
 
 export function ServiceDetailsPage() {
