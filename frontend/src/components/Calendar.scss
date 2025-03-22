@@ -1,0 +1,149 @@
+@use '../variables' as *;
+
+.calendar-wrapper {
+  position: relative; /* чтобы календарь мог всплывать относительно этой обёртки */
+  display: flex;
+
+}
+
+.calendar {
+  width: fit-content;
+  position: absolute;
+  top: 100%;   /* чтобы было чуть ниже кнопки */
+  left: 0;
+  z-index: 9999;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  padding: 0.5rem;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+
+  &-toggle-btn {
+    border: none;
+    background: none;
+    color: $ligt-gray-color;
+    cursor: pointer;
+    padding: 0;
+    font-size: 1.25rem;
+  }
+
+  &__title {
+    margin: 0 0 0.25rem 0;
+    text-align: center;
+
+    color: $dark-gray-color;
+    padding: 0.5rem;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    background-color: $ultra-light-gray-color;
+    color: $dark-gray-color;
+  }
+
+  &__nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    padding: 0.5rem;
+    box-sizing: border-box;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.3;
+      // Можете добавить стили (прозрачность, цвет и т.д.)
+    }
+  }
+
+  &__month-label {
+    font-weight: bold;
+  }
+
+  &__weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  &__weekday {
+    margin-bottom: 0.5rem;
+  }
+
+  &__days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  &__day {
+    padding: 0.5rem;
+    cursor: pointer;
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: $ligt-gray-color;
+    color: white;
+    text-align: center;
+
+    &--empty {
+      background-color: $ultra-light-gray-color;
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    &--past {
+      cursor: not-allowed;
+      background-color: $ultra-light-gray-color;
+      opacity: 0.5;
+      color: $ligt-gray-color;
+    }
+
+    &--selected {
+      background-color: $primary-color;
+    }
+
+  }
+
+  &__time {
+    border-top: 2px solid $dark-gray-color;
+    padding-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  &__time-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__time-slot {
+    padding: 0.5rem;
+    text-align: center;
+    background-color: $ligt-gray-color;
+    color: white;
+    cursor: pointer;
+
+    &--selected {
+      background-color: $primary-color;
+      color: white;
+    }
+
+    &--disabled {
+      cursor: not-allowed;
+      background-color: $ultra-light-gray-color;
+      opacity: 0.5;
+      color: $ligt-gray-color;
+    }
+  }
+}
