@@ -1,15 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Header } from "../components/Header";
 import { SearchBar } from "../components/SearchBar";
 import { ServicesList } from "../components/ServicesList";
 import { Modal } from "../components/Modal";
-import Calendar from "../components/Calendar";
+
+import { getServiceTypes } from "../api/client/services";
 
 export function Home() {
     const [search, setSearch] = useState("");
     const [isModalOpen, setModalOpen] = useState(false);
-    const services = ["ТО автомобиля", "Кузовной ремонт", "Автоэлектрика", "Шиномонтаж", "Мойка и химчистка", "Помощь на дороге", ""];
+    
+    const [serviceTypes, setServiceTypes] = useState([]);
 
+    const handleFetchData = async () => {
+        try {
+            const data = await getServiceTypes(); 
+            setServiceTypes(data)
+        } catch (error) {
+            console.error('Ошибка при выполнении запроса:', error);
+        }
+    };
+
+    useEffect(()=> {
+        handleFetchData();
+    }, [])
+    
+    // const services = ["ТО автомобиля", "Кузовной ремонт", "Автоэлектрика", "Шиномонтаж", "Мойка и химчистка", "Помощь на дороге", ""];
+    const services = serviceTypes.map(item => item.typeName)
+   console.log(services)
     return (
         <div>
             <Header onLoginClick={() => setModalOpen(true)} />

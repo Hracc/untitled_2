@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import "./Modal.scss"; // Подключаем стили для Modal
 
+import { postSendCode, postVerify } from "../api/client/authorization";
+
 export function Modal({ isOpen, onClose }) {
     const [isChecked, setIsChecked] = useState(false);
     const [email, setEmail] = useState("");
@@ -31,16 +33,27 @@ export function Modal({ isOpen, onClose }) {
         }
     };
 
-    const handleSendCode = () => {
-        if (email.trim() !== "" && timer === 0) {
+    const handleSendCode = async () => {
+        if (!email.trim() !== "" && timer !== 0) return;
+       
+        try {
+            await postSendCode(email);
             setEmailSent(true);
             setTimer(60);
+        } catch (error) {
+            console.error("Ошибка при отправке email:", error);
         }
     };
 
-    const handleConfirmCode = () => {
+    const handleConfirmCode = async () => { // Добавлено async
         if (code.trim() !== "") {
-            onClose(); // Закрываем модалку после успешного ввода кода
+            try {
+                const result = await postVerify(email, code); // Добавлено await
+                onClose(); // Закрываем модалку после успешного ввода кода
+                localStorage.setItem("token", result); // Сохраняем токен в localStorage
+            } catch (error) {
+                console.error("Ошибка при отправке запроса:", error);
+            }
         }
     };
 
