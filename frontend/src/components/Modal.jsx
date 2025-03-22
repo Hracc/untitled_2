@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
 import "./Modal.scss"; // Подключаем стили для Modal
 
 export function Modal({ isOpen, onClose }) {
@@ -46,7 +47,11 @@ export function Modal({ isOpen, onClose }) {
     return (
         <div className="modal-overlay" onClick={handleOverlayClick}>
             <div className="modal-content">
-                <h2 className="modal-title">Вход или регистрация</h2>
+                <h2 className="modal-title">Войти или&nbsp;
+                    <nav className="register-link">
+                        <Link to="/register">зарегистрироваться</Link>
+                    </nav>
+                </h2>
 
                 <input
                     type="email"
