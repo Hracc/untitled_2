@@ -2,7 +2,8 @@
 
 .calendar-wrapper {
   position: relative; /* чтобы календарь мог всплывать относительно этой обёртки */
-  display: inline-block; /* или block, если нужно */
+  display: flex;
+
 }
 
 .calendar {

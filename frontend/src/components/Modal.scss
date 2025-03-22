@@ -9,7 +9,7 @@
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+  z-index: 10000;
 }
 
 .modal-content {
@@ -95,5 +95,12 @@
   }
   &:not(:disabled):hover {
     color: $dark-gray-color;
+  }
+}
+.register-link {
+  display: inline;
+  a {
+    text-decoration: underline;
+    color: $primary-color;
   }
 }

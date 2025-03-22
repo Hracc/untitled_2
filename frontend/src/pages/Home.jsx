@@ -20,7 +20,6 @@ export function Home() {
                     <SearchBar search={search} setSearch={setSearch} />
                     <h3>Поручите дела специалистам</h3>
                     <ServicesList services={services} search={search} />
-                    <Calendar />
                 </div>
                 <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
 
