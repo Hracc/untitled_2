@@ -21,7 +21,7 @@ export function ServiceDetailsPage() {
                 const organizations = await postServiceDetail(localStorage.getItem('selectedServiceTypeCode'));
     
                 const formattedOffers = organizations.map((org, index) => ({
-                    id: index + 1, 
+                    id: org.serviceDetailId, 
                     name: `${org.serviceDetailCode} ${org.serviceDetailName}`, 
                     price: org.serviceDetailCost, 
                     time: `${org.serviceDetailDuration} мин`,
