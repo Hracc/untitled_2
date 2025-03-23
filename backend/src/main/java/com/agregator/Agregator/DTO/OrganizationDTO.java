@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OrganizationDTO {
+    private Integer id;
     private String organizationFullName;
     private String organizationShortName;
     private String inn;
@@ -17,7 +18,5 @@ public class OrganizationDTO {
     private String responsiblePersonEmail;
     private String responsiblePersonPhoneNumber;
     private String addInfo;
-
-
 }
 

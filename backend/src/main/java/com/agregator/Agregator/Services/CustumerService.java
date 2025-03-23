@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +34,7 @@ public class CustumerService {
     public Customer findCustomerByEmail(String email) {
         return customerRepositiry.findByEmail(email).orElse(null);
     }
-
+    @Transactional
     public String editCustumers(CustumerDTO custumerDTO, String email){
         try {
             Optional<Customer> customerOpt  = customerRepositiry.findByEmail(email);
@@ -82,6 +83,55 @@ public class CustumerService {
             return "Ошибка при изменении пользователя";
         }
     }
+    @Transactional
+    public CustumerDTO updateCustumer(CustumerDTO custumerDTO,Integer id, String email){
+        try {
+            Optional<Customer> customerOpt  = customerRepositiry.findById(id);
+            if (customerOpt.isEmpty()) {
+                log.error("Покупатель не найден по id: {}", id);
+                throw new RuntimeException("Покупатель не найден по email");
+            }
+            Customer customer = customerOpt.get();
+
+            if (custumerDTO.getCustomerName() != null && !custumerDTO.getCustomerName().isEmpty()) {
+                customer.setCustomerName(custumerDTO.getCustomerName());
+            }
+            if (custumerDTO.getCustomerPatronymic() != null && !custumerDTO.getCustomerPatronymic().isEmpty()) {
+                customer.setCustomerPatronymic(custumerDTO.getCustomerPatronymic());
+            }
+            if (custumerDTO.getCustomerSurname() != null && !custumerDTO.getCustomerSurname().isEmpty()) {
+                customer.setCustomerSurname(custumerDTO.getCustomerSurname());
+            }
+            if (custumerDTO.getAddInfo() != null && !custumerDTO.getAddInfo().isEmpty()) {
+                customer.setAddInfo(custumerDTO.getAddInfo());
+            }
+
+            if (custumerDTO.getEmail() != null && !custumerDTO.getEmail().isEmpty()) {
+                customer.setEmail(custumerDTO.getEmail());
+                // Обновим email и в таблице users
+                userRepository.findByEmail(email).ifPresent(user -> {
+                    user.setEmail(custumerDTO.getEmail());
+                    userRepository.save(user);
+                });
+            }
+
+            customerRepositiry.save(customer);
+            CustumerDTO custumerDTO1 = new CustumerDTO();
+            custumerDTO1.setEmail(customer.getEmail());
+            custumerDTO1.setCustomerName(customer.getCustomerName());
+            custumerDTO1.setCustomerSurname(customer.getCustomerSurname());
+            custumerDTO1.setCustomerPatronymic(customer.getCustomerPatronymic());
+            custumerDTO1.setAddInfo(customer.getAddInfo());
+            log.info("Покупатель успешно обновлен");
+
+            return custumerDTO1;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            log.error("Ошибка при изменении пользователя");
+            throw new RuntimeException("Ошибка при изменении пользователя");
+        }
+    }
+    @Transactional
     public void deleteCustomerByEmail(String email) {
         Optional<Customer> customerOpt = customerRepositiry.findByEmail(email);
         if (customerOpt.isEmpty()) {
@@ -111,5 +161,8 @@ public class CustumerService {
             userRepository.delete(user);
             log.info("Пользователь {} удален", email);
         });
+    }
+    public List<Customer> getAllCustomers() {
+        return customerRepositiry.findAll();
     }
 }

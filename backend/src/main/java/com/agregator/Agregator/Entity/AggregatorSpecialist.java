@@ -29,11 +29,9 @@ public class AggregatorSpecialist {
     @Column(nullable = false, length = 20)
     private String aggregatorSpecialistsPosition;
 
-    @Column(nullable = false, length = 20)
-    private String aggregatorSpecialistsPhoneNumber;
+    @Column(nullable = false, unique = true)
+    private String aggregatorSpecialistsEmail;
 
     @Column(length = 250)
     private String addInfo;
-
-    // геттеры и сеттеры
 }
