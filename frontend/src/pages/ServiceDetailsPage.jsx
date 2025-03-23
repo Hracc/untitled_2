@@ -4,6 +4,8 @@ import { Header } from "../components/Header";
 import { Modal } from "../components/Modal";
 import "../styles.scss";
 
+import { postServiceDetail } from "../api/client/services.js";
+
 export function ServiceDetailsPage() {
     const { categoryName, serviceName } = useParams();
     const navigate = useNavigate();
@@ -14,21 +16,34 @@ export function ServiceDetailsPage() {
     const [isModalOpen, setModalOpen] = useState(false);
 
     useEffect(() => {
-        // Имитируем запрос к API. В реальном проекте:
-        // fetch(`/api/services/${categoryName}/${serviceName}`).then(...)
+        const fetchData = async () => {
+            try {
+                const organizations = await postServiceDetail(localStorage.getItem('selectedServiceTypeCode'));
+                console.log(organizations);
+    
+                const formattedOffers = organizations.map((org) => ({
+                    id: org.serviceDetailCode, 
+                    name: org.serviceDetailName, 
+                    price: org.serviceDetailCost, 
+                    time: `${org.serviceDetailDuration} мин`,
+                }));
+    
+                // Обновляем состояние offers
+                setOffers(formattedOffers);
+            } catch (error) {
+                console.error('Ошибка при загрузке данных:', error);
+            }
+        };
+    
+        fetchData();
+    
+        // Устанавливаем статические данные для serviceData
         setServiceData({
             id: 1,
             name: serviceName,
             address: "Московское шоссе, 176",
             category: categoryName,
         });
-        setOffers([
-            { id: 101, name: "Комплексная мойка", price: 2000, time: "15 мин" },
-            { id: 102, name: "Чистка салона", price: 2000, time: "15 мин" },
-            { id: 103, name: "Мойка кассеты радиаторов", price: 2000, time: "15 мин" },
-            { id: 104, name: "Мойка днища", price: 2000, time: "15 мин" },
-            { id: 105, name: "Удаление водного камня", price: 2000, time: "15 мин" },
-        ]);
     }, [categoryName, serviceName]);
 
     // Переключаем выбор услуги

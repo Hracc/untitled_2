@@ -2,6 +2,8 @@ import { useLocation, Link } from "react-router-dom";
 import { Header } from "../components/Header";
 import "../styles.scss";
 import Calendar from "../components/Calendar.jsx";
+import { useEffect } from "react";
+
 
 export function CartPage() {
     const location = useLocation();
@@ -19,7 +21,6 @@ export function CartPage() {
         const numericTime = parseInt(o.time);
         return sum + (isNaN(numericTime) ? 0 : numericTime);
     }, 0);
-
     return (
         <div>
             <Header />

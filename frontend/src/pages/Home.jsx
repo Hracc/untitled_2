@@ -24,10 +24,8 @@ export function Home() {
     useEffect(()=> {
         handleFetchData();
     }, [])
+
     
-    // const services = ["ТО автомобиля", "Кузовной ремонт", "Автоэлектрика", "Шиномонтаж", "Мойка и химчистка", "Помощь на дороге", ""];
-    const services = serviceTypes.map(item => item.typeName)
-   console.log(services)
     return (
         <div>
             <Header onLoginClick={() => setModalOpen(true)} />
@@ -37,7 +35,7 @@ export function Home() {
                     <h5>Мы ищем - вы выбираете!</h5>
                     <SearchBar search={search} setSearch={setSearch} />
                     <h3>Поручите дела специалистам</h3>
-                    <ServicesList services={services} search={search} />
+                    <ServicesList services={serviceTypes} search={search} />
                 </div>
                 <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
 
