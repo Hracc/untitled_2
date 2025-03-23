@@ -8,6 +8,7 @@ import com.agregator.Agregator.Repositories.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -56,6 +57,7 @@ public class ServiceService {
         List<ServiceDetail> serviceDetails = serviceDetailRepository.findByServiceTypeTypeCode(typeCode);
 
         log.info("Ответ: "+ serviceDetails.stream().map(detail -> new ServiceDetailDTO(
+                detail.getServiceDetailId(),
                 detail.getServiceDetailCode(),
                 detail.getServiceDetailName(),
                 detail.getServiceDetailCost(),
@@ -63,6 +65,7 @@ public class ServiceService {
         )).collect(Collectors.toList()));
         // Преобразуем данные в DTO для удобства
         return serviceDetails.stream().map(detail -> new ServiceDetailDTO(
+                detail.getServiceDetailId(),
                 detail.getServiceDetailCode(),
                 detail.getServiceDetailName(),
                 detail.getServiceDetailCost(),
@@ -101,6 +104,7 @@ public class ServiceService {
     }
 
 
+    @Transactional
     public void createServiceRequest(String customerEmail, CreateServiceRequestDTO dto) {
         Customer customer = customerRepository.findByEmail(customerEmail)
                 .orElseThrow(() -> new RuntimeException("Покупатель не найден"));
