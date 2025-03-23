@@ -109,9 +109,11 @@ public class ServiceService {
                 .orElseThrow(() -> new RuntimeException("Организация не найдена"));
 
         // Проверка, доступно ли время для выбранной услуги с учётом длительности
-        boolean isAvailable = isTimeAvailable(dto.getOrganizationId(), dto.getDateTime(), dto.getServiceDetailId());
-        if (!isAvailable) {
-            throw new RuntimeException("Данное время для этой организации занято.");
+        for (Integer serviceDetailId : dto.getServiceDetailId()) {
+            boolean isAvailable = isTimeAvailable(dto.getOrganizationId(), dto.getDateTime(), serviceDetailId);
+            if (!isAvailable) {
+                throw new RuntimeException("Данное время для этой организации занято.");
+            }
         }
 
         ServiceRequest serviceRequest = new ServiceRequest();
@@ -123,14 +125,16 @@ public class ServiceService {
         serviceRequest.setAddInfo(dto.getAddInfo());
         serviceRequestRepository.save(serviceRequest);
 
-        ServiceRequestDetail serviceRequestDetail = new ServiceRequestDetail();
-        serviceRequestDetail.setServiceRequest(serviceRequest);
+        // Создание ServiceRequestDetail для каждого ServiceDetail
+        for (Integer serviceDetailId : dto.getServiceDetailId()) {
+            ServiceDetail serviceDetail = serviceDetailRepository.findById(serviceDetailId)
+                    .orElseThrow(() -> new RuntimeException("ServiceDetail с ID " + serviceDetailId + " не найден"));
 
-        ServiceDetail serviceDetail = serviceDetailRepository.findById(dto.getServiceDetailId())
-                .orElseThrow(() -> new RuntimeException("ServiceDetail не найден"));
-        serviceRequestDetail.setServiceDetail(serviceDetail);
-
-        serviceRequestDetailRepository.save(serviceRequestDetail);
+            ServiceRequestDetail serviceRequestDetail = new ServiceRequestDetail();
+            serviceRequestDetail.setServiceRequest(serviceRequest);
+            serviceRequestDetail.setServiceDetail(serviceDetail);
+            serviceRequestDetailRepository.save(serviceRequestDetail);
+        }
 
     }
 }
