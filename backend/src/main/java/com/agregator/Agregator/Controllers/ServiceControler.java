@@ -48,14 +48,15 @@ public class ServiceControler {
     @PostMapping("/createRequest")
     public ResponseEntity<String> createServiceRequest(@RequestBody CreateServiceRequestDTO serviceRequestDTO) {
         try {
-            boolean isAvailable = serviceService.isTimeAvailable(
-                    serviceRequestDTO.getOrganizationId(),
-                    serviceRequestDTO.getDateTime(),
-                    serviceRequestDTO.getServiceDetailId()
-            );
-
-            if (!isAvailable) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Время для выбранной услуги уже занято");
+            for (Integer serviceDetailId : serviceRequestDTO.getServiceDetailId()) {
+                boolean isAvailable = serviceService.isTimeAvailable(
+                        serviceRequestDTO.getOrganizationId(),
+                        serviceRequestDTO.getDateTime(),
+                        serviceDetailId
+                );
+                if (!isAvailable) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("Время для выбранной услуги уже занято");
+                }
             }
 
             String email = SecurityContextHolder.getContext().getAuthentication().getName();

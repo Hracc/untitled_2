@@ -3,6 +3,8 @@ import "./Calendar.scss";
 import { NextButton } from "./Next-Button.jsx";
 import { PrevButton } from "./Prev-Button.jsx";
 
+import { addDate } from "../api/client/services.js";
+
 // Именительный падеж (для шапки календаря)
 const MONTH_NAMES_NOMINATIVE = [
     "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
@@ -90,6 +92,8 @@ export default function Calendar() {
     };
 
     const handleTimeClick = (time) => {
+        addDate(time, selectedDate)
+        
         setSelectedTime(time);
         setIsCalendarOpen(false);
     };

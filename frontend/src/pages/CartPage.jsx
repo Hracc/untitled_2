@@ -4,6 +4,7 @@ import "../styles.scss";
 import Calendar from "../components/Calendar.jsx";
 import { useEffect } from "react";
 
+import { addToLocalStorage, postRequest } from "../api/client/services.js";
 
 export function CartPage() {
     const location = useLocation();
@@ -71,7 +72,16 @@ export function CartPage() {
                     {/* Кнопка подтверждения */}
                     <div className="cart-confirm">
                         <Calendar />
-                        <button className="confirm-button" onClick={() => alert("Заказ подтверждён!")}>
+                        <button className="confirm-button" onClick={async () => {
+                            try {
+                            addToLocalStorage("addInfo", "string_front");
+                            postRequest()
+                            alert("Заказ подтверждён!")
+                        } catch (error){
+                            
+                        }
+                        
+                        }}>
                             Подтвердить заказ
                         </button>
                     </div>

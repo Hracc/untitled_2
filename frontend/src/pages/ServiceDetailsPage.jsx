@@ -4,7 +4,7 @@ import { Header } from "../components/Header";
 import { Modal } from "../components/Modal";
 import "../styles.scss";
 
-import { postServiceDetail } from "../api/client/services.js";
+import { postServiceDetail, addToLocalStorage} from "../api/client/services.js";
 
 export function ServiceDetailsPage() {
     const { categoryName, serviceName } = useParams();
@@ -19,11 +19,10 @@ export function ServiceDetailsPage() {
         const fetchData = async () => {
             try {
                 const organizations = await postServiceDetail(localStorage.getItem('selectedServiceTypeCode'));
-                console.log(organizations);
     
-                const formattedOffers = organizations.map((org) => ({
-                    id: org.serviceDetailCode, 
-                    name: org.serviceDetailName, 
+                const formattedOffers = organizations.map((org, index) => ({
+                    id: index + 1, 
+                    name: `${org.serviceDetailCode} ${org.serviceDetailName}`, 
                     price: org.serviceDetailCost, 
                     time: `${org.serviceDetailDuration} мин`,
                 }));
@@ -83,6 +82,8 @@ export function ServiceDetailsPage() {
         return <div>Загрузка...</div>;
     }
 
+
+    
     return (
         <div>
             <Header onLoginClick={() => setModalOpen(true)} />
@@ -104,7 +105,7 @@ export function ServiceDetailsPage() {
             <span>
               Итого: <strong>{totalPrice} RUB</strong>
             </span>
-                        <button onClick={goToCart} className="cart-link">
+                        <button onClick={() => {goToCart(); addToLocalStorage("serviceDetailId",selectedOffers)}} className="cart-link">
                             Корзина
                         </button>
                     </div>
