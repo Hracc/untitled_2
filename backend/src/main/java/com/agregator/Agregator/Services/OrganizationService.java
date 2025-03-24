@@ -178,7 +178,7 @@ public class OrganizationService {
         organization.setAddInfo(dto.getAddInfo());
         organizationRepository.save(organization);
 
-        ConnectionRequest connectionRequest = new ConnectionRequest();
+       /* ConnectionRequest connectionRequest = new ConnectionRequest();
         connectionRequest.setOrganization(organization);
         connectionRequest.setRegNumber("temp");
         connectionRequest.setDateBegin(LocalDate.now());
@@ -193,6 +193,6 @@ public class OrganizationService {
         savedRequest.setRegNumber(regNumber);
 
         // Сохраняем сущность с обновлённым regNumber
-        connectionRequestRepository.save(savedRequest);
+        connectionRequestRepository.save(savedRequest);*/
     }
 }
