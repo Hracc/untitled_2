@@ -18,4 +18,6 @@ public interface AddressRepository extends JpaRepository<Address, Integer> {
             "WHERE LOWER(a.cityName) LIKE LOWER(CONCAT('%', :cityName, '%')) " +
             "AND LOWER(a.organization.organizationFullName) LIKE LOWER(CONCAT('%', :organizationName, '%'))")
     List<Address> findByCityAndOrganizationName(@Param("cityName") String cityName, @Param("organizationName") String organizationName);
+
+    List<Address> findByOrganization_OrganizationId(int organizationId);
 }

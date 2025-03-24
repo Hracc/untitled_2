@@ -11,7 +11,7 @@ public class AggregatorSpecialistDTO {
     private String aggregatorSpecialistPatronymic;
     private String aggregatorSpecialistsDepartment;
     private String aggregatorSpecialistsPosition;
-    private String aggregatorSpecialistsPhoneNumber;
+    private String aggregatorSpecialistsEmail;
     private String addInfo;
 
 
