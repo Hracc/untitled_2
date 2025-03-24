@@ -163,7 +163,7 @@ public class OrganizationService {
     }
 
   //Другое
-    /*public void create(OrganizationDTO dto) {
+    public void create(OrganizationDTO dto) {
         Organization organization = new Organization();
         organization.setOrganizationFullName(dto.getOrganizationFullName());
         organization.setOrganizationShortName(dto.getOrganizationShortName());
@@ -194,5 +194,5 @@ public class OrganizationService {
 
         // Сохраняем сущность с обновлённым regNumber
         connectionRequestRepository.save(savedRequest);
-    }*/
+    }
 }
