@@ -3,6 +3,7 @@ import { Header } from "../components/Header";
 import "../styles.scss";
 import Calendar from "../components/Calendar.jsx";
 import { useEffect } from "react";
+import React, { useState } from "react";
 
 import { addToLocalStorage, postRequest } from "../api/client/services.js";
 
@@ -14,6 +15,8 @@ export function CartPage() {
         category: "",
         offers: [],
     };
+
+    const [selectedDateTime, setSelectedDateTime] = useState(null);
 
     const { serviceName, address, category, offers } = cartData;
 
@@ -71,14 +74,20 @@ export function CartPage() {
 
                     {/* Кнопка подтверждения */}
                     <div className="cart-confirm">
-                        <Calendar />
+                        <Calendar
+                            onDateTimeSelect={setSelectedDateTime}
+                        />
                         <button className="confirm-button" onClick={async () => {
+                            if (!selectedDateTime) {
+                                alert("Выберите время");
+                                return;
+                            }
                             try {
-                            addToLocalStorage("addInfo", "string_front");
-                            postRequest()
-                            alert("Заказ подтверждён!")
+                                addToLocalStorage("addInfo", "string_front")
+                                const response = await postRequest()
+                                alert("Заказ подтверждён!")
                         } catch (error){
-                            
+                            alert("Выбранное время занято! Выберите другое.")
                         }
                         
                         }}>

@@ -95,18 +95,8 @@ export const addToLocalStorage = (key, value) => {
     localStorage.setItem('serviceQuest', JSON.stringify(data));
 };
 
-// - чтение заявки (JSON-формат)
-export const readFromLocalStorage = () => {
-    const storedData = localStorage.getItem('myData');
-    return storedData ? JSON.parse(storedData) : null;
-};
-
 // - запись календаря в заявку
-export const addDate = (time, selectedDate) => {
-    const selectedDateTime = new Date(selectedDate);
-    const [hours, minutes] = time.split(":").map(Number); // Разбиваем время на часы и минуты
-    selectedDateTime.setHours(hours, minutes, 0, 0); // Устанавливаем время
-
+export const addDate = (selectedDateTime) => {
     // Преобразуем в строку в формате ISO
     const isoString = selectedDateTime.toISOString();
     addToLocalStorage("dateTime", isoString);

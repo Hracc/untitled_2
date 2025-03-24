@@ -105,7 +105,15 @@ export function ServiceDetailsPage() {
             <span>
               Итого: <strong>{totalPrice} RUB</strong>
             </span>
-                        <button onClick={() => {goToCart(); addToLocalStorage("serviceDetailId",selectedOffers)}} className="cart-link">
+                        <button onClick={() => {if(selectedOffers.length !== 0) {
+                                goToCart();
+                                addToLocalStorage("serviceDetailId",selectedOffers)
+                                }
+                                else{
+                                    alert("Выберите хотя бы одну услугу.")
+                                    return
+                                }
+                            }} className="cart-link">
                             Корзина
                         </button>
                     </div>
