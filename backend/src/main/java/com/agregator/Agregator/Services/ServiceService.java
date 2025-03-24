@@ -140,11 +140,12 @@ public class ServiceService {
             ServiceDetail serviceDetail = serviceDetailRepository.findById(serviceDetailId)
                     .orElseThrow(() -> new RuntimeException("ServiceDetail с ID " + serviceDetailId + " не найден"));
 
-          ServiceRequestDetail serviceRequestDetail = new ServiceRequestDetail();
-          serviceRequestDetail.setServiceRequest(serviceRequest);
-          serviceRequestDetail.setServiceDetail(serviceDetail);
-          serviceRequestDetailRepository.save(serviceRequestDetail);
+            ServiceRequestDetail serviceRequestDetail = new ServiceRequestDetail();
+            serviceRequestDetail.setServiceRequest(serviceRequest);
+            serviceRequestDetail.setServiceDetail(serviceDetail);
+            serviceRequestDetailRepository.save(serviceRequestDetail);
         }
+    }
       
     @Transactional
     public ServiceTypeDTO createServiceType(ServiceTypeDTO dto) {
