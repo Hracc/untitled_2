@@ -10,6 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ServiceDetailDTO {
+    private int serviceDetailId;
     private String serviceDetailCode;
     private String serviceDetailName;
     private int serviceDetailCost;

@@ -65,6 +65,7 @@ public class ServiceService {
         List<ServiceDetail> serviceDetails = serviceDetailRepository.findByServiceTypeTypeCode(typeCode);
 
         log.info("Ответ: "+ serviceDetails.stream().map(detail -> new ServiceDetailDTO(
+                detail.getServiceDetailId(),
                 detail.getServiceDetailCode(),
                 detail.getServiceDetailName(),
                 detail.getServiceDetailCost(),
@@ -72,6 +73,7 @@ public class ServiceService {
         )).collect(Collectors.toList()));
         // Преобразуем данные в DTO для удобства
         return serviceDetails.stream().map(detail -> new ServiceDetailDTO(
+                detail.getServiceDetailId(),
                 detail.getServiceDetailCode(),
                 detail.getServiceDetailName(),
                 detail.getServiceDetailCost(),
@@ -108,7 +110,6 @@ public class ServiceService {
         }
         return true; // Если пересечений не найдено – время доступно
     }
-
     @Transactional
     public void createServiceRequest(String customerEmail, CreateServiceRequestDTO dto) {
         Customer customer = customerRepository.findByEmail(customerEmail)
@@ -118,9 +119,11 @@ public class ServiceService {
                 .orElseThrow(() -> new RuntimeException("Организация не найдена"));
 
         // Проверка, доступно ли время для выбранной услуги с учётом длительности
-        boolean isAvailable = isTimeAvailable(dto.getOrganizationId(), dto.getDateTime(), dto.getServiceDetailId());
-        if (!isAvailable) {
-            throw new RuntimeException("Данное время для этой организации занято.");
+        for (Integer serviceDetailId : dto.getServiceDetailId()) {
+            boolean isAvailable = isTimeAvailable(dto.getOrganizationId(), dto.getDateTime(), serviceDetailId);
+            if (!isAvailable) {
+                throw new RuntimeException("Данное время для этой организации занято.");
+            }
         }
 
         ServiceRequest serviceRequest = new ServiceRequest();
@@ -132,15 +135,17 @@ public class ServiceService {
         serviceRequest.setAddInfo(dto.getAddInfo());
         serviceRequestRepository.save(serviceRequest);
 
-        ServiceRequestDetail serviceRequestDetail = new ServiceRequestDetail();
-        serviceRequestDetail.setServiceRequest(serviceRequest);
+        // Создание ServiceRequestDetail для каждого ServiceDetail
+        for (Integer serviceDetailId : dto.getServiceDetailId()) {
+            ServiceDetail serviceDetail = serviceDetailRepository.findById(serviceDetailId)
+                    .orElseThrow(() -> new RuntimeException("ServiceDetail с ID " + serviceDetailId + " не найден"));
 
-        ServiceDetail serviceDetail = serviceDetailRepository.findById(dto.getServiceDetailId())
-                .orElseThrow(() -> new RuntimeException("ServiceDetail не найден"));
-        serviceRequestDetail.setServiceDetail(serviceDetail);
-
-        serviceRequestDetailRepository.save(serviceRequestDetail);
-    }
+          ServiceRequestDetail serviceRequestDetail = new ServiceRequestDetail();
+          serviceRequestDetail.setServiceRequest(serviceRequest);
+          serviceRequestDetail.setServiceDetail(serviceDetail);
+          serviceRequestDetailRepository.save(serviceRequestDetail);
+        }
+      
     @Transactional
     public ServiceTypeDTO createServiceType(ServiceTypeDTO dto) {
         ServiceType serviceType = new ServiceType();
@@ -245,7 +250,7 @@ public class ServiceService {
 
         serviceDetailRepository.save(serviceDetail);
         dto.setServiceDetailId(serviceDetail.getServiceDetailId());
-
+      
         return dto;
     }
 
