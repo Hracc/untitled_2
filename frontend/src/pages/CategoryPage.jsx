@@ -13,23 +13,24 @@ export function CategoryPage() {
     const [currentPage, setCurrentPage] = useState(1); // Состояние для текущей страницы
     const servicesPerPage = 10; // Количество сервисов на одной странице
 
+    const fetchData = async () => {
+        try {
+            const organizations = await getOrganizations();
+
+            const formattedServices = organizations.map((org, index) => ({
+                id: index + 1,
+                name: org.organizationFullName, 
+                address: `${org.cityName}, ${org.streetName}, ${org.houseNumber}`,
+                city: org.cityName,
+            }));
+
+            setServices(formattedServices);
+        } catch (error) {
+            console.error('Ошибка при загрузке данных:', error);
+        }
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const organizations = await getOrganizations();
-    
-                const formattedServices = organizations.map((org, index) => ({
-                    id: index + 1,
-                    name: org.organizationFullName, 
-                    address: `${org.cityName}, ${org.streetName}, ${org.houseNumber}`,
-                    city: org.cityName,
-                }));
-    
-                setServices(formattedServices);
-            } catch (error) {
-                console.error('Ошибка при загрузке данных:', error);
-            }
-        };
     
         fetchData();
     }, [categoryName]);

@@ -2,12 +2,17 @@ const urlSendEmail = '/api/auth/send-code';
 const urlVerify = '/api/auth/verify';
 
 export const postSendCode = async (email) => {
-    const response = await fetch(`${urlSendEmail}?${new URLSearchParams({ email })}`, {
-        method: 'POST',
-    });
+    try {
+        const response = await fetch(`${urlSendEmail}?${new URLSearchParams({ email })}`, {
+            method: 'POST',
+        });
 
-    if (!response.ok) throw new Error(`Ошибка при отправке email. Статус: ${response.status}`);
-    console.log('Запрос успешно отправлен!');
+        if (!response.ok) {
+            throw new Error(`Ошибка при отправке email. Статус: ${response.status}`);
+        }
+    } catch (error) {
+        throw new Error(error.message || "Ошибка сети. Проверьте соединение.");
+    }
 };
 
 export const postVerify = async (email, code) => {

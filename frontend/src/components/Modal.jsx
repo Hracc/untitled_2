@@ -13,6 +13,8 @@ export function Modal({ isOpen, onClose }) {
     const [codePlaceholder, setCodePlaceholder] = useState(" Код из письма");
     const [timer, setTimer] = useState(0);
 
+    const [error, setError] = useState("");
+
     useEffect(() => {
         let interval;
         if (timer > 0) {
@@ -33,15 +35,26 @@ export function Modal({ isOpen, onClose }) {
         }
     };
 
+    const validateEmail = (email) => {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailRegex.test(email);
+    };
+    
     const handleSendCode = async () => {
-        if (!email.trim() !== "" && timer !== 0) return;
-       
+        if (email.trim() === "" || timer !== 0) return;
+        if (!validateEmail(email)) {
+            setError("Введите корректный email.");
+            return;
+        }
+
         try {
             await postSendCode(email);
             setEmailSent(true);
             setTimer(60);
+            setError("");
         } catch (error) {
             console.error("Ошибка при отправке email:", error);
+            setError("Не удалось отправить код. Попробуйте еще раз.");
         }
     };
 
@@ -51,8 +64,10 @@ export function Modal({ isOpen, onClose }) {
                 const result = await postVerify(email, code); // Добавлено await
                 onClose(); // Закрываем модалку после успешного ввода кода
                 localStorage.setItem("token", result); // Сохраняем токен в localStorage
+                setError("")
             } catch (error) {
-                console.error("Ошибка при отправке запроса:", error);
+                console.error("Ошибка при отправке кода:", error);
+                setError("Неверный код. Попробуйте еще раз.");
             }
         }
     };
@@ -83,12 +98,15 @@ export function Modal({ isOpen, onClose }) {
                         placeholder={codePlaceholder}
                         className="modal-input"
                         value={code}
-                        onChange={(e) => setCode(e.target.value)}
+                        onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, "");
+                            if (value.length <= 4) setCode(e.target.value)
+                        }}
                         onFocus={() => setCodePlaceholder("")}
                         onBlur={() => setCodePlaceholder(" Код из письма")}
                     />
                 )}
-
+                {error && <p className="modal-error">{error}</p>}
                 <div className="modal-checkbox">
                     <input
                         type="checkbox"
