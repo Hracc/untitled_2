@@ -40,7 +40,7 @@ public class Organization {
     @Column(length = 50)
     private String responsiblePersonPatronymic;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, unique = true)
     private String responsiblePersonEmail;
 
     @Column(nullable = false, length = 20)
