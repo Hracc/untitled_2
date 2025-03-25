@@ -23,10 +23,9 @@ public class Customer {
     @Column(length = 50)
     private String customerPatronymic;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(length = 250)
     private String addInfo;
-
 }

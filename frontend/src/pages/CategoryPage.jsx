@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { SearchBar } from "../components/SearchBar";
 import { Header } from "../components/Header";
-import "../styles.scss"; // Импортируем глобальные стили (вместо отдельного CategoryPage.scss)
+import "../styles.scss";
 
 import { getOrganizations, addToLocalStorage } from "../api/client/services";
 
@@ -10,20 +10,19 @@ export function CategoryPage() {
     const { categoryName } = useParams();
     const [search, setSearch] = useState("");
     const [services, setServices] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1); // Состояние для текущей страницы
-    const servicesPerPage = 10; // Количество сервисов на одной странице
+    const [showCities, setShowCities] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const servicesPerPage = 10;
 
     const fetchData = async () => {
         try {
             const organizations = await getOrganizations();
-
             const formattedServices = organizations.map((org, index) => ({
                 id: index + 1,
                 name: org.organizationFullName, 
-                address: `${org.cityName}, ${org.streetName}, ${org.houseNumber}`,
+                address: `${org.cityName}, ул. ${org.streetName}, дом ${org.houseNumber}`,
                 city: org.cityName,
             }));
-
             setServices(formattedServices);
         } catch (error) {
             console.error('Ошибка при загрузке данных:', error);
@@ -31,35 +30,42 @@ export function CategoryPage() {
     };
 
     useEffect(() => {
-    
         fetchData();
     }, [categoryName]);
 
-    // Фильтрация по названию
-    const filteredServices = services.filter((service) => {
-        const searchParts = search.toLowerCase().split(" "); 
-        const searchCity = searchParts[0] || ""; 
-        const searchName = searchParts.slice(1).join(" ") || ""; 
+    // Получаем уникальные города
+    const cities = [...new Set(services.map(service => service.city))];
 
-        const matchesCity = service.city.toLowerCase().includes(searchCity);
-        const matchesName = service.name.toLowerCase().includes(searchName);
+    // Обработчик изменения поиска
+    const handleSearchChange = (value) => {
+        setSearch(value);
+        setCurrentPage(1);
+        // Если есть пробел - переключаемся на организации
+        setShowCities(!value.includes(' '));
+    };
 
+    // Фильтрация
+    const filteredCities = cities.filter(city => 
+        city.toLowerCase().includes(search.toLowerCase())
+    );
+
+    const filteredServices = services.filter(service => {
+        const [city, ...nameParts] = search.toLowerCase().split(' ');
+        const name = nameParts.join(' ');
+        
+        const matchesCity = city ? service.city.toLowerCase().includes(city) : true;
+        const matchesName = name ? service.name.toLowerCase().includes(name) : true;
+        
         return matchesCity && matchesName;
     });
 
-    // Вычисление сервисов для текущей страницы
+    // Пагинация
     const indexOfLastService = currentPage * servicesPerPage;
     const indexOfFirstService = indexOfLastService - servicesPerPage;
+    const currentCities = filteredCities.slice(indexOfFirstService, indexOfLastService);
     const currentServices = filteredServices.slice(indexOfFirstService, indexOfLastService);
 
-    // Обработчики для смены страницы
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-    // Вычисляем количество страниц
-    const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(filteredServices.length / servicesPerPage); i++) {
-        pageNumbers.push(i);
-    }
 
     return (
         <div>
@@ -68,16 +74,31 @@ export function CategoryPage() {
                 <div className="content">
                     <h1>{categoryName}</h1>
                     <nav className="navigate">
-                        <Link to="/">Главная
-                        </Link>
+                        <Link to="/">Главная</Link>
                         {" — "}
                         <strong>{categoryName}</strong>
                     </nav>
 
-                    <SearchBar search={search} setSearch={setSearch} />
+                    <SearchBar search={search} setSearch={handleSearchChange} />
 
-                    {/* Список сервисов */}
-                    {currentServices.map((service) => (
+                    {/* Список городов */}
+                    {showCities && currentCities.map((city) => (
+                        <div
+                            key={city}
+                            onClick={() => {
+                                setCurrentPage(1);
+                                setSearch(`${city} `); // Добавляем пробел после города
+                                setShowCities(false);
+                            }}
+                            className="category-service-item"
+                            style={{cursor: 'pointer'}}
+                        >
+                            <div className="service-name">{city}</div>
+                        </div>
+                    ))}
+
+                    {/* Список организаций */}
+                    {!showCities && currentServices.map((service) => (
                         <Link
                             key={service.id}
                             to={`/${encodeURIComponent(categoryName)}/${encodeURIComponent(service.name)}`}
@@ -91,13 +112,15 @@ export function CategoryPage() {
 
                     {/* Пагинация */}
                     <div className="pagination">
-                        {pageNumbers.map((number) => (
+                        {[...Array(Math.ceil(
+                            (showCities ? filteredCities.length : filteredServices.length) / servicesPerPage
+                        )).keys()].map(number => (
                             <button
-                                key={number}
-                                onClick={() => {paginate(number);}}
-                                className={currentPage === number ? 'active' : ''}
+                                key={number + 1}
+                                onClick={() => paginate(number + 1)}
+                                className={currentPage === number + 1 ? 'active' : ''}
                             >
-                                {number}
+                                {number + 1}
                             </button>
                         ))}
                     </div>

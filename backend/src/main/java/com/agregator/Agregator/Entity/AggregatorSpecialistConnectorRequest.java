@@ -22,6 +22,4 @@ public class AggregatorSpecialistConnectorRequest {
     @ManyToOne
     @JoinColumn(name = "connection_request_id", nullable = false)
     private ConnectionRequest connectionRequest;
-
-    // геттеры и сеттеры
 }

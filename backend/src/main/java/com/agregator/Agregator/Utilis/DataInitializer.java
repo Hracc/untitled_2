@@ -41,7 +41,6 @@
 //        Customer customer = new Customer();
 //        customer.setCustomerName("John");
 //        customer.setCustomerSurname("Doe");
-//        customer.setEmail("john.doe@example.com");
 //        customer.setEmail("kir@yandex.ru");
 //
 //        customerRepositiry.save(customer);

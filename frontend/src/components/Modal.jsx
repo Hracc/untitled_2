@@ -99,11 +99,12 @@ export function Modal({ isOpen, onClose }) {
                         className="modal-input"
                         value={code}
                         onChange={(e) => {
-                            const value = e.target.value.replace(/\D/g, "");
-                            if (value.length <= 4) setCode(e.target.value)
+                            const value = e.target.value.replace(/\D/g, "").slice(0, 4)
+                            setCode(value)
                         }}
                         onFocus={() => setCodePlaceholder("")}
                         onBlur={() => setCodePlaceholder(" Код из письма")}
+                        inputMode="numeric"
                     />
                 )}
                 {error && <p className="modal-error">{error}</p>}
@@ -135,7 +136,7 @@ export function Modal({ isOpen, onClose }) {
                         <button
                             onClick={handleConfirmCode}
                             className="modal-confirm-btn"
-                            disabled={code.trim() === ""}
+                            disabled={!isChecked || code.trim().length !== 4}
                         >
                             Подтвердить код
                         </button>

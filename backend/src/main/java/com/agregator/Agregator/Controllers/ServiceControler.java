@@ -27,6 +27,10 @@ public class ServiceControler {
     public List<SearchOrganizationDTO> getOrganizationsByCity(@RequestParam String city) {
         return serviceService.getOrganizationsByCity(city);
     }
+    @GetMapping("/CITY")
+    public List<CityDTO> getListOfSity(@RequestParam String city){
+        return serviceService.getCity(city);
+    }
 
     @GetMapping("/OrganizationByCityAndName")
     public List<Organization> getOrganizationsByCity(@RequestParam String city, @RequestParam String name) {
