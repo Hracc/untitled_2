@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 @Service
 @Slf4j
 public class OrganizationService {
@@ -26,6 +29,8 @@ public class OrganizationService {
     private ServiceRequestDetailRepository serviceRequestDetailRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ConnectionRequestRepository connectionRequestRepository;
 
     // CRUD по организациям
     public List<OrganizationDTO> getAllOrganizations() {
@@ -172,5 +177,22 @@ public class OrganizationService {
         organization.setResponsiblePersonPhoneNumber(dto.getResponsiblePersonPhoneNumber());
         organization.setAddInfo(dto.getAddInfo());
         organizationRepository.save(organization);
+
+       /* ConnectionRequest connectionRequest = new ConnectionRequest();
+        connectionRequest.setOrganization(organization);
+        connectionRequest.setRegNumber("temp");
+        connectionRequest.setDateBegin(LocalDate.now());
+        connectionRequest.setStatus("Новая");
+
+        ConnectionRequest savedRequest = connectionRequestRepository.save(connectionRequest);
+        // Генерируем regNumber на основе connectionRequestId
+        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        String regNumber = savedRequest.getConnectionRequestId() + " " + currentDate;
+
+        // Обновляем regNumber
+        savedRequest.setRegNumber(regNumber);
+
+        // Сохраняем сущность с обновлённым regNumber
+        connectionRequestRepository.save(savedRequest);*/
     }
 }

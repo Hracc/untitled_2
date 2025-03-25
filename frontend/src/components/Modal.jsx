@@ -89,6 +89,7 @@ export function Modal({ isOpen, onClose }) {
                     onChange={(e) => setEmail(e.target.value)}
                     onFocus={() => setEmailPlaceholder("")}
                     onBlur={() => setEmailPlaceholder(" Email")}
+                    maxlength="255"
                     disabled={emailSent} // Блокируем поле после отправки кода
                 />
 
