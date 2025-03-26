@@ -1,9 +1,11 @@
-const urlSendEmail = '/api/auth/send-code';
-const urlVerify = '/api/auth/verify';
+const urlAuthorization = {
+    sendEmail: '/api/auth/send-code',
+    verifyCode: '/api/auth/verify',
+}
 
 export const postSendCode = async (email) => {
     try {
-        const response = await fetch(`${urlSendEmail}?${new URLSearchParams({ email })}`, {
+        const response = await fetch(`${urlAuthorization.sendEmail}?${new URLSearchParams({ email })}`, {
             method: 'POST',
         });
 
@@ -17,7 +19,7 @@ export const postSendCode = async (email) => {
 
 export const postVerify = async (email, code) => {
     const requestBody= {email: email, code: code}
-    const response = await fetch(urlVerify, {
+    const response = await fetch(urlAuthorization.verifyCode, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

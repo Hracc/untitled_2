@@ -1,3 +1,5 @@
+import { getWithToken, getTokenOrThrow } from "../utils";
+
 const urlService = {
     serviceTypes: '/api/Service/ServiceTypes',
     organizations: '/api/Service/OrganizationsByCity?city=',
@@ -5,54 +7,26 @@ const urlService = {
     serviceRequest: 'api/Service/createRequest'
 }
 
-const token = localStorage.getItem('token');
-
-// Шаблон GET-запроса
-const getDataService = async (url) => {
-
-    if (!token) {
-        throw new Error('Токен не найден в localStorage');
-    }
-
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        }
-    })
-
-    if (!response.ok) {
-        throw new Error(`Ошибка HTTP: ${response.status}`);
-    }
-
-    return response.json();
-}
-
 // GET-запросы:
 // - типы запросов
 export const getServiceTypes = async () => {
-    return getDataService(urlService.serviceTypes);
+    return getWithToken(urlService.serviceTypes);
 }
 
 // - организации
 export const getOrganizations = async () => {
-    return getDataService(urlService.organizations);
+    return getWithToken(urlService.organizations);
 }
 
 // POST-запросы:
 // - детали сервисов
 export const postServiceDetail = async (typeCode) => {
-
-    if (!token) {
-        throw new Error('Токен не найден в localStorage');
-    }
-
     const params = new URLSearchParams({ typeCode: typeCode.toString()});
     const url = `${urlService.serviceDetail}?${params}`;
     const response = await fetch(url, {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${getTokenOrThrow()}`,
             'Content-Type': 'application/json',
         },
     })
@@ -65,15 +39,11 @@ export const postServiceDetail = async (typeCode) => {
 }
 // - отправка заявки
 export const postRequest = async () => {
-    if (!token) {
-        throw new Error('Токен не найден в localStorage');
-    }
-
     const requestBody= JSON.parse(localStorage.getItem("serviceQuest"))
     const response = await fetch(urlService.serviceRequest, {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${getTokenOrThrow()}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestBody),
