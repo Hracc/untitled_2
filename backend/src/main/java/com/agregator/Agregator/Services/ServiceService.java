@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,7 +32,7 @@ public class ServiceService {
     private ServiceRequestDetailRepository serviceRequestDetailRepository;
 
 
-    public List<SearchOrganizationDTO> getOrganizationsByCity(String cityName) {
+   /* public List<SearchOrganizationDTO> getOrganizationsByCity(String cityName) {
         List<Address> addresses = addressRepository.findByCityName(cityName);
         return addresses.stream()
                 .map(address -> new SearchOrganizationDTO(
@@ -41,7 +42,7 @@ public class ServiceService {
                         address.getHouseNumber()))
                 .distinct()
                 .collect(Collectors.toList());
-    }
+    }*/
     public List<CityDTO> getCity(String city){
         List<Address> addresses = addressRepository.findByCityName(city);
         return  addresses.stream().map(
@@ -52,9 +53,15 @@ public class ServiceService {
                 .collect(Collectors.toList());
     }
 
-    public List<Organization> getOrganizationsByCityAndName(String cityName, String Name) {
-        List<Address> addresses = addressRepository.findByCityAndOrganizationName(cityName, Name);
-        return addresses.stream().map(Address::getOrganization).distinct().collect(Collectors.toList());
+    public List<SearchOrganizationDTO> getOrganizationsByCityAndName(String cityName, String name) {
+        List<Address> addresses = addressRepository.findByCityAndOrganizationName(cityName, name);
+        return addresses.stream()
+                .map(address -> new SearchOrganizationDTO(
+                        address.getOrganization().getOrganizationId(),
+                        address.getCityName(),
+                        address.getOrganization().getOrganizationFullName(),
+                        address.getStreetName(),
+                        address.getHouseNumber())).distinct().collect(Collectors.toList());
     }
 
     public  List<ServiceType> getAllServiceTypes() {
@@ -64,13 +71,13 @@ public class ServiceService {
     public  List<ServiceDetailDTO> getServiceDetailsByTypeCode(String typeCode) {
         List<ServiceDetail> serviceDetails = serviceDetailRepository.findByServiceTypeTypeCode(typeCode);
 
-        log.info("Ответ: "+ serviceDetails.stream().map(detail -> new ServiceDetailDTO(
+        /*log.info("Ответ: "+ serviceDetails.stream().map(detail -> new ServiceDetailDTO(
                 detail.getServiceDetailId(),
                 detail.getServiceDetailCode(),
                 detail.getServiceDetailName(),
                 detail.getServiceDetailCost(),
                 detail.getServiceDetailDuration()
-        )).collect(Collectors.toList()));
+        )).collect(Collectors.toList()));*/
         // Преобразуем данные в DTO для удобства
         return serviceDetails.stream().map(detail -> new ServiceDetailDTO(
                 detail.getServiceDetailId(),

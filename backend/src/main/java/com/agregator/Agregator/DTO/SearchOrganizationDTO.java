@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SearchOrganizationDTO{
 
+    private int organizationId;
     private String cityName;
     private String organizationFullName;
     private String streetName;

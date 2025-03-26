@@ -1,21 +1,20 @@
 package com.agregator.Agregator.Services;
 
 import com.agregator.Agregator.DTO.AggregatorSpecialistDTO;
+import com.agregator.Agregator.DTO.CreateOrganizationDTO;
 import com.agregator.Agregator.DTO.CustomerRegistrationDTO;
 import com.agregator.Agregator.DTO.OrganizationDTO;
-import com.agregator.Agregator.Entity.AggregatorSpecialist;
-import com.agregator.Agregator.Entity.Customer;
-import com.agregator.Agregator.Entity.Organization;
-import com.agregator.Agregator.Entity.User;
+import com.agregator.Agregator.Entity.*;
 import com.agregator.Agregator.Enums.UserRole;
-import com.agregator.Agregator.Repositories.AggregatorSpecialistRepository;
-import com.agregator.Agregator.Repositories.CustomerRepository;
-import com.agregator.Agregator.Repositories.OrganizationRepository;
-import com.agregator.Agregator.Repositories.UserRepository;
+import com.agregator.Agregator.Repositories.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -31,6 +30,9 @@ public class RegistrationService {
 
     @Autowired
     private AggregatorSpecialistRepository aggregatorSpecialistRepository;
+
+    @Autowired
+    private ConnectionRequestRepository connectionRequestRepository;
 
     @Transactional
     public Customer registerCustomer(CustomerRegistrationDTO customerDTO) {
@@ -55,7 +57,7 @@ public class RegistrationService {
         return customer;
     }
     @Transactional
-    public Organization registerOrganization(OrganizationDTO organizationDTO) {
+    public void registerOrganization(CreateOrganizationDTO organizationDTO) {
         // Создание User для Organization
         User user = new User();
         user.setEmail(organizationDTO.getResponsiblePersonEmail());
@@ -70,17 +72,53 @@ public class RegistrationService {
         organization.setOgrn(organizationDTO.getOgrn());
         organization.setResponsiblePersonSurname(organizationDTO.getResponsiblePersonSurname());
         organization.setResponsiblePersonName(organizationDTO.getResponsiblePersonName());
-        if(organizationDTO.getResponsiblePersonPatronymic() != null && !organizationDTO.getResponsiblePersonPatronymic().isEmpty()) {
+        if (organizationDTO.getResponsiblePersonPatronymic() != null && !organizationDTO.getResponsiblePersonPatronymic().isEmpty()) {
             organization.setResponsiblePersonPatronymic(organizationDTO.getResponsiblePersonPatronymic());
         }
         organization.setResponsiblePersonEmail(user.getEmail());
         organization.setResponsiblePersonPhoneNumber(organizationDTO.getResponsiblePersonPhoneNumber());
-        if(organizationDTO.getAddInfo() != null && !organizationDTO.getAddInfo().isEmpty()) {
+        if (organizationDTO.getAddInfo() != null && !organizationDTO.getAddInfo().isEmpty()) {
             organization.setAddInfo(organizationDTO.getAddInfo());
         }
+        organizationRepository.save(organization);
 
-        return organizationRepository.save(organization);
+        ConnectionRequest connectionRequest = new ConnectionRequest();
+        connectionRequest.setOrganization(organization);
+        connectionRequest.setRegNumber("temp");
+        connectionRequest.setDateBegin(LocalDate.now());
+        connectionRequest.setStatus("Новая");
+        log.info("Ответ: ", connectionRequest.getOrganization());
+
+        ConnectionRequest savedRequest = connectionRequestRepository.save(connectionRequest);
+        // Генерируем regNumber на основе connectionRequestId
+        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("ddMMyyyy"));
+        String regNumber = savedRequest.getConnectionRequestId() + currentDate;
+
+        // Обновляем regNumber
+        savedRequest.setRegNumber(regNumber);
+
+        // Сохраняем сущность с обновлённым regNumber
+        connectionRequestRepository.save(connectionRequest);
     }
+
+    /*public ConnectionRequest createConnectionRequest (Organization organization) {
+        ConnectionRequest connectionRequest = new ConnectionRequest();
+        connectionRequest.setOrganization(organization);
+        connectionRequest.setRegNumber("temp");
+        connectionRequest.setDateBegin(LocalDate.now());
+        connectionRequest.setStatus("Новая");
+
+        ConnectionRequest savedRequest = connectionRequestRepository.save(connectionRequest);
+        // Генерируем regNumber на основе connectionRequestId
+        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        String regNumber = savedRequest.getConnectionRequestId() + " " + currentDate;
+
+        // Обновляем regNumber
+        savedRequest.setRegNumber(regNumber);
+
+        // Сохраняем сущность с обновлённым regNumber
+        return connectionRequestRepository.save(savedRequest);
+    }*/
     @Transactional
     public User registerAggregatorSpecialist(AggregatorSpecialistDTO aggregatorSpecialistDTO) {
 
