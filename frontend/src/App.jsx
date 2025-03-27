@@ -1,11 +1,11 @@
-// src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { CategoryPage } from "./pages/CategoryPage";
 import { ServiceDetailsPage } from "./pages/ServiceDetailsPage";
 import { CartPage } from "./pages/CartPage";
-import "./styles.scss";
 import {Profile} from "./pages/Profile.jsx";
+import "./styles.scss";
+
 
 export default function App() {
     return (
