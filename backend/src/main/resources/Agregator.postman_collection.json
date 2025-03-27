@@ -1,0 +1,1027 @@
+{
+	"info": {
+		"_postman_id": "7456da1d-1154-460b-896b-4d1e1a1897e8",
+		"name": "Agregator",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36685152"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Все пользователи",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/all/Customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"all",
+								"Customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NewCustomer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customerName\": \"John\",\r\n    \"customerSurname\": \"Doe\",\r\n    \"email\": \"john@example.com\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/Create/Customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"Create",
+								"Customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateCustomer",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customerName\": \"Dio\",\r\n    \"customerSurname\": \"Doe\",\r\n    \"email\": \"john@example.com\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/Update?id=3&email=john@example.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"Update"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "3"
+								},
+								{
+									"key": "email",
+									"value": "john@example.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteCustumer",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/Customer/john@example.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"Customer",
+								"john@example.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AllOrgnizations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/organizations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"organizations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindOrganizationById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/Organization/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"Organization",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateOrganization",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"organizationFullName\": \"ООО Ромашка\",\r\n    \"organizationShortName\": \"Ромашка\",\r\n    \"inn\": \"1234567890\",\r\n    \"kpp\": \"098765432\",\r\n    \"ogrn\": \"1023456789012\",\r\n    \"responsiblePersonSurname\": \"Иванов\",\r\n    \"responsiblePersonName\": \"Иван\",\r\n    \"responsiblePersonPatronymic\": \"Иванович\",\r\n    \"responsiblePersonEmail\": \"ivanov@example.com\",\r\n    \"responsiblePersonPhoneNumber\": \"+79991234567\",\r\n    \"addInfo\": \"Дополнительная информация о компании\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/Organization/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"Organization",
+								"create"
+							]
+						},
+						"description": "Generated from cURL: curl --location --request POST 'http://localhost:8080/admin/Organization/create' \\\r\n--header 'Content-Type: application/json' \\\r\n--data-raw '{\r\n    \"organizationFullName\": \"ООО Ромашка\",\r\n    \"organizationShortName\": \"Ромашка\",\r\n    \"inn\": \"1234567890\",\r\n    \"kpp\": \"0987654321\",\r\n    \"ogrn\": \"1023456789012\",\r\n    \"responsiblePersonSurname\": \"Иванов\",\r\n    \"responsiblePersonName\": \"Иван\",\r\n    \"responsiblePersonPatronymic\": \"Иванович\",\r\n    \"responsiblePersonEmail\": \"ivanov@example.com\",\r\n    \"responsiblePersonPhoneNumber\": \"+79991234567\",\r\n    \"addInfo\": \"Дополнительная информация о компании\"\r\n}'\r\n"
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateOrganization",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"organizationId\": 2,\r\n    \"organizationFullName\": \"АОА Ромашка\",\r\n    \"organizationShortName\": \"Ромашка\",\r\n    \"inn\": \"1234567890\",\r\n    \"kpp\": \"098765432\",\r\n    \"ogrn\": \"1023456789012\",\r\n    \"responsiblePersonSurname\": \"Иванов\",\r\n    \"responsiblePersonName\": \"Иван\",\r\n    \"responsiblePersonPatronymic\": \"Иванович\",\r\n    \"responsiblePersonEmail\": \"ivanov@example.com\",\r\n    \"responsiblePersonPhoneNumber\": \"+79991234567\",\r\n    \"addInfo\": \"Дополнительная информация о компании\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/Organization/update/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"Organization",
+								"update",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteOrganization",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/Organization/delete/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"Organization",
+								"delete",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAdressByOrganizationId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/Organization/1/addresses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"Organization",
+								"1",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddAddressOrganization",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"addressType\": {\r\n    \"addressTypeId\": 1\r\n  },\r\n  \"subjectName\": \"Главное здание\",\r\n  \"cityName\": \"Москва\",\r\n  \"streetName\": \"Тверская\",\r\n  \"houseNumber\": \"10\",\r\n  \"addInfo\": \"Угловое здание\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/Organization/1/addresses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"Organization",
+								"1",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteAddressById",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/Organization/addresses/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"Organization",
+								"addresses",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateServiceType",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeCode\": 3,\r\n    \"typeName\": \"abbaaa\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/Service/serviceTypes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"Service",
+								"serviceTypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateServiceType",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeCode\": 3,\r\n    \"typeName\": \"baaaaa\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/Service/serviceTypes/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"Service",
+								"serviceTypes",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteServiceType",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/Service/serviceTypes/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"Service",
+								"serviceTypes",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateServiceDetail",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"serviceDetailId\": 1,\r\n  \"serviceTypeId\": 1,\r\n  \"serviceDetailCode\": \"SD1\",\r\n  \"serviceDetailName\": \"Service Detail Name\",\r\n  \"serviceDetailCost\": 1000,\r\n  \"serviceDetailDuration\": 60,\r\n  \"addInfo\": \"Additional information\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/Service/serviceDetails",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"Service",
+								"serviceDetails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateServiceDetail",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"serviceDetailId\": 1,\r\n  \"serviceTypeId\": 1,\r\n  \"serviceDetailCode\": \"SD2\",\r\n  \"serviceDetailName\": \"Service Detail Name\",\r\n  \"serviceDetailCost\": 2000,\r\n  \"serviceDetailDuration\": 60,\r\n  \"addInfo\": \"Additional information\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/Service/serviceDetails/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"Service",
+								"serviceDetails",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteServiceDetailsById",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/Service/serviceDetails/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"Service",
+								"serviceDetails",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Costomer",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/send-code?email=egor@yandex.ru",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"send-code"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "egor@yandex.ru"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/auth/verify?phone=79171555555&code=0795",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"egor@yandex.ru\",\r\n  \"code\": \"0152\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/verify",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"verify"
+							],
+							"query": [
+								{
+									"key": "phone",
+									"value": "chetvergovkirill@yandex.ru",
+									"disabled": true
+								},
+								{
+									"key": "code",
+									"value": "0132",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "http://localhost:8080/auth/verify?phone=79171555555&code=0795",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/auth/verify?phone=79171555555&code=0227",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"verify"
+									],
+									"query": [
+										{
+											"key": "phone",
+											"value": "79171555555"
+										},
+										{
+											"key": "code",
+											"value": "0227"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/plain;charset=UTF-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "37"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 04 Mar 2025 17:51:53 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "Верификация успешна"
+						}
+					]
+				},
+				{
+					"name": "http://localhost:8080/test/test1",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlZ29yQHlhbmRleC5ydSIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc0MjM5NzE5MiwiZXhwIjoxNzQyNDgzNTkyfQ.qrSt5SO8AJsZW7cRf1yN01x5F-YP8wTN1GVqi9gAOrQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/test/test1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"test",
+								"test1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/Service/ServiceTypes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlZ29yQHlhbmRleC5ydSIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc0MjM5NjcwOCwiZXhwIjoxNzQyNDgzMTA4fQ.DypZgO5WSSUxK5u_mKfUY65mI6uWqJYMIfRQGQmAzJM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/Service/ServiceTypes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"Service",
+								"ServiceTypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/Service/OrganizationsByCity?city=Mos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlZ29yQHlhbmRleC5ydSIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc0MjM5Nzk4MywiZXhwIjoxNzQyNDg0MzgzfQ.NYIYL4s15migN3Vy5gAbbLOywlvPmFaNQyr9SRobgCg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/Service/OrganizationsByCity?city=Mos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"Service",
+								"OrganizationsByCity"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "Mos"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/Service/OrganizationByCityAndName?city=Moscow&name=Company XYZ",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlZ29yQHlhbmRleC5ydSIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc0MjM5ODQyNywiZXhwIjoxNzQyNDg0ODI3fQ.dlwt6y5X-SjsH6itjdM7VxE3ejA0PYFUSsOo5I-qq38",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/Service/OrganizationByCityAndName?city=Moscow&name=Company XYZ",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"Service",
+								"OrganizationByCityAndName"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "Moscow"
+								},
+								{
+									"key": "name",
+									"value": "Company XYZ"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/Service/ServiceTypes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlZ29yQHlhbmRleC5ydSIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc0MjM5ODQyNywiZXhwIjoxNzQyNDg0ODI3fQ.dlwt6y5X-SjsH6itjdM7VxE3ejA0PYFUSsOo5I-qq38",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/Service/ServiceTypes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"Service",
+								"ServiceTypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/Service/details?typeCode=01",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlZ29yQHlhbmRleC5ydSIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc0MjM5ODg2NSwiZXhwIjoxNzQyNDg1MjY1fQ.zogKJaCyzcx2avbFIOc4kLRIRWSoKUanlWxAQl1kMvc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/Service/details?typeCode=01",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"Service",
+								"details"
+							],
+							"query": [
+								{
+									"key": "typeCode",
+									"value": "01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/Service/createRequest",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlZ29yQHlhbmRleC5ydSIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc0MjM5OTMwMCwiZXhwIjoxNzQyNDg1NzAwfQ.5GkR67B6ImcSFnsDnwhLZel0QlXkbGGoeEIMhkgSotk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"organizationId\": 1,\r\n    \"serviceDetailId\": 1,\r\n    \"dateTime\": \"2025-03-19T22:00:00\",\r\n    \"addInfo\": \"Комментарий к заявке\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/Service/createRequest",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"Service",
+								"createRequest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/customer/edit",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuZXdlbWFpbEBleGFtcGxlLmNvbSIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc0MjQwMTY0MSwiZXhwIjoxNzQyNDg4MDQxfQ.uLwtZk9DmYT-IgI5lCk3b3GfXQuV3QVXTRnpp2Ransc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customerSurname\": \"Иванов\",\r\n    \"customerName\": \"Иван\",\r\n    \"customerPatronymic\": \"Иванович\",\r\n    \"addInfo\": \"Некоторая дополнительная информация\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/customer/edit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"edit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/customer/TEST",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlZ29yQHlhbmRleC5ydSIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc0MjQwMTYyOSwiZXhwIjoxNzQyNDg4MDI5fQ.GHtLgsyXsYkpDJwPiZED1CyCXf9IsEiXruRwC9jnrWU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/customer/TEST",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"TEST"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/customer/search",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuZXdlbWFpbEBleGFtcGxlLmNvbSIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc0MjQwMTY0MSwiZXhwIjoxNzQyNDg4MDQxfQ.uLwtZk9DmYT-IgI5lCk3b3GfXQuV3QVXTRnpp2Ransc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/customer/search",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/customer/delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlZ29yQHlhbmRleC5ydSIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTc0MjQwMjUyNCwiZXhwIjoxNzQyNDg4OTI0fQ.7qHyXFAHWDXU-c_kHoQmJhFdoNlPxrWPSkFmW-B5bW8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/customer/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

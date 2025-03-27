@@ -1,6 +1,7 @@
 package com.agregator.Agregator.DTO;
 
 
+import com.agregator.Agregator.Enums.UserRole;
 
 public class VerificationRequest {
     private String email;
@@ -22,5 +23,6 @@ public class VerificationRequest {
     public void setCode(String code) {
         this.code = code;
     }
+
 }
 

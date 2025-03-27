@@ -4,28 +4,28 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 @Entity
-@Table(name = "Customer")
 @Getter
 @Setter
 public class Customer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "customer_id")
-    private Integer id;
+    private int customerId;
 
-    @Column(name = "customer_surname", length = 50)
-    private String surname;
+    @Column( length = 50)
+    private String customerSurname;
 
-    @Column(name = "customer_name", length = 50)
-    private String name;
+    @Column( length = 50)
+    private String customerName;
 
-    @Column(name = "customer_patronymic", length = 50)
-    private String patronymic;
+    @Column(length = 50)
+    private String customerPatronymic;
 
-    @Column(name = "email", length = 50, nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "add_info", length = 250)
-    private String info;
+    @Column(length = 250)
+    private String addInfo;
 }
