@@ -2,6 +2,10 @@ import { useLocation, Link } from "react-router-dom";
 import { Header } from "../components/Header";
 import "../styles.scss";
 import Calendar from "../components/Calendar.jsx";
+import { useEffect } from "react";
+import React, { useState } from "react";
+
+import { addToLocalStorage, postRequest } from "../api/client/services.js";
 
 export function CartPage() {
     const location = useLocation();
@@ -12,6 +16,8 @@ export function CartPage() {
         offers: [],
     };
 
+    const [selectedDateTime, setSelectedDateTime] = useState(null);
+
     const { serviceName, address, category, offers } = cartData;
 
     const totalPrice = offers.reduce((sum, o) => sum + o.price, 0);
@@ -19,24 +25,22 @@ export function CartPage() {
         const numericTime = parseInt(o.time);
         return sum + (isNaN(numericTime) ? 0 : numericTime);
     }, 0);
-
     return (
         <div>
             <Header />
             <div className="container">
                 <div className="content">
-                    <h1>Корзина</h1>
+                    <h1>Подтверждение заказа</h1>
 
                     {/* Хлебные крошки */}
                     <nav className="navigate">
                         <Link to={`/${encodeURIComponent(category)}/${encodeURIComponent(serviceName)}`}>
-                            {serviceName}
+                            <strong>{serviceName}</strong>
+                            {"   ("}{address}{")"}
                         </Link>
-                        {" — "}
-                        <strong>Корзина</strong>
+                        {/*{" — "}*/}
+                        {/*<strong>Корзина</strong>*/}
                     </nav>
-
-                    <h5>{address}</h5>
 
                     {/* Таблица услуг */}
                     <table className="cart-table">
@@ -69,8 +73,23 @@ export function CartPage() {
 
                     {/* Кнопка подтверждения */}
                     <div className="cart-confirm">
-                        <Calendar />
-                        <button className="confirm-button" onClick={() => alert("Заказ подтверждён!")}>
+                        <Calendar
+                            onDateTimeSelect={setSelectedDateTime}
+                        />
+                        <button className="confirm-button" onClick={async () => {
+                            if (!selectedDateTime) {
+                                alert("Выберите время");
+                                return;
+                            }
+                            try {
+                                addToLocalStorage("addInfo", "string_front")
+                                const response = await postRequest()
+                                alert("Заказ подтверждён!")
+                        } catch (error){
+                            alert("Выбранное время занято! Выберите другое.")
+                        }
+                        
+                        }}>
                             Подтвердить заказ
                         </button>
                     </div>

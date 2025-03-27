@@ -28,3 +28,29 @@
   width: 100%;
   height: auto;
 }
+
+/* Кнопка выбора города */
+.city-button-icon,
+.login-button-icon {
+  display: none; /* По умолчанию иконки скрыты на широких экранах */
+  margin-right: 0.5rem; /* Отступ между иконкой и текстом */
+}
+
+.city-button-text,
+.login-button-text {
+  display: inline-block; /* Текст виден на широких экранах */
+}
+
+/* Для мобильных (max-width: 480px) */
+@media (max-width: 480px) {
+  .city-button-icon,
+  .login-button-icon {
+    display: inline-block; /* На узких экранах показываем иконки */
+    width: 2rem;
+    height: 2rem;
+  }
+  .city-button-text,
+  .login-button-text {
+    display: none; /* А текст скрываем */
+  }
+}
