@@ -1,7 +1,6 @@
 package com.agregator.Agregator.Controllers;
 
 import com.agregator.Agregator.DTO.*;
-import com.agregator.Agregator.Entity.Organization;
 import com.agregator.Agregator.Entity.ServiceType;
 import com.agregator.Agregator.Services.ServiceService;
 import org.slf4j.Logger;
@@ -23,17 +22,17 @@ public class ServiceControler {
     @Autowired
     public ServiceService serviceService;
 
-    @GetMapping("/OrganizationsByCity")
+    /*@GetMapping("/OrganizationsByCity")
     public List<SearchOrganizationDTO> getOrganizationsByCity(@RequestParam String city) {
         return serviceService.getOrganizationsByCity(city);
-    }
+    }*/
     @GetMapping("/CITY")
     public List<CityDTO> getListOfSity(@RequestParam String city){
         return serviceService.getCity(city);
     }
 
     @GetMapping("/OrganizationByCityAndName")
-    public List<Organization> getOrganizationsByCity(@RequestParam String city, @RequestParam String name) {
+    public List<SearchOrganizationDTO> getOrganizationsByCity(@RequestParam String city, @RequestParam(required = false) String name) {
         log.info(city);
         log.info(name);
         return serviceService.getOrganizationsByCityAndName(city,name);

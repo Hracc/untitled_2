@@ -63,8 +63,9 @@ public class AdminController {
     }
 
     @PostMapping("Organization/create")
-    public Organization createOrganization(@RequestBody OrganizationDTO organization) {
-        return registrationService.registerOrganization(organization);
+    public ResponseEntity<String>  createOrganization(@RequestBody CreateOrganizationDTO organization) {
+        registrationService.registerOrganization(organization);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Организация создана");
     }
 
     @PutMapping("Organization/update/{id}")

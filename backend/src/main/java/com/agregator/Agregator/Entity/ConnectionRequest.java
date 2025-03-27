@@ -26,7 +26,7 @@ public class ConnectionRequest {
     @Column(nullable = false)
     private LocalDate dateBegin;
 
-    @Column(nullable = false)
+    @Column
     private LocalDate dateEnd;
 
     @Column(nullable = false, length = 20)

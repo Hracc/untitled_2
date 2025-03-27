@@ -1,10 +1,13 @@
 package com.agregator.Agregator.Services;
 
+import com.agregator.Agregator.DTO.CreateOrganizationDTO;
 import com.agregator.Agregator.DTO.OrganizationDTO;
 import com.agregator.Agregator.Entity.*;
 import com.agregator.Agregator.Repositories.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,8 +46,9 @@ public class OrganizationService {
                 .orElseThrow(() -> new RuntimeException("Организация не найдена"));
     }
     @Transactional
-    public Organization createOrganization(OrganizationDTO organization) {
-        return registrationService.registerOrganization(organization);
+    public ResponseEntity<String> createOrganization(CreateOrganizationDTO organization) {
+        registrationService.registerOrganization(organization);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Организация создана");
     }
     @Transactional
     public OrganizationDTO updateOrganization(int id, OrganizationDTO orgDetails) {
@@ -160,39 +164,5 @@ public class OrganizationService {
         dto.setResponsiblePersonPhoneNumber(organization.getResponsiblePersonPhoneNumber());
         dto.setAddInfo(organization.getAddInfo());
         return dto;
-    }
-
-  //Другое
-    public void create(OrganizationDTO dto) {
-        Organization organization = new Organization();
-        organization.setOrganizationFullName(dto.getOrganizationFullName());
-        organization.setOrganizationShortName(dto.getOrganizationShortName());
-        organization.setInn(dto.getInn());
-        organization.setKpp(dto.getKpp());
-        organization.setOgrn(dto.getOgrn());
-        organization.setResponsiblePersonSurname(dto.getResponsiblePersonSurname());
-        organization.setResponsiblePersonName(dto.getResponsiblePersonName());
-        organization.setResponsiblePersonPatronymic(dto.getResponsiblePersonPatronymic());
-        organization.setResponsiblePersonEmail(dto.getResponsiblePersonEmail());
-        organization.setResponsiblePersonPhoneNumber(dto.getResponsiblePersonPhoneNumber());
-        organization.setAddInfo(dto.getAddInfo());
-        organizationRepository.save(organization);
-
-       /* ConnectionRequest connectionRequest = new ConnectionRequest();
-        connectionRequest.setOrganization(organization);
-        connectionRequest.setRegNumber("temp");
-        connectionRequest.setDateBegin(LocalDate.now());
-        connectionRequest.setStatus("Новая");
-
-        ConnectionRequest savedRequest = connectionRequestRepository.save(connectionRequest);
-        // Генерируем regNumber на основе connectionRequestId
-        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-        String regNumber = savedRequest.getConnectionRequestId() + " " + currentDate;
-
-        // Обновляем regNumber
-        savedRequest.setRegNumber(regNumber);
-
-        // Сохраняем сущность с обновлённым regNumber
-        connectionRequestRepository.save(savedRequest);*/
     }
 }
