@@ -1,3 +1,4 @@
+// src/pages/CategoryPage.jsx
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { SearchBar } from "../components/SearchBar";
@@ -10,22 +11,25 @@ export function CategoryPage() {
     const { categoryName } = useParams();
     const [search, setSearch] = useState("");
     const [services, setServices] = useState([]);
-    const [showCities, setShowCities] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const servicesPerPage = 10;
 
+    // Читаем город из Local Storage (если пользователь выбрал)
+    const selectedCity = localStorage.getItem("selectedCity") || "";
+
+    // Загрузка всех организаций
     const fetchData = async () => {
         try {
             const organizations = await getOrganizations();
             const formattedServices = organizations.map((org, index) => ({
                 id: index + 1,
-                name: org.organizationFullName, 
+                name: org.organizationFullName,
                 address: `${org.cityName}, ул. ${org.streetName}, дом ${org.houseNumber}`,
                 city: org.cityName,
             }));
             setServices(formattedServices);
         } catch (error) {
-            console.error('Ошибка при загрузке данных:', error);
+            console.error("Ошибка при загрузке данных:", error);
         }
     };
 
@@ -33,38 +37,36 @@ export function CategoryPage() {
         fetchData();
     }, [categoryName]);
 
-    // Получаем уникальные города
-    const cities = [...new Set(services.map(service => service.city))];
-
-    // Обработчик изменения поиска
+    // При изменении поисковой строки
     const handleSearchChange = (value) => {
         setSearch(value);
         setCurrentPage(1);
-        // Если есть пробел - переключаемся на организации
-        setShowCities(!value.includes(' '));
     };
 
-    // Фильтрация
-    const filteredCities = cities.filter(city => 
-        city.toLowerCase().includes(search.toLowerCase())
-    );
-
+    // Фильтрация: если есть выбранный город, можем фильтровать по нему
+    // + по названию организации (если в search нет пробела)
     const filteredServices = services.filter(service => {
-        const [city, ...nameParts] = search.toLowerCase().split(' ');
-        const name = nameParts.join(' ');
-        
-        const matchesCity = city ? service.city.toLowerCase().includes(city) : true;
-        const matchesName = name ? service.name.toLowerCase().includes(name) : true;
-        
-        return matchesCity && matchesName;
+        // Если есть выбранный город, проверяем совпадение
+        const cityMatch = selectedCity
+            ? service.city.toLowerCase() === selectedCity.toLowerCase()
+            : true;
+
+        // Поиск по названию (если пользователь ввёл текст)
+        const nameMatch = search
+            ? service.name.toLowerCase().includes(search.toLowerCase())
+            : true;
+
+        return cityMatch && nameMatch;
     });
 
     // Пагинация
     const indexOfLastService = currentPage * servicesPerPage;
     const indexOfFirstService = indexOfLastService - servicesPerPage;
-    const currentCities = filteredCities.slice(indexOfFirstService, indexOfLastService);
     const currentServices = filteredServices.slice(indexOfFirstService, indexOfLastService);
 
+    const pageCount = Math.ceil(filteredServices.length / servicesPerPage);
+
+    // Смена страницы
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
@@ -79,26 +81,11 @@ export function CategoryPage() {
                         <strong>{categoryName}</strong>
                     </nav>
 
+                    {/* Поисковая строка */}
                     <SearchBar search={search} setSearch={handleSearchChange} />
 
-                    {/* Список городов */}
-                    {showCities && currentCities.map((city) => (
-                        <div
-                            key={city}
-                            onClick={() => {
-                                setCurrentPage(1);
-                                setSearch(`${city} `); // Добавляем пробел после города
-                                setShowCities(false);
-                            }}
-                            className="category-service-item"
-                            style={{cursor: 'pointer'}}
-                        >
-                            <div className="service-name">{city}</div>
-                        </div>
-                    ))}
-
                     {/* Список организаций */}
-                    {!showCities && currentServices.map((service) => (
+                    {currentServices.map(service => (
                         <Link
                             key={service.id}
                             to={`/${encodeURIComponent(categoryName)}/${encodeURIComponent(service.name)}`}
@@ -112,13 +99,11 @@ export function CategoryPage() {
 
                     {/* Пагинация */}
                     <div className="pagination">
-                        {[...Array(Math.ceil(
-                            (showCities ? filteredCities.length : filteredServices.length) / servicesPerPage
-                        )).keys()].map(number => (
+                        {[...Array(pageCount).keys()].map(number => (
                             <button
                                 key={number + 1}
                                 onClick={() => paginate(number + 1)}
-                                className={currentPage === number + 1 ? 'active' : ''}
+                                className={currentPage === number + 1 ? "active" : ""}
                             >
                                 {number + 1}
                             </button>

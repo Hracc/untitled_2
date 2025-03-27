@@ -3,7 +3,6 @@ import { useParams, Link } from "react-router-dom";
 import "./Modal.scss"; // Подключаем стили для Modal
 
 import { postSendCode, postVerify } from "../api/client/authorization";
-import { setCookie } from "../api/utils";
 
 export function Modal({ isOpen, onClose }) {
     const [isChecked, setIsChecked] = useState(false);
@@ -59,12 +58,12 @@ export function Modal({ isOpen, onClose }) {
         }
     };
 
-    const handleConfirmCode = async () => { 
+    const handleConfirmCode = async () => { // Добавлено async
         if (code.trim() !== "") {
             try {
-                const result = await postVerify(email, code); 
-                onClose(); 
-                setCookie("token",result)
+                const result = await postVerify(email, code); // Добавлено await
+                onClose(); // Закрываем модалку после успешного ввода кода
+                localStorage.setItem("token", result); // Сохраняем токен в localStorage
                 setError("")
             } catch (error) {
                 console.error("Ошибка при отправке кода:", error);
@@ -76,10 +75,7 @@ export function Modal({ isOpen, onClose }) {
     return (
         <div className="modal-overlay" onClick={handleOverlayClick}>
             <div className="modal-content">
-                <h2 className="modal-title">Войти или&nbsp;
-                    <nav className="register-link">
-                        <Link to="/register">зарегистрироваться</Link>
-                    </nav>
+                <h2 className="modal-title">Войти или зарегистрироваться
                 </h2>
 
                 <input
