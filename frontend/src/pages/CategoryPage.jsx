@@ -21,8 +21,9 @@ export function CategoryPage() {
     const fetchData = async () => {
         try {
             const organizations = await getOrganizations();
+            console.log(organizations)
             const formattedServices = organizations.map((org, index) => ({
-                id: index + 1,
+                id: org.organizationId,
                 name: org.organizationFullName,
                 address: `${org.cityName}, ул. ${org.streetName}, дом ${org.houseNumber}`,
                 city: org.cityName,

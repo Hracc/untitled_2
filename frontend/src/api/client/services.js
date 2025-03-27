@@ -2,7 +2,7 @@ import { getWithToken, getTokenOrThrow } from "../utils";
 
 const urlService = {
     serviceTypes: '/api/Service/ServiceTypes',
-    organizations: '/api/Service/OrganizationByCityAndName?city=%D0%9C&name=C',
+    organizations: '/api/Service/OrganizationByCityAndName?city=&name=',
     serviceDetail: '/api/Service/details',
     serviceRequest: '/api/Service/createRequest'
 }
