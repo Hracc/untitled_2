@@ -61,10 +61,9 @@ export function Modal({ isOpen, onClose }) {
     const handleConfirmCode = async () => { // Добавлено async
         if (code.trim() !== "") {
             try {
-                const result = await postVerify(email, code); // Добавлено await
-                onClose(); // Закрываем модалку после успешного ввода кода
-                localStorage.setItem("token", result); // Сохраняем токен в localStorage
-                setError("")
+                const result = await postVerify(email, code); 
+                onClose(); 
+                setCookie("token",result)
             } catch (error) {
                 console.error("Ошибка при отправке кода:", error);
                 setError("Неверный код. Попробуйте еще раз.");

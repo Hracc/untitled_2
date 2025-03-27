@@ -5,14 +5,26 @@ import { Logo } from "./Logo";
 import { CityModal } from "./CityModal";
 import { Location } from "./Location";
 
+import { useNavigate } from "react-router-dom";
+
 import "./Header.scss";
 import {Person} from "./Person.jsx";
+
+import { getTokenOrThrow } from "../api/utils.js";
 
 export function Header({ onLoginClick }) {
     const [isCityModalOpen, setCityModalOpen] = useState(false);
     const [selectedCity, setSelectedCity] = useState("");
-
+    const [isAuthorization, setIsAuthorization] = useState(false);
+    const navigate = useNavigate()
     useEffect(() => {
+        try {
+            const token = getTokenOrThrow()
+            setIsAuthorization(true)
+        } catch (error) {
+            setIsAuthorization(false)
+        }
+
         const cityFromStorage = localStorage.getItem("selectedCity") || "";
         setSelectedCity(cityFromStorage);
     }, []);
@@ -46,11 +58,18 @@ export function Header({ onLoginClick }) {
                     </button>
 
                     {/* Кнопка входа/регистрации */}
-                    <button onClick={onLoginClick} className="header__button login-button">
+                    <button onClick= {() => {
+                        if (isAuthorization) {
+                            navigate("/profile");
+                        } else {
+                            onLoginClick(); 
+                        }
+                    }} 
+                    className="header__button login-button">
                         <span className="login-button-icon">
                             <Person />
                         </span>
-                        <span className="login-button-text">Вход или регистрация</span>
+                        <span className="login-button-text">{isAuthorization ? "Профиль" : "Вход или регистрация"}</span>
                     </button>
                 </div>
             </div>

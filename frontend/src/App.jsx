@@ -4,12 +4,12 @@ import { Home } from "./pages/Home";
 import { CategoryPage } from "./pages/CategoryPage";
 import { ServiceDetailsPage } from "./pages/ServiceDetailsPage";
 import { CartPage } from "./pages/CartPage";
-import { AuthProvider } from "./components/AuthContext";
+// import { AuthProvider } from "./components/AuthContext";
 import "./styles.scss";
 
 export default function App() {
     return (
-        <AuthProvider>
+        // <AuthProvider>
             <Router>
                 <Routes>
                     <Route path="/" element={<Home />} />
@@ -20,6 +20,6 @@ export default function App() {
                     <Route path="/profile" element={<div>Профиль (страница в разработке)</div>} />
                 </Routes>
             </Router>
-        </AuthProvider>
+        // </AuthProvider>
     );
 }

@@ -2,9 +2,9 @@ import { getWithToken, getTokenOrThrow } from "../utils";
 
 const urlService = {
     serviceTypes: '/api/Service/ServiceTypes',
-    organizations: '/api/Service/OrganizationsByCity?city=',
+    organizations: '/api/Service/OrganizationByCityAndName?city=%D0%9C&name=C',
     serviceDetail: '/api/Service/details',
-    serviceRequest: 'api/Service/createRequest'
+    serviceRequest: '/api/Service/createRequest'
 }
 
 // GET-запросы:
