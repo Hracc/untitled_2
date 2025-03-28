@@ -1,3 +1,4 @@
+import { getTokenOrThrow } from "../utils";
 
 const urlCustomer = {
     customerSearch: '/api/customer/search',
@@ -6,16 +7,12 @@ const urlCustomer = {
 }
 
 export const getCustomer = async () => {
-    const token = localStorage.getItem('token');
 
-    if (!token) {
-        throw new Error('Токен не найден в localStorage');
-    }
 
     const response = await fetch(urlCustomer.customerSearch, {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${getTokenOrThrow()}`,
         }
     })
 
@@ -27,16 +24,11 @@ export const getCustomer = async () => {
 }
 
 export const putCustomer = async (requestBody) => {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-        throw new Error('Токен не найден в localStorage');
-    }
 
     const response = await fetch(urlCustomer.customerEdit, {
         method: 'PUT',
         headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${getTokenOrThrow()}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestBody),
@@ -44,16 +36,12 @@ export const putCustomer = async (requestBody) => {
 }
 
 export const deleteCustomer = async () => {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-        throw new Error('Токен не найден в localStorage');
-    }
-
     const response = await fetch(urlCustomer.customerDelete, {
         method: 'DELETE',
         headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${getTokenOrThrow()}`,
         },
     })
+    document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+    window.location.href = "/"
 }

@@ -18,10 +18,9 @@ export function CategoryPage() {
     const selectedCity = localStorage.getItem("selectedCity") || "";
 
     // Загрузка всех организаций
-    const fetchData = async () => {
+    const findOrganization = async () => {
         try {
             const organizations = await getOrganizations();
-            console.log(organizations)
             const formattedServices = organizations.map((org, index) => ({
                 id: org.organizationId,
                 name: org.organizationFullName,
@@ -35,7 +34,7 @@ export function CategoryPage() {
     };
 
     useEffect(() => {
-        fetchData();
+        findOrganization();
     }, [categoryName]);
 
     // При изменении поисковой строки

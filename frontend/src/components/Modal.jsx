@@ -63,8 +63,9 @@ export function Modal({ isOpen, onClose }) {
         if (code.trim() !== "") {
             try {
                 const result = await postVerify(email, code); 
-                onClose(); 
+                // onClose(); 
                 setCookie("token",result)
+                window.location.reload()
             } catch (error) {
                 console.error("Ошибка при отправке кода:", error);
                 setError("Неверный код. Попробуйте еще раз.");

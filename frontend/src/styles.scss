@@ -27,8 +27,13 @@ body {
 @media (max-width: 480px) {
   .content{
     padding: 1.25rem;
+
+    .profile-info, .profile-buttons {
+      width: 100%;
+    }
   }
 }
+
 
 h1,h3 {
   color: #222222;
@@ -300,5 +305,46 @@ h5 {
 
   &:hover {
     background-color: #a50e0e;
+  }
+}
+
+.profile-info {
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0.5rem;
+
+  input {
+    width: 60%;
+    height: 2rem;
+    padding-left: 0.5rem;
+    border: none;
+    border-bottom: $dark-gray-color 1px solid;
+
+    &:active  {
+    border: none;
+    }
+  }
+
+}
+
+.profile-buttons {
+  margin-top: 2rem;
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
+  button {
+    margin: 1rem 0.5rem;
+    padding: 0.5rem;
+    width: 6rem;
+    border: none;
+    background-color: $ultra-light-gray-color;
+    color: $dark-gray-color;
+    cursor: pointer;
+    &:hover {
+      background-color: $primary-color;
+      color: white;
+      font-weight: bold;
+    }
   }
 }

@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 //Работа с куки
 export const setCookie = (name, value, expiresDays = 7) => {
   const expires = new Date(Date.now() + expiresDays * 86400e3).toUTCString();
@@ -13,7 +15,9 @@ export const getCookie = (name) => {
 // Проверка наличия токена
 export const getTokenOrThrow = () => {
     const token = getCookie("token")
-    if (!token) throw new Error('Токен не найден')
+    if (!token) {
+        throw new Error('Токен не найден')
+    }
     return token
 }
 

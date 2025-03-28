@@ -1,6 +1,6 @@
 // src/components/CityModal.jsx
 import { useState, useEffect } from "react";
-import { getOrganizations } from "../api/client/services";
+import { getCities } from "../api/client/services";
 import { SearchBar } from "./SearchBar";
 import "./modal.scss"; // Подключаем стили модалки
 
@@ -12,8 +12,8 @@ export function CityModal({ isOpen, onClose }) {
         // При открытии модалки загружаем список городов
         async function fetchCities() {
             try {
-                const organizations = await getOrganizations();
-                const uniqueCities = [...new Set(organizations.map((org) => org.cityName))];
+                const organizations = await getCities();
+                const uniqueCities = [...new Set(organizations.map((org) => org.city))];
                 setCities(uniqueCities);
             } catch (error) {
                 console.error("Ошибка при загрузке данных:", error);

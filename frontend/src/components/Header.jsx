@@ -1,15 +1,12 @@
-// src/components/Header.jsx
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Logo } from "./Logo";
 import { CityModal } from "./CityModal";
 import { Location } from "./Location";
 
-import { useNavigate } from "react-router-dom";
-
 import "./Header.scss";
 import {Person} from "./Person.jsx";
-
 import { getTokenOrThrow } from "../api/utils.js";
 
 export function Header({ onLoginClick }) {
@@ -17,6 +14,7 @@ export function Header({ onLoginClick }) {
     const [selectedCity, setSelectedCity] = useState("");
     const [isAuthorization, setIsAuthorization] = useState(false);
     const navigate = useNavigate()
+
     useEffect(() => {
         try {
             const token = getTokenOrThrow()
@@ -62,10 +60,10 @@ export function Header({ onLoginClick }) {
                         if (isAuthorization) {
                             navigate("/profile");
                         } else {
-                            onLoginClick(); 
+                            onLoginClick();
                         }
-                    }} 
-                    className="header__button login-button">
+                    }}
+                            className="header__button login-button">
                         <span className="login-button-icon">
                             <Person />
                         </span>

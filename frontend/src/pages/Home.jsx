@@ -37,7 +37,7 @@ export function Home() {
                     <h3>Поручите дела специалистам</h3>
                     <ServicesList services={serviceTypes} search={search} />
                 </div>
-                <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}/>
+                <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
 
             </div>
 
