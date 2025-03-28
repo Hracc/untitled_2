@@ -1,5 +1,6 @@
 package com.agregator.Agregator.Services;
 
+import com.agregator.Agregator.DTO.ConnectionRequestDTO;
 import com.agregator.Agregator.DTO.CreateOrganizationDTO;
 import com.agregator.Agregator.DTO.OrganizationDTO;
 import com.agregator.Agregator.Entity.*;
@@ -14,8 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -147,6 +147,32 @@ public class OrganizationService {
     @Transactional
     public void deleteAddress(int addressId) {
         addressRepository.deleteById(addressId);
+    }
+
+    public List<ConnectionRequestDTO> UpdateStatus(String email) {
+        Optional<Organization> organization = organizationRepository.findByResponsiblePersonEmail(email);
+
+        if (organization.isEmpty()) {
+            throw new RuntimeException("Такая организация не найдена");
+        } else {
+            // Получаем список запросов на подключение
+            List<ConnectionRequest> requests = connectionRequestRepository.findByOrganization_OrganizationId(organization.get().getOrganizationId());
+
+            return requests.stream()
+                    .map(this::convertToDTO)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    private ConnectionRequestDTO convertToDTO(ConnectionRequest connectionRequest) {
+        // Маппинг из ConnectionRequest в ConnectionRequestDTO
+        return new ConnectionRequestDTO(
+                connectionRequest.getRegNumber(),
+                connectionRequest.getDateBegin(),
+                connectionRequest.getDateEnd(),
+                connectionRequest.getStatus(),
+                connectionRequest.getAddInfo()
+        );
     }
 
     private OrganizationDTO convertToDTO(Organization organization) {
