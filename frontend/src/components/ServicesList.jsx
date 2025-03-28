@@ -2,17 +2,21 @@ import { Link } from "react-router-dom";
 import './ServicesList.scss';
 
 export function ServicesList({ services, search }) {
+    const handleServiceSelect = (typeCode) => {
+        localStorage.setItem('selectedServiceTypeCode', typeCode);
+    };
     return (
         <div className="services-list">
             {services
-                .filter((s) => s.toLowerCase().includes(search.toLowerCase()))
-                .map((s, i) => (
+                .filter((s) => s.typeName.toLowerCase().includes(search.toLowerCase()))
+                .map((s) => (
                     <Link
-                        key={i}
-                        to={`/${encodeURIComponent(s)}`}
+                        key={s.typeCode}
+                        to={`/${encodeURIComponent(s.typeName)}`}
                         className="service-item"
+                        onClick={() => handleServiceSelect(s.typeCode)}
                     >
-                        {s}
+                        {s.typeName}
                     </Link>
                 ))}
         </div>

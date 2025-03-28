@@ -3,6 +3,8 @@ import "./Calendar.scss";
 import { NextButton } from "./Next-Button.jsx";
 import { PrevButton } from "./Prev-Button.jsx";
 
+import { addDate } from "../api/client/services.js";
+
 // Именительный падеж (для шапки календаря)
 const MONTH_NAMES_NOMINATIVE = [
     "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
@@ -42,7 +44,7 @@ function chunkArray(array, size) {
     return result;
 }
 
-export default function Calendar() {
+export default function Calendar( { onDateTimeSelect } ) {
     const today = new Date();
     const [isCalendarOpen, setIsCalendarOpen] = useState(false);
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -92,6 +94,16 @@ export default function Calendar() {
     const handleTimeClick = (time) => {
         setSelectedTime(time);
         setIsCalendarOpen(false);
+
+        if(onDateTimeSelect && selectedDate) {
+            const selectedDateTime = new Date(selectedDate);
+            const [hours, minutes] = time.split(":").map(Number); 
+            selectedDateTime.setHours(hours, minutes, 0, 0); 
+            
+            onDateTimeSelect(selectedDateTime)
+            
+            addDate(selectedDateTime)
+        }
     };
 
     const maxSelectableDate = new Date();

@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -35,14 +37,18 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (token != null && jwtService.isValidToken(token)) {
             String username = jwtService.extractUsername(token); // Извлекаем имя пользователя из токена
+            String role = jwtService.extractRole(token); // Извлекаем роль
 
-            logger.info("Valid token, username: {}", username);
+            logger.info("Valid token, username: {}, ROLE: {}", username, role);
 
             // Если токен валиден, устанавливаем аутентификацию
-            Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
+            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+            Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
+
             logger.info("Current authentication: {}", currentAuth);
         }else {
             logger.warn("Invalid token or no token provided.");
