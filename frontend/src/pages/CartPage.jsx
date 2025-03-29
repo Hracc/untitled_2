@@ -5,7 +5,8 @@ import Calendar from "../components/Calendar.jsx";
 import { useEffect } from "react";
 import React, { useState } from "react";
 
-import { addToLocalStorage, postRequest } from "../api/client/services.js";
+import { serviceItem, postRequest } from "../api/client/services.js";
+import { addLocalJSON } from "../api/utils.js";
 
 export function CartPage() {
     const location = useLocation();
@@ -82,7 +83,7 @@ export function CartPage() {
                                 return;
                             }
                             try {
-                                addToLocalStorage("addInfo", "string_front")
+                                addLocalJSON(serviceItem.serviceRequest,"addInfo", "string_front")
                                 const response = await postRequest()
                                 alert("Заказ подтверждён!")
                         } catch (error){

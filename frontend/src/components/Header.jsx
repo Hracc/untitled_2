@@ -7,13 +7,15 @@ import { Location } from "./Location";
 
 import "./Header.scss";
 import {Person} from "./Person.jsx";
-import { getTokenOrThrow } from "../api/utils.js";
+import { getTokenOrThrow, getLocalJSON} from "../api/utils.js";
+import { serviceItem } from "../api/client/services.js";
 
 export function Header({ onLoginClick }) {
     const [isCityModalOpen, setCityModalOpen] = useState(false);
     const [selectedCity, setSelectedCity] = useState("");
     const [isAuthorization, setIsAuthorization] = useState(false);
     const navigate = useNavigate()
+    const item = serviceItem.selectedData
 
     useEffect(() => {
         try {
@@ -23,13 +25,13 @@ export function Header({ onLoginClick }) {
             setIsAuthorization(false)
         }
 
-        const cityFromStorage = localStorage.getItem("selectedCity") || "";
+        const cityFromStorage = getLocalJSON(item, 'city')
         setSelectedCity(cityFromStorage);
     }, []);
 
     const handleCloseModal = () => {
         setCityModalOpen(false);
-        const cityFromStorage = localStorage.getItem("selectedCity") || "";
+        const cityFromStorage = getLocalJSON(item, 'city')
         setSelectedCity(cityFromStorage);
     };
 

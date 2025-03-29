@@ -4,6 +4,8 @@ import { getCities } from "../api/client/services";
 import { SearchBar } from "./SearchBar";
 import "./modal.scss"; // Подключаем стили модалки
 
+import { addLocalJSON } from "../api/utils";
+import { serviceItem } from "../api/client/services";
 export function CityModal({ isOpen, onClose }) {
     const [search, setSearch] = useState("");
     const [cities, setCities] = useState([]);
@@ -16,7 +18,7 @@ export function CityModal({ isOpen, onClose }) {
                 const uniqueCities = [...new Set(organizations.map((org) => org.city))];
                 setCities(uniqueCities);
             } catch (error) {
-                console.error("Ошибка при загрузке данных:", error);
+                // console.error("Ошибка при загрузке данных:", error);
             }
         }
 
@@ -43,7 +45,7 @@ export function CityModal({ isOpen, onClose }) {
 
     // Выбор города
     const handleSelectCity = (city) => {
-        localStorage.setItem("selectedCity", city);
+        addLocalJSON(serviceItem.selectedData,"city", city)
         onClose();
     };
 

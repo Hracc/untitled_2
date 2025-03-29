@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router-dom";
-
 //Работа с куки
 export const setCookie = (name, value, expiresDays = 7) => {
   const expires = new Date(Date.now() + expiresDays * 86400e3).toUTCString();
@@ -35,4 +33,18 @@ export const getWithToken = async (url) => {
     }
 
     return response.json();
+}
+
+export const addLocalJSON = (item, key, value) => {
+    const storedData = localStorage.getItem(item)
+    let data = storedData ? JSON.parse(storedData) : {}
+    data[key] = value
+    localStorage.setItem(item, JSON.stringify(data))
+
+}
+
+export const getLocalJSON = (item, key) => {
+    const storedData = localStorage.getItem('selectedData')
+    const data = storedData ? JSON.parse(storedData) : {}
+    return key ? data[key] : data
 }

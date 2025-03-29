@@ -1,11 +1,12 @@
 // src/pages/CategoryPage.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { SearchBar } from "../components/SearchBar";
 import { Header } from "../components/Header";
 import "../styles.scss";
 
-import { getOrganizations, addToLocalStorage } from "../api/client/services";
+import { getOrganizations, serviceItem} from "../api/client/services";
+import { addLocalJSON, getLocalJSON } from "../api/utils";
 
 export function CategoryPage() {
     const { categoryName } = useParams();
@@ -15,7 +16,7 @@ export function CategoryPage() {
     const servicesPerPage = 10;
 
     // Читаем город из Local Storage (если пользователь выбрал)
-    const selectedCity = localStorage.getItem("selectedCity") || "";
+    const selectedCity = getLocalJSON(serviceItem.selectedData,"city")
 
     // Загрузка всех организаций
     const findOrganization = async () => {
@@ -25,6 +26,7 @@ export function CategoryPage() {
                 id: org.organizationId,
                 name: org.organizationFullName,
                 address: `${org.cityName}, ул. ${org.streetName}, дом ${org.houseNumber}`,
+                street : `${org.streetName}, ${org.houseNumber}`,
                 city: org.cityName,
             }));
             setServices(formattedServices);
@@ -89,7 +91,9 @@ export function CategoryPage() {
                         <Link
                             key={service.id}
                             to={`/${encodeURIComponent(categoryName)}/${encodeURIComponent(service.name)}`}
-                            onClick={() => addToLocalStorage("organizationId", service.id)}
+                            onClick={() => {
+                                addLocalJSON(serviceItem.selectedData, "street", service.street)
+                                addLocalJSON(serviceItem.serviceRequest,"organizationId", service.id)}}
                             className="category-service-item"
                         >
                             <div className="service-name">{service.name}</div>

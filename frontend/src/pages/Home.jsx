@@ -17,7 +17,7 @@ export function Home() {
             const data = await getServiceTypes(); 
             setServiceTypes(data)
         } catch (error) {
-            console.error('Ошибка при выполнении запроса:', error);
+            // console.error('Ошибка при выполнении запроса:', error);
         }
     };
 

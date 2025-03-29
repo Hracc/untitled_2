@@ -4,7 +4,8 @@ import { Header } from "../components/Header";
 import { Modal } from "../components/Modal";
 import "../styles.scss";
 
-import { postServiceDetail, addToLocalStorage} from "../api/client/services.js";
+import { postServiceDetail, serviceItem} from "../api/client/services.js";
+import { addLocalJSON, getLocalJSON} from "../api/utils.js";
 
 export function ServiceDetailsPage() {
     const { categoryName, serviceName } = useParams();
@@ -18,7 +19,7 @@ export function ServiceDetailsPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const organizations = await postServiceDetail(localStorage.getItem('selectedServiceTypeCode'));
+                const organizations = await postServiceDetail(getLocalJSON(serviceItem.selectedData ,'serviceTypeCode'));
     
                 const formattedOffers = organizations.map((org, index) => ({
                     id: org.serviceDetailId, 
@@ -40,7 +41,7 @@ export function ServiceDetailsPage() {
         setServiceData({
             id: 1,
             name: serviceName,
-            address: "Московское шоссе, 176",
+            address: getLocalJSON(serviceItem.selectedData,'street'),
             category: categoryName,
         });
     }, [categoryName, serviceName]);
@@ -106,8 +107,8 @@ export function ServiceDetailsPage() {
               Итого: <strong>{totalPrice} RUB</strong>
             </span>
                         <button onClick={() => {if(selectedOffers.length !== 0) {
-                                goToCart();
-                                addToLocalStorage("serviceDetailId",selectedOffers)
+                                    goToCart()
+                                    addLocalJSON(serviceItem.serviceRequest,"serviceDetailId",selectedOffers)
                                 }
                                 else{
                                     alert("Выберите хотя бы одну услугу.")

@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
 import "./Modal.scss"; // Подключаем стили для Modal
 
-import { postSendCode, postVerify } from "../api/client/authorization";
+import { postSendCode, postVerify } from "../api/authorization";
 import { setCookie } from "../api/utils";
 
 export function Modal({ isOpen, onClose }) {
@@ -87,7 +86,7 @@ export function Modal({ isOpen, onClose }) {
                     onChange={(e) => setEmail(e.target.value)}
                     onFocus={() => setEmailPlaceholder("")}
                     onBlur={() => setEmailPlaceholder(" Email")}
-                    maxlength="255"
+                    maxLength="255"
                     disabled={emailSent} // Блокируем поле после отправки кода
                 />
 

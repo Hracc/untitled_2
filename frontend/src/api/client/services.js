@@ -1,4 +1,4 @@
-import { getWithToken, getTokenOrThrow } from "../utils";
+import { getWithToken, getTokenOrThrow, addLocalJSON} from "../utils";
 
 const urlService = {
     serviceTypes: '/api/Service/ServiceTypes',
@@ -6,6 +6,11 @@ const urlService = {
     organizations: '/api/Service/OrganizationByCityAndName?city=&name=',
     serviceDetail: '/api/Service/details',
     serviceRequest: '/api/Service/createRequest'
+}
+
+export const serviceItem = {
+    selectedData : 'selectedData',
+    serviceRequest : 'serviceRequest',
 }
 
 // GET-запросы:
@@ -58,7 +63,7 @@ export const postServiceDetail = async (typeCode) => {
 }
 // - отправка заявки
 export const postRequest = async () => {
-    const requestBody= JSON.parse(localStorage.getItem("serviceQuest"))
+    const requestBody= JSON.parse(localStorage.getItem(serviceItem.serviceRequest))
     const response = await fetch(urlService.serviceRequest, {
         method: 'POST',
         headers: {
@@ -74,19 +79,9 @@ export const postRequest = async () => {
 };
 
 // Функция для заполнения заявки:
-// - добавления данных к заявке (JSON-формат)
-export const addToLocalStorage = (key, value) => {
-    const storedData = localStorage.getItem('serviceQuest');
-    console.log(JSON.parse(storedData))
-    let data = storedData ? JSON.parse(storedData) : {};
-
-    data[key] = value;
-    localStorage.setItem('serviceQuest', JSON.stringify(data));
-};
-
 // - запись календаря в заявку
 export const addDate = (selectedDateTime) => {
     // Преобразуем в строку в формате ISO
     const isoString = selectedDateTime.toISOString();
-    addToLocalStorage("dateTime", isoString);
+    addLocalJSON(serviceItem.serviceRequest,"dateTime", isoString);
 }
