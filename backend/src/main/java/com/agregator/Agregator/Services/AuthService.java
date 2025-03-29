@@ -1,6 +1,7 @@
 package com.agregator.Agregator.Services;
 
 import com.agregator.Agregator.Controllers.TestController;
+import com.agregator.Agregator.Entity.AggregatorSpecialist;
 import com.agregator.Agregator.Entity.Customer;
 import com.agregator.Agregator.Entity.User;
 import com.agregator.Agregator.Enums.UserRole;
@@ -28,6 +29,8 @@ public class AuthService {
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
     private final Map<String, VerificationData> verificationCodes = new ConcurrentHashMap<>();
+    private final Map<String, VerificationData> verificationAdmin = new ConcurrentHashMap<>();
+    private final Map<String, VerificationData> verificationOrganization = new ConcurrentHashMap<>();
 
     @Autowired
     private EmailService emailService;
@@ -68,6 +71,29 @@ public class AuthService {
         return "Код отправлен";
     }
 
+    public String sendVerificationCodeAdmin(String email) {
+        if(!isValidEmail(email)){
+            return "Неверный формат email";
+        }
+        try {
+            Optional<User> user = userRepository.findByEmail(email);
+            if (user.isEmpty()) {
+                logger.info(email);
+                logger.info("Попытка подбора Email у админа");
+                throw new RuntimeException("Ошибка авторизации");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Ошибка авторизации");
+        }
+        String code = generateCode();
+        verificationAdmin.put(email, new VerificationData(code, Instant.now()));
+
+        // Логируем вместо отправки SMS (замени на реальную отправку)
+
+        emailService.sendCodeToEmail(email,code);
+        logger.info("Отправлен код: " + code + " на почту: " + email);
+        return "Код отправлен";
+    }
 
     public String verifyCode(String email, String code) {
         if(!isValidEmail(email)){
@@ -86,6 +112,68 @@ public class AuthService {
         }
         return "false";
     }
+
+    public String sendVerificationCodeOrganization(String email) {
+        if(!isValidEmail(email)){
+            return "Неверный формат email";
+        }
+        try {
+            Optional<User> user = userRepository.findByEmail(email);
+            if (user.isEmpty()) {
+                logger.info(email);
+                logger.info("Попытка подбора Email у админа");
+                throw new RuntimeException("Ошибка авторизации");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Ошибка авторизации");
+        }
+        String code = generateCode();
+        verificationOrganization.put(email, new VerificationData(code, Instant.now()));
+
+        // Логируем вместо отправки SMS (замени на реальную отправку)
+
+        emailService.sendCodeToEmail(email,code);
+        logger.info("Отправлен код: " + code + " на почту: " + email);
+        return "Код отправлен";
+    }
+
+    public String verifyCodeOrganization(String email, String code) {
+        if(!isValidEmail(email)){
+            return "Неверный формат email";
+        }
+        VerificationData data = verificationOrganization.get(email);
+        logger.info("data " + data, data.code);
+        if (data != null && data.code().equals(code) && isCodeValid(data)) {
+            verificationOrganization.remove(data);
+
+            String token = JwtService.generateToken(email, UserRole.ORGANIZATION);
+
+            logger.info("Код успешно Введен"+ email);
+            logger.info("Токен: "+ token);
+            return token;
+        }
+        return "false";
+    }
+
+
+    public String verifyCodeAdmin(String email, String code) {
+        if(!isValidEmail(email)){
+            return "Неверный формат email";
+        }
+        VerificationData data = verificationAdmin.get(email);
+        logger.info("data " + data, data.code);
+        if (data != null && data.code().equals(code) && isCodeValid(data)) {
+            verificationAdmin.remove(data);
+
+            String token = JwtService.generateToken(email, UserRole.ADMINISTRATION);
+
+            logger.info("Код успешно Введен"+ email);
+            logger.info("Токен: "+ token);
+            return token;
+        }
+        return "false";
+    }
+
     private boolean isValidEmail(String email) {
         // Регулярное выражение для проверки email
         String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
