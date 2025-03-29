@@ -4,7 +4,7 @@ import com.agregator.Agregator.DTO.CustumerDTO;
 import com.agregator.Agregator.Entity.Customer;
 import com.agregator.Agregator.Entity.ServiceRequest;
 import com.agregator.Agregator.Entity.ServiceRequestDetail;
-import com.agregator.Agregator.Repositories.CustomerRepositiry;
+import com.agregator.Agregator.Repositories.CustomerRepository;
 import com.agregator.Agregator.Repositories.ServiceRequestDetailRepository;
 import com.agregator.Agregator.Repositories.ServiceRequestRepository;
 import com.agregator.Agregator.Repositories.UserRepository;
@@ -21,7 +21,7 @@ import java.util.Optional;
 public class CustumerService {
     private static final Logger log = LoggerFactory.getLogger(CustumerService.class);
     @Autowired
-    private CustomerRepositiry customerRepositiry;
+    private CustomerRepository customerRepositiry;
     @Autowired
     private UserRepository userRepository;
     @Autowired

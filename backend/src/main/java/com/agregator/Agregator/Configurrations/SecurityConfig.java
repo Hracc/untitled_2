@@ -21,7 +21,7 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable()) // Если API, можно отключить CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/send-code", "/auth/verify", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/index.html#/","/organization/**").permitAll() // Доступ без авторизации
+                        .requestMatchers("/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/index.html#/","/organization/**").permitAll() // Доступ без авторизации
                         .requestMatchers("/Service/**","/customer/**").hasRole("CUSTOMER")
                         .requestMatchers("/admin/**").hasRole("ADMINISTRATION")
                         .anyRequest().authenticated() // Все остальные запросы требуют верификации

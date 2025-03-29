@@ -23,7 +23,7 @@ public class ServiceService {
     @Autowired
     private  ServiceDetailRepository serviceDetailRepository;
     @Autowired
-    private CustomerRepositiry customerRepository;
+    private CustomerRepository customerRepository;
     @Autowired
     private OrganizationRepository organizationRepository;
     @Autowired
