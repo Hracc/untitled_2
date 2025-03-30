@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import "./Modal.scss"; // Подключаем стили для Modal
 
-import { postSendCode, postVerify } from "../api/authorization";
-import { setCookie } from "../api/utils";
+import { postClientEmail, postClientVerify } from "../api/authorization";
 
 export function Modal({ isOpen, onClose }) {
     const [isChecked, setIsChecked] = useState(false);
@@ -48,7 +47,7 @@ export function Modal({ isOpen, onClose }) {
         }
 
         try {
-            await postSendCode(email);
+            await postClientEmail(email);
             setEmailSent(true);
             setTimer(60);
             setError("");
@@ -61,9 +60,7 @@ export function Modal({ isOpen, onClose }) {
     const handleConfirmCode = async () => { // Добавлено async
         if (code.trim() !== "") {
             try {
-                const result = await postVerify(email, code); 
-                // onClose(); 
-                setCookie("token",result)
+                const result = await postClientVerify(email, code); 
                 window.location.reload()
             } catch (error) {
                 console.error("Ошибка при отправке кода:", error);

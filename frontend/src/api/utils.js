@@ -35,6 +35,20 @@ export const getWithToken = async (url) => {
     return response.json();
 }
 
+// - POST-запрос, где требуется только токен и JSON тело
+export const postWithToken = async (url, requestBody) => {
+    const response = fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+    })
+    if (!response.ok) {
+        throw new Error(`Ошибка HTTP: ${response.status}`);
+    }
+} 
+// Работа с localStorage в со JSON значением
 export const addLocalJSON = (item, key, value) => {
     const storedData = localStorage.getItem(item)
     let data = storedData ? JSON.parse(storedData) : {}
