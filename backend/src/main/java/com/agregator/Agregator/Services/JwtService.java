@@ -28,9 +28,9 @@ public class JwtService {
     }
 
     // Генерация JWT токена
-    public static String generateToken(String phone, UserRole role) {
+    public static String generateToken(String email, UserRole role) {
         return Jwts.builder()
-                .setSubject(phone)
+                .setSubject(email)
                 .claim("role",role.name())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000))  // Истечение через 24 часа

@@ -30,6 +30,8 @@ public class ServiceService {
     private ServiceRequestRepository serviceRequestRepository;
     @Autowired
     private ServiceRequestDetailRepository serviceRequestDetailRepository;
+    @Autowired
+    private ConnectionRequestRepository connectionRequestRepository;
 
 
    /* public List<SearchOrganizationDTO> getOrganizationsByCity(String cityName) {
@@ -56,6 +58,14 @@ public class ServiceService {
     public List<SearchOrganizationDTO> getOrganizationsByCityAndName(String cityName, String name) {
         List<Address> addresses = addressRepository.findByCityAndOrganizationName(cityName, name);
         return addresses.stream()
+                .filter(address -> {
+                    Organization organization = address.getOrganization();
+                    // Ищем заявки для этой организации
+                    List<ConnectionRequest> organizationRequests = connectionRequestRepository.findByOrganization_OrganizationId(organization.getOrganizationId());
+                    // Проверяем, есть ли у организации хотя бы одна заявка с статусом "Исполнен"
+                    return organizationRequests.stream()
+                            .anyMatch(request -> "Исполнен".equals(request.getStatus()));
+                })
                 .map(address -> new SearchOrganizationDTO(
                         address.getOrganization().getOrganizationId(),
                         address.getCityName(),
@@ -79,7 +89,8 @@ public class ServiceService {
                 detail.getServiceDetailDuration()
         )).collect(Collectors.toList()));*/
         // Преобразуем данные в DTO для удобства
-        return serviceDetails.stream().map(detail -> new ServiceDetailDTO(
+        return serviceDetails.stream()
+                .map(detail -> new ServiceDetailDTO(
                 detail.getServiceDetailId(),
                 detail.getServiceDetailCode(),
                 detail.getServiceDetailName(),
