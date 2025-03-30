@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ConnectionRequestRepository extends JpaRepository<ConnectionRequest, Integer> {
     List<ConnectionRequest> findByOrganization_OrganizationId(int organizationId);
+    List<ConnectionRequest> findByStatus(String status);
 }
