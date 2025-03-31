@@ -54,29 +54,65 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
+
+        /*User user = new User();
+        user.setEmail(organization.getResponsiblePersonEmail());
+        user.setRole(UserRole.ORGANIZATION);
+        userRepository.save(user);*/
+
+        User user1 = createUser("johhcallofduty@yandex.ru", UserRole.CUSTOMER);
+        User user2 = createUser("klr1234@mail.ru", UserRole.CUSTOMER);
+        User user3 = createUser("artrub@yandex.ru", UserRole.CUSTOMER);
+        User user4 = createUser("grisha007@gmail.com", UserRole.CUSTOMER);
+        User user5 = createUser("a.ivanov@fastrepair.ru", UserRole.ORGANIZATION);
+        User user6 = createUser("e.smirnova@translogistic.ru", UserRole.ORGANIZATION);
+        User user7 = createUser("d.kuznetsov@gruzoperevozki.ru", UserRole.ORGANIZATION);
+        User user8 = createUser("o.petrova@atc-plus.ru", UserRole.ORGANIZATION);
+        User user9 = createUser("a.sokolov@dorpatrul.ru", UserRole.ORGANIZATION);
+        User user10 = createUser("dlgrkv@mail.ru", UserRole.ADMINISTRATION);
+        User user11 = createUser("goro@mail.ru", UserRole.ADMINISTRATION);
+
+
+
         // Добавление данных в таблицу Custumer
-        Customer customer = new Customer();
+/*Customer customer = new Customer();
         customer.setCustomerName("John");
         customer.setCustomerSurname("Doe");
-        customer.setEmail("kir@yandex.ru");
+        customer.setEmail("johhcallofduty@yandex.ru");
 
-        customerRepositiry.save(customer);
+        customerRepositiry.save(customer);*/
 
-        // Добавление данных в таблицу AddressType
-        AddressType addressType = new AddressType();
+        Customer customer1 = createCustomer("Джон", "Каллофдути", "", "johhcallofduty@yandex.ru" );
+        Customer customer2 = createCustomer("Кирилл", "Магомедов", "Александрович", "klr1234@mail.ru" );
+        Customer customer3 = createCustomer("Артем", "Рубченко", "Иванович", "artrub@yandex.ru" );
+        Customer customer4 = createCustomer("Григорий", "Рыбков", "Григорьевич", "grisha007@gmail.com" );
+
+
+
+        /*// Добавление данных в таблицу AddressType
+AddressType addressType = new AddressType();
         addressType.setAddressTypeName(AddressTypeEnum.Физический.name());
         addressType.setAddInfo("главное место");
-        addressTypeRepository.save(addressType);
+        addressTypeRepository.save(addressType);*/
 
-        // Добавление данных в таблицу ServiceType
-        ServiceType serviceType = new ServiceType();
+
+        AddressType addressType1 = createAddressType(AddressTypeEnum.Физический.name(), "");
+        AddressType addressType2 = createAddressType(AddressTypeEnum.Юридический.name(), "");
+
+        /*// Добавление данных в таблицу ServiceType
+ServiceType serviceType = new ServiceType();
         serviceType.setTypeCode("01");
         serviceType.setTypeName("Мойка");
-        serviceTypeRepository.save(serviceType);
+        serviceTypeRepository.save(serviceType);*/
 
 
-        // Добавление данных в таблицу Organization
-        Organization organization = new Organization();
+        ServiceType serviceType1 = createServiceType("01", "Мойка");
+        ServiceType serviceType2 = createServiceType("02", "Шиномонтаж");
+
+
+/*        // Добавление данных в таблицу Organization
+Organization organization = new Organization();
         organization.setOrganizationFullName("Company XYZ");
         organization.setOrganizationShortName("XYZ");
         organization.setInn("1234567890");
@@ -85,12 +121,81 @@ public class DataInitializer implements CommandLineRunner {
         organization.setResponsiblePersonSurname("Doe");
         organization.setResponsiblePersonName("John");
         organization.setResponsiblePersonPatronymic("Smith");
-        organization.setResponsiblePersonEmail("john.doe@example.com");
+        organization.setUser("john.doe@example.com");
         organization.setResponsiblePersonPhoneNumber("1234567890");
         organization.setAddInfo("Additional info about company XYZ");
-        organizationRepository.save(organization);
+        organizationRepository.save(organization);*/
 
-        ConnectionRequest connectionRequest = new ConnectionRequest();
+
+        Organization org1 = createOrganization(
+                "Автосервис Быстрый Ремонт",
+                "Быстрый ремонт",
+                "7712345678",
+                "770101001",
+                "1127712345678",
+                "Иванов",
+                "Алексей",
+                "Петрович",
+                "a.ivanov@fastrepair.ru",
+                "+7 (495) 123-45-67",
+                "");
+        Organization org2 = createOrganization(
+                "ТрансЛогистик Групп",
+                "ТрансЛогистик",
+                "7723456789",
+                "772001002",
+                "1137723456789",
+                "Смирнова",
+                "Елена",
+                "Владимировна",
+                "e.smirnova@translogistic.ru",
+                "+7 (495) 234-56-78",
+                ""
+        );
+
+        Organization org3 = createOrganization(
+                "Грузоперевозки 24/7",
+                "ГрузоПеревозки",
+                "7734567890",
+                "773002003",
+                "1147734567890",
+                "Кузнецов",
+                "Дмитрий",
+                "Сергеевич",
+                "d.kuznetsov@gruzoperevozki.ru",
+                "+7 (495) 345-67-89",
+                ""
+        );
+
+        Organization org4 = createOrganization(
+                "АвтоТехСервис Плюс",
+                "АТС Плюс",
+                "7745678901",
+                "774003004",
+                "1157745678901",
+                "Петрова",
+                "Ольга",
+                "Игоревна",
+                "o.petrova@atc-plus.ru",
+                "+7 (495) 456-78-90",
+                ""
+        );
+
+        Organization org5 = createOrganization(
+                "Дорожный Патруль",
+                "ДорПатруль",
+                "7756789012",
+                "775004005",
+                "1167756789012",
+                "Соколов",
+                "Андрей",
+                "Александрович",
+                "a.sokolov@dorpatrul.ru",
+                "+7 (495) 567-89-01",
+                ""
+        );
+
+/* ConnectionRequest connectionRequest = new ConnectionRequest();
         connectionRequest.setOrganization(organization);
         connectionRequest.setRegNumber("ABC123"); // Уникальный регистрационный номер
         connectionRequest.setDateBegin(LocalDate.now()); // Начало даты
@@ -98,15 +203,18 @@ public class DataInitializer implements CommandLineRunner {
         connectionRequest.setStatus("Новый"); // Статус запроса
         connectionRequest.setAddInfo("Дополнительная информация по запросу");
 
-        connectionRequestRepository.save(connectionRequest);
+        connectionRequestRepository.save(connectionRequest);*/
 
-        User user = new User();
-        user.setEmail(organization.getResponsiblePersonEmail());
-        user.setRole(UserRole.ORGANIZATION);
-        userRepository.save(user);
+
+        ConnectionRequest cnnRq1 = createConnectionRequest(org1, "130122001", LocalDate.now(), LocalDate.now().plusDays(30), "Исполнен", "Доп. информация");
+        ConnectionRequest cnnRq2 = createConnectionRequest(org2, "211012002", LocalDate.now(), LocalDate.now().plusDays(15), "Исполнен", "Доп. информация");
+        createConnectionRequest(org3, "322012002", LocalDate.now(), null, "Новый", "Доп. информация");
+        createConnectionRequest(org4, "422012002", LocalDate.now(), null, "Новый", "Доп. информация");
+        createConnectionRequest(org5, "522012002", LocalDate.now(), null, "Новый", "Доп. информация");
+
 
         // Добавление данных в таблицу Address
-        Address address = new Address();
+/*        Address address = new Address();
         address.setOrganization(organization);
         address.setAddressType(addressType);
         address.setSubjectName("Company XYZ");
@@ -114,9 +222,15 @@ public class DataInitializer implements CommandLineRunner {
         address.setStreetName("Tverskaya");
         address.setHouseNumber("10");
         address.setAddInfo("Additional address info");
-        addressRepository.save(address);
+        addressRepository.save(address);*/
 
-        // Добавление данных в таблицу ServiceDetail
+        createAddress(org1, addressType1, "г. Москва", "Москва", "Ленинградский проспект", "78", "Бизнес-центр 'Ленинградский', 3 этаж");
+        createAddress(org2, addressType1, "Московская область", "Химки", "Ленинградское шоссе", "15", "Логистический терминал №3");
+        createAddress(org3, addressType1, "Ленинградская область", "Всеволожск", "Центральная", "42", "Складской комплекс 'Балтика'");
+        createAddress(org4, addressType1, "Свердловская область", "Екатеринбург", "Машиностроителей", "19", "Автотехцентр, въезд с ул. Репина");
+        createAddress(org5, addressType1, "Республика Татарстан", "Казань", "Декабристов", "85Б", "БЦ 'Деловой', 4 этаж");
+
+        /*// Добавление данных в таблицу ServiceDetail
         ServiceDetail serviceDetail = new ServiceDetail();
         serviceDetail.setServiceType(serviceType);
         serviceDetail.setServiceDetailCode("001");
@@ -124,21 +238,54 @@ public class DataInitializer implements CommandLineRunner {
         serviceDetail.setServiceDetailCost(1000);
         serviceDetail.setServiceDetailDuration(60);
         serviceDetail.setAddInfo("Standard cleaning service");
-        serviceDetailRepository.save(serviceDetail);
+        serviceDetailRepository.save(serviceDetail);*/
 
-        // Создание ServiceRequest
+        ServiceDetail srvcDtl1 = createServiceDetail(serviceType1, "001", "Мойка днища", 1000, 20,  "Доп. информация");
+        ServiceDetail srvcDtl2 = createServiceDetail(serviceType1, "002", "Наномойка", 2300, 40,  "Доп. информация");
+        ServiceDetail srvcDtl3 = createServiceDetail(serviceType1, "003", "Мойка двигателя", 5500, 60,  "Доп. информация");
+
+        ServiceDetail srvcDtl4 = createServiceDetail(serviceType2, "010", "Сезонная замена шин", 5500, 30,  "Доп. информация");
+        ServiceDetail srvcDtl5 = createServiceDetail(serviceType2, "011", "Замена колеса", 3000, 60,  "Доп. информация");
+        ServiceDetail srvcDtl6 = createServiceDetail(serviceType2, "012", "Покраска шин", 1800, 60,  "Доп. информация");
+
+        /*// Создание ServiceRequest
         ServiceRequest serviceRequest = new ServiceRequest();
         serviceRequest.setCustomer(customer);  // Вставьте реального клиента
         serviceRequest.setOrganization(organization);
         serviceRequest.setDateService(LocalDateTime.now());
         serviceRequest.setAddInfo("Request for cleaning service");
-        serviceRequestRepository.save(serviceRequest);
+        serviceRequestRepository.save(serviceRequest);*/
 
-        // Создание ServiceRequestDetail
+        ServiceRequest srvcRqst1 = createServiceRequest(customer1, org1, LocalDateTime.now().plusDays(1), "Доп. информация" );
+        ServiceRequest srvcRqst2 = createServiceRequest(customer2, org1, LocalDateTime.now().plusDays(2), "Доп. информация" );
+        ServiceRequest srvcRqst3 = createServiceRequest(customer1, org2, LocalDateTime.now().plusDays(1), "Доп. информация" );
+        ServiceRequest srvcRqst4 = createServiceRequest(customer2, org2, LocalDateTime.now().plusDays(2), "Доп. информация" );
+
+        /*// Создание ServiceRequestDetail
         ServiceRequestDetail serviceRequestDetail = new ServiceRequestDetail();
         serviceRequestDetail.setServiceRequest(serviceRequest);
         serviceRequestDetail.setServiceDetail(serviceDetail);
-        serviceRequestDetailRepository.save(serviceRequestDetail);
+        serviceRequestDetailRepository.save(serviceRequestDetail);*/
+
+        createServiceRequestDetail(srvcRqst1, srvcDtl1);
+        createServiceRequestDetail(srvcRqst1, srvcDtl2);
+
+        createServiceRequestDetail(srvcRqst2, srvcDtl3);
+
+        createServiceRequestDetail(srvcRqst3, srvcDtl4);
+        createServiceRequestDetail(srvcRqst3, srvcDtl5);
+        createServiceRequestDetail(srvcRqst3, srvcDtl6);
+
+        createServiceRequestDetail(srvcRqst4, srvcDtl5);
+
+        AggregatorSpecialist agrSpclst1 = createAggregatorSpecialist("Долгоруков", "Иван", "Абрамович", "Отдел администрации", "Администратор", "dlgrkv@mail.ru", "");
+        AggregatorSpecialist agrSpclst2 = createAggregatorSpecialist("Горов", "Горо", "Горович", "Отдел администрации", "Администратор", "goro@mail.ru", "");
+
+        createAggregatorSpecialistConnectorRequest(agrSpclst1, cnnRq1);
+        createAggregatorSpecialistConnectorRequest(agrSpclst2, cnnRq2);
+
+
+
 
 
         System.out.println("Database has been initialized!");
@@ -254,6 +401,13 @@ public class DataInitializer implements CommandLineRunner {
         connectionRequest.setStatus(status);
         connectionRequest.setAddInfo(addInfo);
         return connectionRequestRepository.save(connectionRequest);
+    }
+
+    private User createUser (String email, UserRole role) {
+        User user = new User();
+        user.setEmail(email);
+        user.setRole(role);
+        return userRepository.save(user);
     }
 }
 
