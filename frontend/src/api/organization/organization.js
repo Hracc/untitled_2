@@ -3,8 +3,9 @@ const urlOrganiztion = {
     checkStatus : 'api/organization/Status'
 }
 
-export const postStatement = (requestBody) => {
-    const response = fetch(urlOrganiztion.sendStatement, {
+// Подать заявку
+export const postStatement = async (requestBody) => {
+    const response = await fetch(urlOrganiztion.sendStatement, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -13,6 +14,10 @@ export const postStatement = (requestBody) => {
     })
 
     if (!response.ok) {
-        throw new Error(`Ошибка HTTP: ${response.status}`);
+        throw new Error(`Ошибка HTTP: ${response.status}`)
     } 
+}
+
+export const getStatus = () => {
+
 }

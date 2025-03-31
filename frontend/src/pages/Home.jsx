@@ -5,7 +5,6 @@ import { ServicesList } from "../components/ServicesList";
 import { Modal } from "../components/Modal";
 
 import { getServiceTypes } from "../api/client/services";
-
 export function Home() {
     const [search, setSearch] = useState("");
     const [isModalOpen, setModalOpen] = useState(false);
@@ -14,10 +13,10 @@ export function Home() {
 
     const handleFetchData = async () => {
         try {
-            const data = await getServiceTypes(); 
-            setServiceTypes(data)
+            const data = await getServiceTypes();
+            setServiceTypes(data)            
         } catch (error) {
-            // console.error('Ошибка при выполнении запроса:', error);
+            console.error('Ошибка при выполнении запроса:', error);
         }
     };
 

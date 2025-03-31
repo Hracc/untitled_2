@@ -15,24 +15,13 @@ export const serviceItem = {
 
 // GET-запросы:
 // - типы запросов
-export const getServiceTypes = async () => {
+export const getServiceTypes = () => {
     return getWithToken(urlService.serviceTypes);
 }
 
 // - города
 export const getCities = async () => {
-    const response = await fetch(urlService.cities, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${getTokenOrThrow()}`,
-        }
-    })
-
-    if (!response.ok) {
-        throw new Error(`Ошибка HTTP: ${response.status}`);
-    }
-
-    return response.json();
+    return getWithToken(urlService.cities);
 }
 
 // - организации

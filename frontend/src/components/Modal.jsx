@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import "./Modal.scss"; // Подключаем стили для Modal
 
-import { postClientEmail, postClientVerify } from "../api/authorization";
+import { postClientEmail, postClientVerify } from "../api/authorization"
+import { setCookie } from "../api/utils";
+
 
 export function Modal({ isOpen, onClose }) {
     const [isChecked, setIsChecked] = useState(false);
@@ -39,7 +41,7 @@ export function Modal({ isOpen, onClose }) {
         return emailRegex.test(email);
     };
     
-    const handleSendCode = async () => {
+    const handleSendCode = () => {
         if (email.trim() === "" || timer !== 0) return;
         if (!validateEmail(email)) {
             setError("Введите корректный email.");
@@ -47,7 +49,7 @@ export function Modal({ isOpen, onClose }) {
         }
 
         try {
-            await postClientEmail(email);
+            postClientEmail(email);
             setEmailSent(true);
             setTimer(60);
             setError("");
@@ -60,7 +62,8 @@ export function Modal({ isOpen, onClose }) {
     const handleConfirmCode = async () => { // Добавлено async
         if (code.trim() !== "") {
             try {
-                const result = await postClientVerify(email, code); 
+                const result = await postClientVerify(email, code)
+                setCookie("token",result)
                 window.location.reload()
             } catch (error) {
                 console.error("Ошибка при отправке кода:", error);

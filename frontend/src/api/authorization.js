@@ -1,3 +1,4 @@
+
 const urlAuthorization = {
     clientSendEmail: '/api/auth/send-code',
     clientVerify: '/api/auth/verify',
@@ -37,7 +38,6 @@ const postSendEmail = async (url,email) => {
     if (!response.ok) {
         throw new Error(`Ошибка при отправке email. Статус: ${response.status}`);
     }
-    setCookie("token",result)
 };
 
 const postVerify = async (url, email, code) => {
@@ -54,6 +54,6 @@ if (!response.ok) {
     throw new Error(`Ошибка HTTP: ${response.status}`);
 }
 
-const result = await response.text();
+const result = response.text();
 return result;
 }

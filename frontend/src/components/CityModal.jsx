@@ -10,26 +10,19 @@ export function CityModal({ isOpen, onClose }) {
     const [search, setSearch] = useState("");
     const [cities, setCities] = useState([]);
 
-    useEffect(() => {
-        // При открытии модалки загружаем список городов
-        async function fetchCities() {
-            try {
-                const organizations = await getCities();
-                const uniqueCities = [...new Set(organizations.map((org) => org.city))];
-                setCities(uniqueCities);
-            } catch (error) {
-                // console.error("Ошибка при загрузке данных:", error);
-            }
+useEffect(() => {
+    async function fetchCities() {
+        try {
+            const organizations = await getCities(); // Работает корректно!
+            const uniqueCities = [...new Set(organizations.map(org => org.city))];
+            setCities(uniqueCities);
+        } catch (error) {
+            console.error("Ошибка при загрузке городов:", error);
         }
+    }
 
-        if (isOpen) {
-            fetchCities()
-                .then(() => {
-                    // успех
-                })
-                .catch((err) => console.error(err));
-        }
-    }, [isOpen]);
+    if (isOpen) fetchCities();
+}, [isOpen]);
 
     // Закрываем модалку, если кликнули на фон
     const handleOverlayClick = (e) => {
