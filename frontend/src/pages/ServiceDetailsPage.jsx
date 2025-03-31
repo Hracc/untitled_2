@@ -6,6 +6,8 @@ import "../styles.scss";
 
 import { postServiceDetail, serviceItem} from "../api/client/services.js";
 import { addLocalJSON, getLocalJSON} from "../api/utils.js";
+import { Loading } from "../components/Loading.jsx";
+
 
 export function ServiceDetailsPage() {
     const { categoryName, serviceName } = useParams();
@@ -15,6 +17,8 @@ export function ServiceDetailsPage() {
     const [offers, setOffers] = useState([]);
     const [selectedOffers, setSelectedOffers] = useState([]);
     const [isModalOpen, setModalOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(true)
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,6 +36,8 @@ export function ServiceDetailsPage() {
                 setOffers(formattedOffers);
             } catch (error) {
                 console.error('Ошибка при загрузке данных:', error);
+            } finally {
+                setIsLoading(false)
             }
         };
     
@@ -120,7 +126,7 @@ export function ServiceDetailsPage() {
                     </div>
 
                     <div className="offers-list">
-                        {offers.map((offer) => {
+                         {isLoading? <Loading /> : offers.map((offer) => {
                             const isSelected = selectedOffers.includes(offer.id);
                             return (
                                 <div key={offer.id} className="offer-item">

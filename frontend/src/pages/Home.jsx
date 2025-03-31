@@ -4,12 +4,15 @@ import { SearchBar } from "../components/SearchBar";
 import { ServicesList } from "../components/ServicesList";
 import { Modal } from "../components/Modal";
 
-import { getServiceTypes } from "../api/client/services";
+import { getServiceTypes } from "../api/client/services"
+import { Loading } from "../components/Loading";
+
 export function Home() {
     const [search, setSearch] = useState("");
     const [isModalOpen, setModalOpen] = useState(false);
-    
     const [serviceTypes, setServiceTypes] = useState([]);
+
+    const [isLoading, setIsLoading] = useState(true)
 
     const handleFetchData = async () => {
         try {
@@ -17,6 +20,8 @@ export function Home() {
             setServiceTypes(data)            
         } catch (error) {
             console.error('Ошибка при выполнении запроса:', error);
+        } finally {
+            setIsLoading(false)
         }
     };
 
@@ -34,7 +39,8 @@ export function Home() {
                     <h5>Мы ищем - вы выбираете!</h5>
                     <SearchBar search={search} setSearch={setSearch} />
                     <h3>Поручите дела специалистам</h3>
-                    <ServicesList services={serviceTypes} search={search} />
+                    {isLoading ? <Loading /> : <ServicesList services={serviceTypes} search={search} />}
+                    {/* <ServicesList services={serviceTypes} search={search} /> */}
                 </div>
                 <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
 

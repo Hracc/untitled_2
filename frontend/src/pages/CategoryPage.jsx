@@ -5,39 +5,59 @@ import { SearchBar } from "../components/SearchBar";
 import { Header } from "../components/Header";
 import "../styles.scss";
 
-import { getOrganizations, serviceItem} from "../api/client/services";
-import { addLocalJSON, getLocalJSON } from "../api/utils";
+import { getOrganizations, serviceItem} from "../api/client/services"
+import { addLocalJSON, getLocalJSON } from "../api/utils"
+import { Loading } from "../components/Loading"
 
 export function CategoryPage() {
     const { categoryName } = useParams();
     const [search, setSearch] = useState("");
     const [services, setServices] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const servicesPerPage = 10;
+    const [isLoading, setIsLoading] = useState(true)
+    const [selectedCity, setSelectedCity] = useState(getLocalJSON(serviceItem.selectedData, "city"))
 
-    // Читаем город из Local Storage (если пользователь выбрал)
-    const selectedCity = getLocalJSON(serviceItem.selectedData,"city")
+    const servicesPerPage = 10;
 
     // Загрузка всех организаций
     const findOrganization = async () => {
         try {
             const organizations = await getOrganizations();
-            const formattedServices = organizations.map((org, index) => ({
+            const formattedServices = organizations.map((org) => ({
                 id: org.organizationId,
                 name: org.organizationFullName,
                 address: `${org.cityName}, ул. ${org.streetName}, дом ${org.houseNumber}`,
                 street : `${org.streetName}, ${org.houseNumber}`,
                 city: org.cityName,
             }));
-            setServices(formattedServices);
+            setServices(formattedServices)
         } catch (error) {
             console.error("Ошибка при загрузке данных:", error);
+        } finally {
+            setIsLoading(false)
         }
     };
 
     useEffect(() => {
-        findOrganization();
-    }, [categoryName]);
+        findOrganization()
+    }, [categoryName, selectedCity])
+
+    useEffect(() => {
+        const handleStorageChange = () => {
+            const newCity = getLocalJSON(serviceItem.selectedData, "city");
+            if (newCity !== selectedCity) {
+                setSelectedCity(newCity);
+                setCurrentPage(1); // Сбрасываем пагинацию
+            }
+        };
+
+        // Подписываемся на изменения в localStorage
+        window.addEventListener('storage', handleStorageChange);
+        
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, [selectedCity])
 
     // При изменении поисковой строки
     const handleSearchChange = (value) => {
@@ -87,7 +107,7 @@ export function CategoryPage() {
                     <SearchBar search={search} setSearch={handleSearchChange} />
 
                     {/* Список организаций */}
-                    {currentServices.map(service => (
+                    {isLoading ? <Loading/> :currentServices.map(service => (
                         <Link
                             key={service.id}
                             to={`/${encodeURIComponent(categoryName)}/${encodeURIComponent(service.name)}`}

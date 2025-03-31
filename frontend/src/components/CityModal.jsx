@@ -38,7 +38,16 @@ useEffect(() => {
 
     // Выбор города
     const handleSelectCity = (city) => {
-        addLocalJSON(serviceItem.selectedData,"city", city)
+        addLocalJSON(serviceItem.selectedData, "city", city);
+        
+        // Генерируем событие для обновления других вкладок
+        window.dispatchEvent(new Event('storage'));
+        
+        // Принудительно обновляем текущую вкладку
+        if (typeof onCityChange === 'function') {
+            onCityChange(city);
+        }
+        
         onClose();
     };
 

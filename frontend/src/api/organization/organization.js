@@ -1,3 +1,4 @@
+import { getWithToken } from '../utils'
 const urlOrganiztion = {
     sendStatement : '/api/organization/create',
     checkStatus : 'api/organization/Status'
@@ -19,5 +20,5 @@ export const postStatement = async (requestBody) => {
 }
 
 export const getStatus = () => {
-
+    return getWithToken(urlOrganiztion.checkStatus)
 }

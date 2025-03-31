@@ -7,8 +7,6 @@ const urlCustomer = {
 }
 
 export const getCustomer = async () => {
-
-
     const response = await fetch(urlCustomer.customerSearch, {
         method: 'GET',
         headers: {
@@ -24,8 +22,7 @@ export const getCustomer = async () => {
 }
 
 export const putCustomer = async (requestBody) => {
-
-    const response = await fetch(urlCustomer.customerEdit, {
+    await fetch(urlCustomer.customerEdit, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${getTokenOrThrow()}`,
@@ -36,7 +33,7 @@ export const putCustomer = async (requestBody) => {
 }
 
 export const deleteCustomer = async () => {
-    const response = await fetch(urlCustomer.customerDelete, {
+    await fetch(urlCustomer.customerDelete, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${getTokenOrThrow()}`,
