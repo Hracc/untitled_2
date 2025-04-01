@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,11 +49,10 @@ public class OrganizationService {
     }
     @Transactional
     public ResponseEntity<String> createOrganization(CreateOrganizationDTO organization) {
-        registrationService.registerOrganization(organization);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Организация создана");
+        return registrationService.registerOrganization(organization);
     }
     @Transactional
-    public OrganizationDTO updateOrganization(int id, OrganizationDTO orgDetails) {
+    public ResponseEntity<?> updateOrganization(int id, OrganizationDTO orgDetails) {
         Organization organization = getOrganizationById(id);
         if(!orgDetails.getOrganizationFullName().isEmpty()) {
             organization.setOrganizationFullName(orgDetails.getOrganizationFullName());
@@ -75,7 +76,20 @@ public class OrganizationService {
             organization.setResponsiblePersonPatronymic(orgDetails.getResponsiblePersonPatronymic());
         }
         if(!orgDetails.getResponsiblePersonEmail().isEmpty()){
-            organization.setResponsiblePersonEmail(orgDetails.getResponsiblePersonEmail());
+            if (isValidEmail(orgDetails.getResponsiblePersonEmail())){
+                if (!isEmailExist(orgDetails.getResponsiblePersonEmail())){
+                    userRepository.findByEmail(organization.getResponsiblePersonEmail()).ifPresent(user -> {
+                        user.setEmail(orgDetails.getResponsiblePersonEmail());
+                        userRepository.save(user);
+                    });
+                    organization.setResponsiblePersonEmail(orgDetails.getResponsiblePersonEmail());
+
+                }else {
+                    return ResponseEntity.badRequest().body("Этот email уже занят");
+                }
+            }else {
+                return ResponseEntity.badRequest().body("Email не правильного вида");
+            }
         }
         if(!orgDetails.getResponsiblePersonName().isEmpty()){
             organization.setResponsiblePersonName(orgDetails.getResponsiblePersonName());
@@ -88,7 +102,7 @@ public class OrganizationService {
         }
         organizationRepository.save(organization);
         orgDetails.setId(id);
-        return orgDetails;
+        return ResponseEntity.ok(orgDetails);
     }
     @Transactional
     public void deleteOrganization(int id) {
@@ -190,5 +204,18 @@ public class OrganizationService {
         dto.setResponsiblePersonPhoneNumber(organization.getResponsiblePersonPhoneNumber());
         dto.setAddInfo(organization.getAddInfo());
         return dto;
+    }
+
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        return Pattern.matches(emailRegex, email);
+    }
+
+    private boolean isEmailExist(String email){
+        if(userRepository.findByEmail(email).isPresent()){
+            return true;
+        }else {
+            return false;
+        }
     }
 }

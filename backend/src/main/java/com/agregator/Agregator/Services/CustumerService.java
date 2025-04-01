@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class CustumerService {
@@ -107,12 +109,18 @@ public class CustumerService {
             }
 
             if (custumerDTO.getEmail() != null && !custumerDTO.getEmail().isEmpty()) {
-                customer.setEmail(custumerDTO.getEmail());
-                // Обновим email и в таблице users
-                userRepository.findByEmail(email).ifPresent(user -> {
-                    user.setEmail(custumerDTO.getEmail());
-                    userRepository.save(user);
-                });
+                //проверяем что email правильного вида
+                if (isValidEmail(custumerDTO.getEmail())) {
+                    //Проверяем, что новый email не занят
+                    if (isEmailExist(custumerDTO.getEmail())) {
+                        customer.setEmail(custumerDTO.getEmail());
+                        // Обновим email и в таблице users
+                        userRepository.findByEmail(email).ifPresent(user -> {
+                            user.setEmail(custumerDTO.getEmail());
+                            userRepository.save(user);
+                        });
+                    }
+                }
             }
 
             customerRepositiry.save(customer);
@@ -164,5 +172,18 @@ public class CustumerService {
     }
     public List<Customer> getAllCustomers() {
         return customerRepositiry.findAll();
+    }
+
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        return Pattern.matches(emailRegex, email);
+    }
+
+    private boolean isEmailExist(String email){
+        if(userRepository.findByEmail(email).isPresent()){
+            return true;
+        }else {
+            return false;
+        }
     }
 }

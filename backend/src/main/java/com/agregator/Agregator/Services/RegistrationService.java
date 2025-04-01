@@ -9,11 +9,13 @@ import com.agregator.Agregator.Enums.UserRole;
 import com.agregator.Agregator.Repositories.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,16 +37,25 @@ public class RegistrationService {
     private ConnectionRequestRepository connectionRequestRepository;
 
     @Transactional
-    public Customer registerCustomer(CustomerRegistrationDTO customerDTO) {
+    public ResponseEntity<?> registerCustomer(CustomerRegistrationDTO customerDTO) {
         // Создание User для Customer
         User user = new User();
-        user.setEmail(customerDTO.getEmail());
+        if (isValidEmail(customerDTO.getEmail())) {
+            if (!isEmailExist(customerDTO.getEmail())){
+                user.setEmail(customerDTO.getEmail());
+            }else {
+                return ResponseEntity.badRequest().body("Такой email занят");
+            }
+        }else {
+            return ResponseEntity.badRequest().body("Не верный email");
+        }
         user.setRole(UserRole.CUSTOMER);
         userRepository.save(user);
         // Создание Customer
         Customer customer = new Customer();
         customer.setCustomerSurname(customerDTO.getCustomerSurname());
         customer.setCustomerName(customerDTO.getCustomerName());
+        customer.setEmail(user.getEmail());
         customer.setEmail(user.getEmail());
         if(customerDTO.getCustomerPatronymic() != null && !customerDTO.getCustomerPatronymic().isEmpty()) {
             customer.setCustomerPatronymic(customerDTO.getCustomerPatronymic());
@@ -54,15 +65,24 @@ public class RegistrationService {
         }
         // Сохранение Customer
         customerRepository.save(customer);
-        return customer;
+        return ResponseEntity.ok(customer);
     }
     @Transactional
-    public void registerOrganization(CreateOrganizationDTO organizationDTO) {
+    public ResponseEntity<String> registerOrganization(CreateOrganizationDTO organizationDTO) {
         // Создание User для Organization
         User user = new User();
-        user.setEmail(organizationDTO.getResponsiblePersonEmail());
+        if (isValidEmail(organizationDTO.getResponsiblePersonEmail())) {
+            if (!isEmailExist(organizationDTO.getResponsiblePersonEmail())){
+                user.setEmail(organizationDTO.getResponsiblePersonEmail());
+            }else {
+                return ResponseEntity.badRequest().body("Такой email занят");
+            }
+        }else {
+            return ResponseEntity.badRequest().body("Не верный email");
+        }
         user.setRole(UserRole.ORGANIZATION);
         userRepository.save(user);
+
         // Создание Organization
         Organization organization = new Organization();
         organization.setOrganizationFullName(organizationDTO.getOrganizationFullName());
@@ -75,6 +95,9 @@ public class RegistrationService {
         if (organizationDTO.getResponsiblePersonPatronymic() != null && !organizationDTO.getResponsiblePersonPatronymic().isEmpty()) {
             organization.setResponsiblePersonPatronymic(organizationDTO.getResponsiblePersonPatronymic());
         }
+
+        organization.setResponsiblePersonEmail(organizationDTO.getResponsiblePersonEmail());
+
         organization.setResponsiblePersonEmail(user.getEmail());
         organization.setResponsiblePersonPhoneNumber(organizationDTO.getResponsiblePersonPhoneNumber());
         if (organizationDTO.getAddInfo() != null && !organizationDTO.getAddInfo().isEmpty()) {
@@ -99,6 +122,8 @@ public class RegistrationService {
 
         // Сохраняем сущность с обновлённым regNumber
         connectionRequestRepository.save(connectionRequest);
+
+        return ResponseEntity.ok("Организация создана");
     }
 
     /*public ConnectionRequest createConnectionRequest (Organization organization) {
@@ -120,11 +145,19 @@ public class RegistrationService {
         return connectionRequestRepository.save(savedRequest);
     }*/
     @Transactional
-    public User registerAggregatorSpecialist(AggregatorSpecialistDTO aggregatorSpecialistDTO) {
+    public ResponseEntity<?> registerAggregatorSpecialist(AggregatorSpecialistDTO aggregatorSpecialistDTO) {
 
         // Создание User для AggregatorSpecialist
         User user = new User();
-        user.setEmail(aggregatorSpecialistDTO.getAggregatorSpecialistsEmail());  // или другой уникальный идентификатор
+        if (isValidEmail(aggregatorSpecialistDTO.getAggregatorSpecialistsEmail())){
+            if (!isEmailExist(aggregatorSpecialistDTO.getAggregatorSpecialistsEmail())){
+                user.setEmail(aggregatorSpecialistDTO.getAggregatorSpecialistsEmail());  // или другой уникальный идентификатор
+            }else {
+                return ResponseEntity.badRequest().body("Этот email занят");
+            }
+        }else {
+            return ResponseEntity.badRequest().body("Не правильный вид email");
+        }
         user.setRole(UserRole.ADMINISTRATION); // или соответствующая роль для специалиста
         userRepository.save(user);
 
@@ -137,6 +170,9 @@ public class RegistrationService {
         }
         aggregatorSpecialist.setAggregatorSpecialistsDepartment(aggregatorSpecialistDTO.getAggregatorSpecialistsDepartment());
         aggregatorSpecialist.setAggregatorSpecialistsPosition(aggregatorSpecialistDTO.getAggregatorSpecialistsPosition());
+
+        aggregatorSpecialist.setAggregatorSpecialistsEmail(aggregatorSpecialistDTO.getAggregatorSpecialistsEmail());
+
         aggregatorSpecialist.setAggregatorSpecialistsEmail(aggregatorSpecialistDTO.getAggregatorSpecialistsEmail());
         if(aggregatorSpecialist.getAddInfo() != null && !aggregatorSpecialistDTO.getAddInfo().isEmpty()) {
             aggregatorSpecialist.setAddInfo(aggregatorSpecialistDTO.getAddInfo());
@@ -145,7 +181,20 @@ public class RegistrationService {
         // Сохранение AggregatorSpecialist
         aggregatorSpecialistRepository.save(aggregatorSpecialist);
 
-        return user;
+        return ResponseEntity.ok(user);
     }
 
+
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        return Pattern.matches(emailRegex, email);
+    }
+
+    private boolean isEmailExist(String email){
+        if(userRepository.findByEmail(email).isPresent()){
+            return true;
+        }else {
+            return false;
+        }
+    }
 }

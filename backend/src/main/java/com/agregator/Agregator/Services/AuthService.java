@@ -57,6 +57,10 @@ public class AuthService {
                 Customer newcustomer = new Customer();
                 newcustomer.setEmail(email);
                 customerRepository.save(newcustomer);
+            }else {
+                if (!user.get().getRole().equals(UserRole.CUSTOMER)){
+                    throw new RuntimeException("Ошибка авторизации");
+                }
             }
         } catch (Exception e) {
             return "Ошибка при проверке пользователя";
@@ -80,6 +84,9 @@ public class AuthService {
             if (user.isEmpty()) {
                 logger.info(email);
                 logger.info("Попытка подбора Email у админа");
+                throw new RuntimeException("Ошибка авторизации");
+            }
+            if (!user.get().getRole().equals(UserRole.ADMINISTRATION)){
                 throw new RuntimeException("Ошибка авторизации");
             }
         } catch (Exception e) {
@@ -123,6 +130,10 @@ public class AuthService {
                 logger.info(email);
                 logger.info("Попытка подбора Email у админа");
                 throw new RuntimeException("Ошибка авторизации");
+            }else {
+                if (!user.get().getRole().equals(UserRole.ORGANIZATION)){
+                    throw new RuntimeException("Ошибка авторизации");
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException("Ошибка авторизации");
@@ -175,11 +186,8 @@ public class AuthService {
     }
 
     private boolean isValidEmail(String email) {
-        // Регулярное выражение для проверки email
-        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
-        Pattern pattern = Pattern.compile(emailRegex);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        return Pattern.matches(emailRegex, email);
     }
     private String generateCode() {
         return String.format("%04d", (int) (Math.random() * 1000)); //0.1456 => 1456
