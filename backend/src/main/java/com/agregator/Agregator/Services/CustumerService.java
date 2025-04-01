@@ -62,11 +62,18 @@ public class CustumerService {
 
             if (custumerDTO.getEmail() != null && !custumerDTO.getEmail().isEmpty() && !custumerDTO.getEmail().equals(email)) {
                 customer.setEmail(custumerDTO.getEmail());
-                // Обновим email и в таблице users
-                userRepository.findByEmail(email).ifPresent(user -> {
-                    user.setEmail(custumerDTO.getEmail());
-                    userRepository.save(user);
-                });
+                //проверяем что email правильного вида
+                if (isValidEmail(custumerDTO.getEmail())) {
+                    //Проверяем, что новый email не занят
+                    if (!isEmailExist(custumerDTO.getEmail())) {
+                        customer.setEmail(custumerDTO.getEmail());
+                        // Обновим email и в таблице users
+                        userRepository.findByEmail(email).ifPresent(user -> {
+                            user.setEmail(custumerDTO.getEmail());
+                            userRepository.save(user);
+                        });
+                    }
+                }
                 newEmail = custumerDTO.getEmail();
             }
 
@@ -112,7 +119,7 @@ public class CustumerService {
                 //проверяем что email правильного вида
                 if (isValidEmail(custumerDTO.getEmail())) {
                     //Проверяем, что новый email не занят
-                    if (isEmailExist(custumerDTO.getEmail())) {
+                    if (!isEmailExist(custumerDTO.getEmail())) {
                         customer.setEmail(custumerDTO.getEmail());
                         // Обновим email и в таблице users
                         userRepository.findByEmail(email).ifPresent(user -> {
