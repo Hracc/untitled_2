@@ -5,7 +5,8 @@ import Calendar from "../components/Calendar.jsx";
 import { useEffect } from "react";
 import React, { useState } from "react";
 
-import { addToLocalStorage, postRequest } from "../api/client/services.js";
+import { serviceItem, postRequest } from "../api/client/services.js";
+import { addLocalJSON } from "../api/utils.js";
 
 export function CartPage() {
     const location = useLocation();
@@ -30,18 +31,17 @@ export function CartPage() {
             <Header />
             <div className="container">
                 <div className="content">
-                    <h1>Корзина</h1>
+                    <h1>Подтверждение заказа</h1>
 
                     {/* Хлебные крошки */}
                     <nav className="navigate">
                         <Link to={`/${encodeURIComponent(category)}/${encodeURIComponent(serviceName)}`}>
-                            {serviceName}
+                            <strong>{serviceName}</strong>
+                            {"   ("}{address}{")"}
                         </Link>
-                        {" — "}
-                        <strong>Корзина</strong>
+                        {/*{" — "}*/}
+                        {/*<strong>Корзина</strong>*/}
                     </nav>
-
-                    <h5>{address}</h5>
 
                     {/* Таблица услуг */}
                     <table className="cart-table">
@@ -83,7 +83,7 @@ export function CartPage() {
                                 return;
                             }
                             try {
-                                addToLocalStorage("addInfo", "string_front")
+                                addLocalJSON(serviceItem.serviceRequest,"addInfo", "string_front")
                                 const response = await postRequest()
                                 alert("Заказ подтверждён!")
                         } catch (error){

@@ -4,20 +4,19 @@ import com.agregator.Agregator.DTO.*;
 import com.agregator.Agregator.Entity.Address;
 import com.agregator.Agregator.Entity.Customer;
 import com.agregator.Agregator.Entity.Organization;
-import com.agregator.Agregator.Services.CustumerService;
-import com.agregator.Agregator.Services.OrganizationService;
-import com.agregator.Agregator.Services.RegistrationService;
-import com.agregator.Agregator.Services.ServiceService;
+import com.agregator.Agregator.Services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
+@PreAuthorize("hasRole('ADMINISTRATION')")
 public class AdminController {
     @Autowired
     private CustumerService customerService;
@@ -27,6 +26,8 @@ public class AdminController {
     private OrganizationService organizationService;
     @Autowired
     private ServiceService serviceService;
+    @Autowired
+    private AdminService adminService;
 
     @GetMapping("/all/Customers")
     public List<Customer> getAllCustomers() {
@@ -63,8 +64,9 @@ public class AdminController {
     }
 
     @PostMapping("Organization/create")
-    public Organization createOrganization(@RequestBody OrganizationDTO organization) {
-        return registrationService.registerOrganization(organization);
+    public ResponseEntity<String>  createOrganization(@RequestBody CreateOrganizationDTO organization) {
+        registrationService.registerOrganization(organization);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Организация создана");
     }
 
     @PutMapping("Organization/update/{id}")
@@ -131,5 +133,23 @@ public class AdminController {
     public ResponseEntity<Void> deleteServiceDetail(@PathVariable Integer id) {
         serviceService.deleteServiceDetail(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("Connection/all")
+    public  ResponseEntity<List<ConnectionRequestAdminDTO>> watchAllConnection(){
+        List<ConnectionRequestAdminDTO> list = adminService.getAllConnectionRequests();
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("Connection/filter")
+    public ResponseEntity<List<ConnectionRequestAdminDTO>> getConnectionsByStatus(@RequestParam String status) {
+        List<ConnectionRequestAdminDTO> list = adminService.getConnectionRequestsByStatus(status);
+        return ResponseEntity.ok(list);
+    }
+
+    @PostMapping("Connection/UpdateStatus")
+    public ResponseEntity<String> moveToInProgress(@RequestParam int connectionRequestId,@RequestParam String status) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return adminService.UpdateStatus(connectionRequestId, email, status);
     }
 }

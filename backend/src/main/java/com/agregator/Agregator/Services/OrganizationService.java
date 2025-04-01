@@ -1,15 +1,21 @@
 package com.agregator.Agregator.Services;
 
+import com.agregator.Agregator.DTO.ConnectionRequestDTO;
+import com.agregator.Agregator.DTO.CreateOrganizationDTO;
 import com.agregator.Agregator.DTO.OrganizationDTO;
 import com.agregator.Agregator.Entity.*;
 import com.agregator.Agregator.Repositories.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -26,6 +32,8 @@ public class OrganizationService {
     private ServiceRequestDetailRepository serviceRequestDetailRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ConnectionRequestRepository connectionRequestRepository;
 
     // CRUD по организациям
     public List<OrganizationDTO> getAllOrganizations() {
@@ -38,8 +46,9 @@ public class OrganizationService {
                 .orElseThrow(() -> new RuntimeException("Организация не найдена"));
     }
     @Transactional
-    public Organization createOrganization(OrganizationDTO organization) {
-        return registrationService.registerOrganization(organization);
+    public ResponseEntity<String> createOrganization(CreateOrganizationDTO organization) {
+        registrationService.registerOrganization(organization);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Организация создана");
     }
     @Transactional
     public OrganizationDTO updateOrganization(int id, OrganizationDTO orgDetails) {
@@ -140,6 +149,32 @@ public class OrganizationService {
         addressRepository.deleteById(addressId);
     }
 
+    public List<ConnectionRequestDTO> UpdateStatus(String email) {
+        Optional<Organization> organization = organizationRepository.findByResponsiblePersonEmail(email);
+
+        if (organization.isEmpty()) {
+            throw new RuntimeException("Такая организация не найдена");
+        } else {
+            // Получаем список запросов на подключение
+            List<ConnectionRequest> requests = connectionRequestRepository.findByOrganization_OrganizationId(organization.get().getOrganizationId());
+
+            return requests.stream()
+                    .map(this::convertToDTO)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    private ConnectionRequestDTO convertToDTO(ConnectionRequest connectionRequest) {
+        // Маппинг из ConnectionRequest в ConnectionRequestDTO
+        return new ConnectionRequestDTO(
+                connectionRequest.getRegNumber(),
+                connectionRequest.getDateBegin(),
+                connectionRequest.getDateEnd(),
+                connectionRequest.getStatus(),
+                connectionRequest.getAddInfo()
+        );
+    }
+
     private OrganizationDTO convertToDTO(Organization organization) {
         OrganizationDTO dto = new OrganizationDTO();
         dto.setId(organization.getOrganizationId());
@@ -155,22 +190,5 @@ public class OrganizationService {
         dto.setResponsiblePersonPhoneNumber(organization.getResponsiblePersonPhoneNumber());
         dto.setAddInfo(organization.getAddInfo());
         return dto;
-    }
-
-  //Другое
-    public void create(OrganizationDTO dto) {
-        Organization organization = new Organization();
-        organization.setOrganizationFullName(dto.getOrganizationFullName());
-        organization.setOrganizationShortName(dto.getOrganizationShortName());
-        organization.setInn(dto.getInn());
-        organization.setKpp(dto.getKpp());
-        organization.setOgrn(dto.getOgrn());
-        organization.setResponsiblePersonSurname(dto.getResponsiblePersonSurname());
-        organization.setResponsiblePersonName(dto.getResponsiblePersonName());
-        organization.setResponsiblePersonPatronymic(dto.getResponsiblePersonPatronymic());
-        organization.setResponsiblePersonEmail(dto.getResponsiblePersonEmail());
-        organization.setResponsiblePersonPhoneNumber(dto.getResponsiblePersonPhoneNumber());
-        organization.setAddInfo(dto.getAddInfo());
-        organizationRepository.save(organization);
     }
 }

@@ -27,8 +27,13 @@ body {
 @media (max-width: 480px) {
   .content{
     padding: 1.25rem;
+
+    .profile-info, .profile-buttons {
+      width: 100%;
+    }
   }
 }
+
 
 h1,h3 {
   color: #222222;
@@ -69,6 +74,9 @@ h5 {
   color: $ligt-gray-color;
   font-size: 1rem;
   padding: 0 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   a {
     text-decoration: underline;
@@ -265,7 +273,7 @@ h5 {
   }
 
   td {
-    color: $ligt-gray-color; /* Проверка на опечатку? Может $light-gray-color? */
+    color: $ligt-gray-color;
   }
 
   td.cart-total {
@@ -297,5 +305,158 @@ h5 {
 
   &:hover {
     background-color: #a50e0e;
+  }
+}
+
+.profile-info {
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0.5rem;
+
+  input {
+    width: 60%;
+    height: 2rem;
+    padding-left: 0.5rem;
+    border: none;
+    border-bottom: $dark-gray-color 1px solid;
+
+    &:active  {
+    border: none;
+    }
+  }
+
+}
+
+.profile-buttons {
+  margin-top: 2rem;
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
+  button {
+    margin: 1rem 0.5rem;
+    padding: 0.5rem;
+    width: 6rem;
+    border: none;
+    background-color: $ultra-light-gray-color;
+    color: $dark-gray-color;
+    cursor: pointer;
+    &:hover {
+      background-color: $primary-color;
+      color: white;
+      font-weight: bold;
+    }
+  }
+}
+
+.requests-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+
+  th, td {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
+
+  .request-row {
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #e9e9e9;
+    }
+  }
+
+  /* Настройка столбцов для десктопа */
+  th.col-reg, td.col-reg {
+    width: 15%;
+    text-align: center;
+    position: relative;
+  }
+
+  th.col-date, td.col-date {
+    width: 15%;
+    text-align: center;
+  }
+
+  th.col-short, td.col-short {
+    width: 50%;
+    text-align: left;
+    position: relative;
+  }
+
+  th.col-status, td.col-status {
+    width: 20%;
+    text-align: center;
+  }
+
+  @media (max-width: 1024px) {
+    th.col-reg, td.col-reg { width: 10%; }
+    th.col-date, td.col-date { width: 20%; }
+    th.col-short, td.col-short { width: 50%; }
+    th.col-status, td.col-status { width: 20%; text-overflow: clip; }
+
+    /* Меняем заголовки */
+    th.col-reg, th.col-short, th.col-date {
+      font-size: 0;
+    }
+
+    th.col-reg::before {
+      content: "№";
+      font-size: 1.25rem;
+      display: block;
+    }
+
+    th.col-short::before {
+      content: "Наименование";
+      font-size: 1.25rem;
+      display: block;
+    }
+
+    th.col-date::before {
+      content: "Дата";
+      font-size: 1.25rem;
+      display: block;
+    }
+  }
+
+  @media (max-width: 480px) {
+    th, td {
+      padding: 0.25rem;
+    }
+
+    th.col-reg, td.col-reg { width: 15%; }
+    th.col-date, td.col-date { display: none; }
+    th.col-short, td.col-short { width: 55%; }
+    th.col-status, td.col-status { width: 40%; text-overflow: clip; }
+
+    /* Меняем заголовки */
+    th.col-reg, th.col-short {
+      font-size: 0;
+    }
+
+    th.col-reg::before {
+      content: "№";
+      font-size: 1.25rem;
+      display: block;
+    }
+
+    th.col-short::before {
+      content: "Наименование";
+      font-size: 1.25rem;
+      display: block;
+    }
+  }
+
+  a {
+    text-decoration: none;
   }
 }

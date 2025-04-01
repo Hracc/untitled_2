@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import './ServicesList.scss';
 
+import { addLocalJSON } from "../api/utils";
+import {serviceItem} from "../api/client/services";
+
 export function ServicesList({ services, search }) {
-    const handleServiceSelect = (typeCode) => {
-        localStorage.setItem('selectedServiceTypeCode', typeCode);
-    };
     return (
         <div className="services-list">
             {services
@@ -14,7 +14,7 @@ export function ServicesList({ services, search }) {
                         key={s.typeCode}
                         to={`/${encodeURIComponent(s.typeName)}`}
                         className="service-item"
-                        onClick={() => handleServiceSelect(s.typeCode)}
+                        onClick={() => {addLocalJSON(serviceItem.selectedData,'serviceTypeCode', s.typeCode);}}
                     >
                         {s.typeName}
                     </Link>

@@ -49,4 +49,58 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Неверный код");
         }
     }
+
+    @PostMapping("/admin/Send-code")
+    public ResponseEntity<String> sendCodeAdmin(@RequestParam String email){
+        String answer = authService.sendVerificationCodeAdmin(email);
+        if(answer.equals("Код отправлен")){
+            return ResponseEntity.ok("Код отправлен");
+        }else {
+            return ResponseEntity.badRequest().body(answer);
+        }
+    }
+
+    @PostMapping("/admin/verify")
+    public ResponseEntity<String> verifyCodeAdmin(@RequestBody VerificationRequest verificationRequest) {
+        String email = verificationRequest.getEmail();
+        String code = verificationRequest.getCode();
+
+        logger.info("code " + code);
+        logger.info("email "+ email);
+
+
+        String token = authService.verifyCodeAdmin(email, code);
+        if (token!="false") {
+            return ResponseEntity.ok(token);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Неверный код");
+        }
+    }
+
+    @PostMapping("/Organization/Send-code")
+    public ResponseEntity<String> sendCodeOrganization(@RequestParam String email){
+        String answer = authService.sendVerificationCodeOrganization(email);
+        if(answer.equals("Код отправлен")){
+            return ResponseEntity.ok("Код отправлен");
+        }else {
+            return ResponseEntity.badRequest().body(answer);
+        }
+    }
+
+    @PostMapping("/Organization/verify")
+    public ResponseEntity<String> verifyCodeOrganization(@RequestBody VerificationRequest verificationRequest) {
+        String email = verificationRequest.getEmail();
+        String code = verificationRequest.getCode();
+
+        logger.info("code " + code);
+        logger.info("email "+ email);
+
+
+        String token = authService.verifyCodeOrganization(email, code);
+        if (token!="false") {
+            return ResponseEntity.ok(token);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Неверный код");
+        }
+    }
 }

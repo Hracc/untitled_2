@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
 import "./Modal.scss"; // Подключаем стили для Modal
 
-import { postSendCode, postVerify } from "../api/client/authorization";
+import { postClientEmail, postClientVerify } from "../api/authorization"
+import { setCookie } from "../api/utils";
+
 
 export function Modal({ isOpen, onClose }) {
     const [isChecked, setIsChecked] = useState(false);
@@ -40,7 +41,7 @@ export function Modal({ isOpen, onClose }) {
         return emailRegex.test(email);
     };
     
-    const handleSendCode = async () => {
+    const handleSendCode = () => {
         if (email.trim() === "" || timer !== 0) return;
         if (!validateEmail(email)) {
             setError("Введите корректный email.");
@@ -48,7 +49,7 @@ export function Modal({ isOpen, onClose }) {
         }
 
         try {
-            await postSendCode(email);
+            postClientEmail(email);
             setEmailSent(true);
             setTimer(60);
             setError("");
@@ -61,10 +62,9 @@ export function Modal({ isOpen, onClose }) {
     const handleConfirmCode = async () => { // Добавлено async
         if (code.trim() !== "") {
             try {
-                const result = await postVerify(email, code); // Добавлено await
-                onClose(); // Закрываем модалку после успешного ввода кода
-                localStorage.setItem("token", result); // Сохраняем токен в localStorage
-                setError("")
+                const result = await postClientVerify(email, code)
+                setCookie("token",result)
+                window.location.reload()
             } catch (error) {
                 console.error("Ошибка при отправке кода:", error);
                 setError("Неверный код. Попробуйте еще раз.");
@@ -75,10 +75,7 @@ export function Modal({ isOpen, onClose }) {
     return (
         <div className="modal-overlay" onClick={handleOverlayClick}>
             <div className="modal-content">
-                <h2 className="modal-title">Войти или&nbsp;
-                    <nav className="register-link">
-                        <Link to="/register">зарегистрироваться</Link>
-                    </nav>
+                <h2 className="modal-title">Войти или зарегистрироваться
                 </h2>
 
                 <input
@@ -89,6 +86,7 @@ export function Modal({ isOpen, onClose }) {
                     onChange={(e) => setEmail(e.target.value)}
                     onFocus={() => setEmailPlaceholder("")}
                     onBlur={() => setEmailPlaceholder(" Email")}
+                    maxLength="255"
                     disabled={emailSent} // Блокируем поле после отправки кода
                 />
 

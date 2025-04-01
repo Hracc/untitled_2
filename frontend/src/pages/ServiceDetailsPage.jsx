@@ -4,7 +4,10 @@ import { Header } from "../components/Header";
 import { Modal } from "../components/Modal";
 import "../styles.scss";
 
-import { postServiceDetail, addToLocalStorage} from "../api/client/services.js";
+import { postServiceDetail, serviceItem} from "../api/client/services.js";
+import { addLocalJSON, getLocalJSON} from "../api/utils.js";
+import { Loading } from "../components/Loading.jsx";
+
 
 export function ServiceDetailsPage() {
     const { categoryName, serviceName } = useParams();
@@ -14,11 +17,13 @@ export function ServiceDetailsPage() {
     const [offers, setOffers] = useState([]);
     const [selectedOffers, setSelectedOffers] = useState([]);
     const [isModalOpen, setModalOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(true)
+
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const organizations = await postServiceDetail(localStorage.getItem('selectedServiceTypeCode'));
+                const organizations = await postServiceDetail(getLocalJSON(serviceItem.selectedData ,'serviceTypeCode'));
     
                 const formattedOffers = organizations.map((org, index) => ({
                     id: org.serviceDetailId, 
@@ -31,6 +36,8 @@ export function ServiceDetailsPage() {
                 setOffers(formattedOffers);
             } catch (error) {
                 console.error('Ошибка при загрузке данных:', error);
+            } finally {
+                setIsLoading(false)
             }
         };
     
@@ -40,7 +47,7 @@ export function ServiceDetailsPage() {
         setServiceData({
             id: 1,
             name: serviceName,
-            address: "Московское шоссе, 176",
+            address: getLocalJSON(serviceItem.selectedData,'street'),
             category: categoryName,
         });
     }, [categoryName, serviceName]);
@@ -106,8 +113,8 @@ export function ServiceDetailsPage() {
               Итого: <strong>{totalPrice} RUB</strong>
             </span>
                         <button onClick={() => {if(selectedOffers.length !== 0) {
-                                goToCart();
-                                addToLocalStorage("serviceDetailId",selectedOffers)
+                                    goToCart()
+                                    addLocalJSON(serviceItem.serviceRequest,"serviceDetailId",selectedOffers)
                                 }
                                 else{
                                     alert("Выберите хотя бы одну услугу.")
@@ -119,7 +126,7 @@ export function ServiceDetailsPage() {
                     </div>
 
                     <div className="offers-list">
-                        {offers.map((offer) => {
+                         {isLoading? <Loading /> : offers.map((offer) => {
                             const isSelected = selectedOffers.includes(offer.id);
                             return (
                                 <div key={offer.id} className="offer-item">
