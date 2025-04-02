@@ -206,11 +206,11 @@
 //        connectionRequestRepository.save(connectionRequest);*/
 //
 //
-//        ConnectionRequest cnnRq1 = createConnectionRequest(org1, "130122001", LocalDate.now(), LocalDate.now().plusDays(30), "Исполнен", "Доп. информация");
-//        ConnectionRequest cnnRq2 = createConnectionRequest(org2, "211012002", LocalDate.now(), LocalDate.now().plusDays(15), "Исполнен", "Доп. информация");
-//        createConnectionRequest(org3, "322012002", LocalDate.now(), null, "Новый", "Доп. информация");
-//        createConnectionRequest(org4, "422012002", LocalDate.now(), null, "Новый", "Доп. информация");
-//        createConnectionRequest(org5, "522012002", LocalDate.now(), null, "Новый", "Доп. информация");
+//        ConnectionRequest cnnRq1 = createConnectionRequest(org1, "130122001", LocalDate.now(), LocalDate.now().plusDays(30), "Исполнена", "Доп. информация");
+//        ConnectionRequest cnnRq2 = createConnectionRequest(org2, "211012002", LocalDate.now(), LocalDate.now().plusDays(15), "Исполнена", "Доп. информация");
+//        createConnectionRequest(org3, "322012002", LocalDate.now(), null, "Новая", "Доп. информация");
+//        createConnectionRequest(org4, "422012002", LocalDate.now(), null, "Новая", "Доп. информация");
+//        createConnectionRequest(org5, "522012002", LocalDate.now(), null, "Новая", "Доп. информация");
 //
 //
 //        // Добавление данных в таблицу Address
