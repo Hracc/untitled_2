@@ -3,12 +3,22 @@ import { getWithToken, postWithToken } from "../utils"
 
 const urlStatement = {
     statements : '/api/admin/Connection/all',
-    updateStatus : '/api/admin/Connection/UpdateStatus'
+    currentStatement: '/api/admin/Organization',
+    updateStatus : '/api/admin/Connection/UpdateStatus',
+    state: '/api/admin/Connection/status',
 }
 
 // Все заявки
 export const getStatements = () => {
     return getWithToken(urlStatement.statements)
+}
+
+export const getCurStatement = (id) => {
+    return getWithToken(`${urlStatement.currentStatement}/${id}`)
+}
+
+export const getStatus = (id) => {
+    return getWithToken(`${urlStatement.state}?id=${id}`)
 }
 
 // Изменить статус

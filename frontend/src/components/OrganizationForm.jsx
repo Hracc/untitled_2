@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect  } from "react";
 import "./OrganizationForm.scss";
 
 import { postStatement } from "../api/organization/organization";
 
-export function OrganizationForm({ readOnly = false }) {
+export function OrganizationForm({ readOnly = false, initialData = null}) {
     const [fullName, setFullName] = useState("");
     const [shortName, setShortName] = useState("");
     const [inn, setInn] = useState("");
@@ -23,6 +23,22 @@ export function OrganizationForm({ readOnly = false }) {
         ogrn: 13,
         phone: 20
     }
+
+    useEffect(() => {
+        if (initialData) {
+            setFullName(initialData.organizationFullName || "");
+            setShortName(initialData.organizationShortName || "");
+            setInn(initialData.inn || "");
+            setKpp(initialData.kpp || "");
+            setOgrn(initialData.ogrn || "");
+            setSurname(initialData.responsiblePersonSurname || "");
+            setName(initialData.responsiblePersonName || "");
+            setPatronymic(initialData.responsiblePersonPatronymic || "");
+            setEmail(initialData.responsiblePersonEmail || "");
+            setPhone(initialData.responsiblePersonPhoneNumber || "");
+            setAdditionalInfo(initialData.addInfo || "");
+        }
+    }, [initialData])
 
     const handleNumberInput = (value, setFunction, field) => {
         const maxLength = fieldLengths[field]

@@ -6,7 +6,7 @@ import { Modal } from "../components/Modal";
 
 import { getServiceTypes } from "../api/client/services"
 import { Loading } from "../components/Loading";
-
+import { getUserRole } from "../api/jwt";
 export function Home() {
     const [search, setSearch] = useState("");
     const [isModalOpen, setModalOpen] = useState(false);
@@ -26,6 +26,7 @@ export function Home() {
     };
 
     useEffect(()=> {
+        getUserRole()
         handleFetchData();
     }, [])
 

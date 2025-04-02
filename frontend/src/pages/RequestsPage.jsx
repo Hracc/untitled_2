@@ -2,23 +2,30 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles.scss";
 import { Header } from "../components/Header.jsx";
+import { getStatements } from "../api/administration/statements.js";
 
 export function RequestsPage() {
     // Фильтр статусов, включая "Все"
     const statuses = ["Все", "Новая", "В работе", "Исполнена", "Отклонена"];
     const [filterStatus, setFilterStatus] = useState("Все");
-
-    // Заглушка: данные заявок
     const [requests, setRequests] = useState([]);
+    const statements = async () => {
+        try {
+            const data = await getStatements()
+            const formattedData = data.map((item) => ({
+                id: item.connectionRequestId,
+                regNo: item.regNumber,
+                createdDate: item.dateBegin,
+                shortName: item.organizationName,
+                status: item.status, 
+            }))
+            setRequests(formattedData)
+        } catch (error) {
+            console.error("Ошибка при выполнении запроса:", error);
+        }
+    }
     useEffect(() => {
-        const sampleRequests = [
-            { id: 1, regNo: "1", createdDate: "2025-03-25", shortName: "Авангард", status: "Новая" },
-            { id: 2, regNo: "2", createdDate: "2025-03-24", shortName: "АвтоПлюс", status: "В работе" },
-            { id: 3, regNo: "3", createdDate: "2025-03-23", shortName: "Моечка", status: "Исполнена" },
-            { id: 4, regNo: "4", createdDate: "2025-03-22", shortName: "МирМасел", status: "Отклонена" },
-            // Можно добавить дополнительные данные
-        ];
-        setRequests(sampleRequests);
+        statements()
     }, []);
 
     // Если выбран фильтр "Все", не фильтруем, иначе фильтруем по статусу
@@ -67,7 +74,7 @@ export function RequestsPage() {
                             <tr
                                 key={req.id}
                                 className="request-row"
-                                onClick={() => handleRowClick(req.regNo)}
+                                onClick={() => handleRowClick(req.id)}
                             >
                                 <td className="col-reg">{req.regNo}</td>
                                 <td className="col-date">{req.createdDate}</td>

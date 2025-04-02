@@ -3,11 +3,11 @@ package com.agregator.Agregator.Services;
 import com.agregator.Agregator.DTO.ConnectionRequestDTO;
 import com.agregator.Agregator.DTO.CreateOrganizationDTO;
 import com.agregator.Agregator.DTO.OrganizationDTO;
+import com.agregator.Agregator.DTO.ServiceRequestDTO;
 import com.agregator.Agregator.Entity.*;
 import com.agregator.Agregator.Repositories.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -36,6 +35,16 @@ public class OrganizationService {
     private UserRepository userRepository;
     @Autowired
     private ConnectionRequestRepository connectionRequestRepository;
+
+    public ResponseEntity<OrganizationDTO> findCustomerByEmail(String email) {
+        Optional<Organization> organization = organizationRepository.findByResponsiblePersonEmail(email);
+        if (organization.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }else {
+            OrganizationDTO organizationDTO = convertToDTO(organization.get());
+            return ResponseEntity.ok(organizationDTO);
+        }
+    }
 
     // CRUD по организациям
     public List<OrganizationDTO> getAllOrganizations() {
@@ -187,6 +196,38 @@ public class OrganizationService {
                 connectionRequest.getStatus(),
                 connectionRequest.getAddInfo()
         );
+    }
+
+    public ResponseEntity<List<ServiceRequestDTO>> getServiceRequestsForOrganization(String email) {
+        // Находим организацию по email
+        int organizationId = organizationRepository.findByResponsiblePersonEmail(email)
+                .orElseThrow().getOrganizationId();
+
+        // Получаем все заявки для организации
+        List<ServiceRequest> requests = serviceRequestRepository.findByOrganization_OrganizationId(organizationId);
+
+        // Маппируем заявки в DTO
+        List<ServiceRequestDTO> dtoList = requests.stream()
+                .map(r -> new ServiceRequestDTO(
+                        r.getCustomer().getCustomerName(),
+                        r.getCustomer().getEmail(),
+                        r.getDateService().toLocalDate(),
+                        r.getAddInfo(),
+                        getServiceDetailsForRequest(r.getServiceRequestId())
+                ))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(dtoList);
+    }
+
+    private List<String> getServiceDetailsForRequest(int serviceRequestId) {
+        // Получаем все детали услуги для конкретной заявки
+        List<ServiceRequestDetail> requestDetails = serviceRequestDetailRepository.findByServiceRequest_ServiceRequestId(serviceRequestId);
+
+        // Возвращаем список имен выбранных услуг
+        return requestDetails.stream()
+                .map(srd -> srd.getServiceDetail().getServiceDetailName())
+                .collect(Collectors.toList());
     }
 
     private OrganizationDTO convertToDTO(Organization organization) {

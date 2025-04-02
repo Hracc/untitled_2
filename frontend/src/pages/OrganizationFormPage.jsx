@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { OrganizationForm } from "../components/OrganizationForm";
 import {Header} from "../components/Header.jsx";
 import "../styles.scss";
-import { getStatus } from "../api/organization/organization.js";
+import { getStatus, getOrganization } from "../api/organization/organization.js";
 
 export function OrganizationFormPage() {
     const [statement, setStatement] = useState({})
+    const [organization, setOrganization] = useState({})
     const formatDate = (dateString) => {
         if (!dateString) return ""
         const date = new Date(dateString)
@@ -30,8 +31,17 @@ export function OrganizationFormPage() {
             console.error("Ошибка при выполнении запроса:", error);
         }
     }
+    const fetchOrganization = async () => {
+        try {
+            const data = await getOrganization()
+            setOrganization(data)
+        } catch (error) {
+            console.error("Ошибка при выполнении запроса:", error);
+        }
+    }
     useEffect(()=>{
         fetchData()
+        fetchOrganization()
     },[])
     return (
         <div>
@@ -44,7 +54,7 @@ export function OrganizationFormPage() {
                         <h5>Дата создания: {statement.dateBegin}</h5>
                         <h5>Дата исполнения/отклонения: {statement.dateEnd}</h5>
                     </div>
-                    <OrganizationForm readOnly={true}/>
+                    <OrganizationForm readOnly={true} initialData={organization}/>
                 </div>
             </div>
         </div>

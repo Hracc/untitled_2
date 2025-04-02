@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import "../components/Modal.scss"; // Подключаем стили для Modal
 import "../styles.scss"
 
-import { postOrganizationEmail, postOrganizationVerify } from "../api/authorization";
+import { postAdminEmail, postAdminVerify } from "../api/authorization";
 import { setCookie } from "../api/utils";
 import {Header} from "../components/Header.jsx";
 
-export function OrganizationPage() {
-    const [isChecked, setIsChecked] = useState(false);
+export function AdminPage() {
     const [email, setEmail] = useState("");
     const [code, setCode] = useState("");
     const [emailSent, setEmailSent] = useState(false);
@@ -17,7 +15,6 @@ export function OrganizationPage() {
     const [timer, setTimer] = useState(0);
     const [error, setError] = useState("");
 
-    const navigate = useNavigate()
 
     useEffect(() => {
         let interval;
@@ -44,7 +41,7 @@ export function OrganizationPage() {
         }
 
         try {
-            await postOrganizationEmail(email);
+            await postAdminEmail(email);
             setEmailSent(true);
             setTimer(60);
             setError("");
@@ -57,9 +54,9 @@ export function OrganizationPage() {
     const handleConfirmCode = async () => {
         if (code.trim() !== "") {
             try {
-                const result = await postOrganizationVerify(email, code);
+                const result = await postAdminVerify(email, code);
                 setCookie("token", result);
-                window.location.replace("/partner/form")
+                window.location.replace("/admin/requests")
             } catch (error) {
                 console.error("Ошибка при отправке кода:", error);
                 setError("Неверный код. Попробуйте еще раз.");
@@ -74,7 +71,7 @@ export function OrganizationPage() {
             <div className="container">
                 <div className="content">
                     <div className="modal-content">
-                        <h2 className="modal-title">Войти или стать партнером</h2>
+                        <h2 className="modal-title">Войти администратором</h2>
 
                         <input
                             type="email"
@@ -106,26 +103,13 @@ export function OrganizationPage() {
 
                         {error && <p className="modal-error">{error}</p>}
 
-                        <div className="modal-checkbox">
-                            <input
-                                type="checkbox"
-                                id="privacy-policy"
-                                checked={isChecked}
-                                onChange={(e) => setIsChecked(e.target.checked)}
-                            />
-                            <label htmlFor="privacy-policy" className="modal-checkbox-label">
-                                Принимаю условия{" "}
-                                <a href="/privacy-policy" className="privacy-link" target="_blank" rel="noreferrer">
-                                    политики конфиденциальности
-                                </a>
-                            </label>
-                        </div>
+
 
                         {!emailSent ? (
                             <button
                                 onClick={handleSendCode}
                                 className="modal-send-btn"
-                                disabled={!isChecked || email.trim() === ""}
+                                disabled={email.trim() === ""}
                             >
                                 Отправить код
                             </button>
@@ -134,7 +118,7 @@ export function OrganizationPage() {
                                 <button
                                     onClick={handleConfirmCode}
                                     className="modal-confirm-btn"
-                                    disabled={!isChecked || code.trim().length !== 4}
+                                    disabled={code.trim().length !== 4}
                                 >
                                     Подтвердить код
                                 </button>
@@ -147,10 +131,6 @@ export function OrganizationPage() {
                                 </button>
                             </>
                         )}
-
-                        <Link to="new" className="partner-link">
-                            Регистрация организации
-                        </Link>
                     </div>
                 </div>
             </div>

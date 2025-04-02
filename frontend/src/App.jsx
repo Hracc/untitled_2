@@ -11,6 +11,7 @@ import { TestOrganization } from "./pages_tests/TestOrganization.jsx"
 import { OrganizationFormPage } from "./pages/OrganizationFormPage.jsx";
 import { OrganizationRequestPage } from "./pages/OrganizationRequestPage.jsx";
 import { OrganizationPage } from "./pages/OrganizationPage.jsx";
+import { AdminPage } from "./pages/AdminPage.jsx";
 import "./styles.scss";
 
 
@@ -31,6 +32,7 @@ export default function App() {
                 <Route path="/partner/form" element={<OrganizationFormPage />} />
                 <Route path="/partner/new" element={<OrganizationRegPage />} />
                 {/* Администрация */}
+                <Route path="/admin" element={<AdminPage />} />
                 <Route path="/admin/requests" element={<RequestsPage />} />
                 <Route path="/admin/requests/:regNo" element={<OrganizationRequestPage />} />
                 {/* Маршруты для тестирования функционала без вёрстки */}

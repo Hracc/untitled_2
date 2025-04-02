@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import "./Modal.scss"; // Подключаем стили для Modal
+import "./Modal.scss"; 
 
 import { postClientEmail, postClientVerify } from "../api/authorization"
 import { setCookie } from "../api/utils";
@@ -42,7 +42,7 @@ export function Modal({ isOpen, onClose }) {
         return emailRegex.test(email);
     };
     
-    const handleSendCode = () => {
+    const handleSendCode = async () => {
         if (email.trim() === "" || timer !== 0) return;
         if (!validateEmail(email)) {
             setError("Введите корректный email.");
@@ -50,7 +50,7 @@ export function Modal({ isOpen, onClose }) {
         }
 
         try {
-            postClientEmail(email);
+            await postClientEmail(email);
             setEmailSent(true);
             setTimer(60);
             setError("");
@@ -154,7 +154,9 @@ export function Modal({ isOpen, onClose }) {
                 <Link to="partner" className="partner-link">
                     Партнерам сервиса
                 </Link>
-
+                <Link to="admin" className="partner-link">
+                    Администрация
+                </Link>
             </div>
         </div>
     );
