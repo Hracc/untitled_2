@@ -30,7 +30,7 @@ public class OrganizationController {
     private OrganizationService organizationService;
 
     @PostMapping("/create")
-    public ResponseEntity<String> create(@RequestBody CreateOrganizationDTO dto) {
+    public ResponseEntity<?> create(@RequestBody CreateOrganizationDTO dto) {
         try {
             return organizationService.createOrganization(dto);
         } catch (Exception e) {

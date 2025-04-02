@@ -64,7 +64,7 @@ public class AdminController {
     }
 
     @PostMapping("Organization/create")
-    public ResponseEntity<String>  createOrganization(@RequestBody CreateOrganizationDTO organization) {
+    public ResponseEntity<?>  createOrganization(@RequestBody CreateOrganizationDTO organization) {
         return registrationService.registerOrganization(organization);
     }
 
