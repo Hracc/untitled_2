@@ -5,6 +5,7 @@ import com.agregator.Agregator.DTO.ConnectionRequestAdminDTO;
 import com.agregator.Agregator.Entity.AggregatorSpecialist;
 import com.agregator.Agregator.Entity.AggregatorSpecialistConnectorRequest;
 import com.agregator.Agregator.Entity.ConnectionRequest;
+import com.agregator.Agregator.Entity.Customer;
 import com.agregator.Agregator.Repositories.AggregatorSpecialistConnectorRequestRepository;
 import com.agregator.Agregator.Repositories.AggregatorSpecialistRepository;
 import com.agregator.Agregator.Repositories.ConnectionRequestRepository;
@@ -28,6 +29,9 @@ public class AdminService {
     @Autowired
     private AggregatorSpecialistConnectorRequestRepository aggregatorSpecialistConnectorRequestRepository;
 
+    public AggregatorSpecialist findCustomerByEmail(String email) {
+        return aggregatorSpecialistRepository.findByaggregatorSpecialistsEmail(email).orElse(null);
+    }
 
     public List<ConnectionRequestAdminDTO> getAllConnectionRequests() {
         return connectionRequestRepository.findAll().stream()

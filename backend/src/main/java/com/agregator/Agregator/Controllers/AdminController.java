@@ -2,9 +2,11 @@ package com.agregator.Agregator.Controllers;
 
 import com.agregator.Agregator.DTO.*;
 import com.agregator.Agregator.Entity.Address;
+import com.agregator.Agregator.Entity.AggregatorSpecialist;
 import com.agregator.Agregator.Entity.Customer;
 import com.agregator.Agregator.Entity.Organization;
 import com.agregator.Agregator.Services.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequestMapping("/admin")
 @PreAuthorize("hasRole('ADMINISTRATION')")
 public class AdminController {
@@ -28,6 +31,26 @@ public class AdminController {
     private ServiceService serviceService;
     @Autowired
     private AdminService adminService;
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchCustomerByEmail() {
+        try {
+            // Получаем email из JWT
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+            log.info("Email: "+ email);
+            // Ищем пользователя по email
+            AggregatorSpecialist AggregatorSpecialist = adminService.findCustomerByEmail(email);
+            if (AggregatorSpecialist != null) {
+                return ResponseEntity.ok(AggregatorSpecialist);
+            } else {
+                return ResponseEntity.status(404).body("Admin not found");
+            }
+        } catch (Exception e) {
+            log.error("Ошибка при поиске пользователя", e);
+            return ResponseEntity.status(500).body("Ошибка при поиске покупателя");
+        }
+    }
+
 
     @GetMapping("/all/Customers")
     public List<Customer> getAllCustomers() {
