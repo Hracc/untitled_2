@@ -31,11 +31,12 @@ public class AdminService {
         return connectionRequestRepository.findAll().stream()
                 .map(req -> new ConnectionRequestAdminDTO(
                         req.getConnectionRequestId(), // Передаем id
+                        req.getOrganization().getOrganizationShortName(), // Передаем имя организации
                         req.getRegNumber(),
                         req.getDateBegin(),
                         req.getDateEnd(),
                         req.getStatus(),
-                        req.getAddInfo()
+                        req.getAddInfo() // Добавляем addInfo
                 ))
                 .collect(Collectors.toList());
     }
@@ -44,14 +45,16 @@ public class AdminService {
         return connectionRequestRepository.findByStatus(status).stream()
                 .map(req -> new ConnectionRequestAdminDTO(
                         req.getConnectionRequestId(),
+                        req.getOrganization().getOrganizationShortName(), // Передаем имя организации
                         req.getRegNumber(),
                         req.getDateBegin(),
                         req.getDateEnd(),
                         req.getStatus(),
-                        req.getAddInfo()
+                        req.getAddInfo() // Добавляем addInfo
                 ))
                 .collect(Collectors.toList());
     }
+
 
     @Transactional
     public ResponseEntity<String> UpdateStatus(int connectionRequestId, String email, String Status) {

@@ -11,5 +11,4 @@ public class CustomerRegistrationDTO {
     private String customerPatronymic;
     private String email;
     private String addInfo;
-
 }
