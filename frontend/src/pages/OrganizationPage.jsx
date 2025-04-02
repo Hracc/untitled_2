@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../components/Modal.scss"; // Подключаем стили для Modal
 import "../styles.scss"
 
-import { postClientEmail, postClientVerify } from "../api/authorization";
+import { postOrganizationEmail, postOrganizationVerify } from "../api/authorization";
 import { setCookie } from "../api/utils";
 import {Header} from "../components/Header.jsx";
 
@@ -16,6 +16,8 @@ export function OrganizationPage() {
     const [codePlaceholder, setCodePlaceholder] = useState(" Код из письма");
     const [timer, setTimer] = useState(0);
     const [error, setError] = useState("");
+
+    const navigate = useNavigate()
 
     useEffect(() => {
         let interval;
@@ -42,7 +44,7 @@ export function OrganizationPage() {
         }
 
         try {
-            postClientEmail(email);
+            postOrganizationEmail(email);
             setEmailSent(true);
             setTimer(60);
             setError("");
@@ -55,8 +57,9 @@ export function OrganizationPage() {
     const handleConfirmCode = async () => {
         if (code.trim() !== "") {
             try {
-                const result = await postClientVerify(email, code);
+                const result = await postOrganizationVerify(email, code);
                 setCookie("token", result);
+                navigate("/partner/form")
                 window.location.reload();
             } catch (error) {
                 console.error("Ошибка при отправке кода:", error);

@@ -68,7 +68,7 @@ public class RegistrationService {
         return ResponseEntity.ok(customer);
     }
     @Transactional
-    public ResponseEntity<String> registerOrganization(CreateOrganizationDTO organizationDTO) {
+    public ResponseEntity<?> registerOrganization(CreateOrganizationDTO organizationDTO) {
         // Создание User для Organization
         User user = new User();
         if (isValidEmail(organizationDTO.getResponsiblePersonEmail())) {
@@ -123,7 +123,7 @@ public class RegistrationService {
         // Сохраняем сущность с обновлённым regNumber
         connectionRequestRepository.save(connectionRequest);
 
-        return ResponseEntity.ok("Организация создана");
+        return ResponseEntity.ok(organizationDTO);
     }
 
     /*public ConnectionRequest createConnectionRequest (Organization organization) {

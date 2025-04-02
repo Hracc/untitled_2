@@ -1,7 +1,7 @@
 import { getWithToken } from '../utils'
 const urlOrganiztion = {
     sendStatement : '/api/organization/create',
-    checkStatus : 'api/organization/Status'
+    checkStatus : '/api/organization/Status'
 }
 
 // Подать заявку

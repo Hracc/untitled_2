@@ -11,9 +11,8 @@ export function OrganizationRegPage() {
                 <div className="content">
                     <h1>Регистрация организации</h1>
                     <OrganizationForm />
-                    Нажимая "Отправить" вы принимаете условия
-                    <a href="/privacy-policy" target="_blank" rel="noreferrer">
-                         политики конфиденциальности</a>
+                    Нажимая "Отправить" вы принимаете условия <a href="/privacy-policy" target="_blank" rel="noreferrer">
+                           политики конфиденциальности</a>
                 </div>
             </div>
         </div>

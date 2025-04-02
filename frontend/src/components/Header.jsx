@@ -10,7 +10,7 @@ import {Person} from "./Person.jsx";
 import { getTokenOrThrow, getLocalJSON} from "../api/utils.js";
 import { serviceItem } from "../api/client/services.js";
 
-export function Header({ onLoginClick }) {
+export function Header({ onLoginClick, logo="/" }) {
     const [isCityModalOpen, setCityModalOpen] = useState(false);
     const [selectedCity, setSelectedCity] = useState("");
     const [isAuthorization, setIsAuthorization] = useState(false);
@@ -39,7 +39,7 @@ export function Header({ onLoginClick }) {
         <header className="header">
             <div className="container">
                 <div className="header__logo">
-                    <Link to="/" className="header__logo-link">
+                    <Link to={logo} className="header__logo-link">
                         <Logo />
                     </Link>
                 </div>
