@@ -72,9 +72,10 @@ public class AdminService {
         if (Status.equals(connectionRequest.getStatus())) {
             return ResponseEntity.badRequest().body("Заявка уже в этом статусе "+ Status);
         }
-        if (Status.equals("Иссполнено")){
+        if (Status.equals("Исполнено") || Status.equals("Отклонена")){
             connectionRequest.setDateEnd(LocalDate.now());
         }
+
 
         // Обновляем статус заявки
         connectionRequest.setStatus(Status);
@@ -86,18 +87,23 @@ public class AdminService {
                 .orElseThrow(() -> new RuntimeException("Администратор не найден"));
 
         // Создаем запись связи, если администратор еще не работал над этим запросом
+        String responseMessage = "Заявка переведена в статус " + Status + " администратором " + admin.getAggregatorSpecialistsId();
+
+        if (connectionRequest.getDateEnd() != null) {
+            responseMessage += ". Дата окончания: " + connectionRequest.getDateEnd();
+        }
 
         // Проверяем, существует ли уже связь между администратором и запросом на подключение
         boolean exists = aggregatorSpecialistConnectorRequestRepository.existsByAggregatorSpecialistAndConnectionRequest(admin, connectionRequest);
         if (exists) {
-            return ResponseEntity.ok("Заявка переведена в статус "+Status+" администратором " + admin.getAggregatorSpecialistsId());
+            return ResponseEntity.ok(responseMessage);
         }else {
             AggregatorSpecialistConnectorRequest connectorRequest = new AggregatorSpecialistConnectorRequest();
             connectorRequest.setAggregatorSpecialist(admin);
             connectorRequest.setConnectionRequest(connectionRequest);
             aggregatorSpecialistConnectorRequestRepository.save(connectorRequest);
 
-            return ResponseEntity.ok("Заявка переведена в статус "+Status+" администратором " + admin.getAggregatorSpecialistsId());
+            return ResponseEntity.ok(responseMessage);
         }
     }
 
