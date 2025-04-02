@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import "./Modal.scss"; // Подключаем стили для Modal
+import { Link } from "react-router-dom";
+import "./Modal.scss"; 
+
+import { postClientEmail, postClientVerify } from "../api/authorization"
+import { setCookie } from "../api/utils";
+
 
 export function Modal({ isOpen, onClose }) {
     const [isChecked, setIsChecked] = useState(false);
@@ -9,6 +14,8 @@ export function Modal({ isOpen, onClose }) {
     const [emailPlaceholder, setEmailPlaceholder] = useState(" Email");
     const [codePlaceholder, setCodePlaceholder] = useState(" Код из письма");
     const [timer, setTimer] = useState(0);
+
+    const [error, setError] = useState("");
 
     useEffect(() => {
         let interval;
@@ -30,23 +37,47 @@ export function Modal({ isOpen, onClose }) {
         }
     };
 
-    const handleSendCode = () => {
-        if (email.trim() !== "" && timer === 0) {
+    const validateEmail = (email) => {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailRegex.test(email);
+    };
+    
+    const handleSendCode = async () => {
+        if (email.trim() === "" || timer !== 0) return;
+        if (!validateEmail(email)) {
+            setError("Введите корректный email.");
+            return;
+        }
+
+        try {
+            await postClientEmail(email);
             setEmailSent(true);
             setTimer(60);
+            setError("");
+        } catch (error) {
+            console.error("Ошибка при отправке email:", error);
+            setError("Не удалось отправить код. Попробуйте еще раз.");
         }
     };
 
-    const handleConfirmCode = () => {
+    const handleConfirmCode = async () => { // Добавлено async
         if (code.trim() !== "") {
-            onClose(); // Закрываем модалку после успешного ввода кода
+            try {
+                const result = await postClientVerify(email, code)
+                setCookie("token",result)
+                window.location.reload()
+            } catch (error) {
+                console.error("Ошибка при отправке кода:", error);
+                setError("Неверный код. Попробуйте еще раз.");
+            }
         }
     };
 
     return (
         <div className="modal-overlay" onClick={handleOverlayClick}>
             <div className="modal-content">
-                <h2 className="modal-title">Вход или регистрация</h2>
+                <h2 className="modal-title">Войти или зарегистрироваться
+                </h2>
 
                 <input
                     type="email"
@@ -56,6 +87,7 @@ export function Modal({ isOpen, onClose }) {
                     onChange={(e) => setEmail(e.target.value)}
                     onFocus={() => setEmailPlaceholder("")}
                     onBlur={() => setEmailPlaceholder(" Email")}
+                    maxLength="255"
                     disabled={emailSent} // Блокируем поле после отправки кода
                 />
 
@@ -65,12 +97,16 @@ export function Modal({ isOpen, onClose }) {
                         placeholder={codePlaceholder}
                         className="modal-input"
                         value={code}
-                        onChange={(e) => setCode(e.target.value)}
+                        onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, "").slice(0, 4)
+                            setCode(value)
+                        }}
                         onFocus={() => setCodePlaceholder("")}
                         onBlur={() => setCodePlaceholder(" Код из письма")}
+                        inputMode="numeric"
                     />
                 )}
-
+                {error && <p className="modal-error">{error}</p>}
                 <div className="modal-checkbox">
                     <input
                         type="checkbox"
@@ -84,6 +120,8 @@ export function Modal({ isOpen, onClose }) {
                             политики конфиденциальности
                         </a>
                     </label>
+
+
                 </div>
 
                 {!emailSent ? (
@@ -99,7 +137,7 @@ export function Modal({ isOpen, onClose }) {
                         <button
                             onClick={handleConfirmCode}
                             className="modal-confirm-btn"
-                            disabled={code.trim() === ""}
+                            disabled={!isChecked || code.trim().length !== 4}
                         >
                             Подтвердить код
                         </button>
@@ -112,6 +150,13 @@ export function Modal({ isOpen, onClose }) {
                         </button>
                     </>
                 )}
+
+                <Link to="partner" className="partner-link">
+                    Партнерам сервиса
+                </Link>
+                <Link to="admin" className="partner-link">
+                    Администрация
+                </Link>
             </div>
         </div>
     );

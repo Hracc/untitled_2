@@ -1,71 +1,95 @@
-import { useState, useEffect } from "react";
+// src/pages/CategoryPage.jsx
+import { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { SearchBar } from "../components/SearchBar";
 import { Header } from "../components/Header";
-import "../styles.scss"; // Импортируем глобальные стили (вместо отдельного CategoryPage.scss)
+import "../styles.scss";
+
+import { getOrganizations, serviceItem} from "../api/client/services"
+import { addLocalJSON, getLocalJSON } from "../api/utils"
+import { Loading } from "../components/Loading"
 
 export function CategoryPage() {
     const { categoryName } = useParams();
     const [search, setSearch] = useState("");
     const [services, setServices] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1); // Состояние для текущей страницы
-    const servicesPerPage = 10; // Количество сервисов на одной странице
+    const [currentPage, setCurrentPage] = useState(1);
+    const [isLoading, setIsLoading] = useState(true)
+    const [selectedCity, setSelectedCity] = useState(getLocalJSON(serviceItem.selectedData, "city"))
+
+    const servicesPerPage = 10;
+
+    // Загрузка всех организаций
+    const findOrganization = async () => {
+        try {
+            const organizations = await getOrganizations();
+            const formattedServices = organizations.map((org) => ({
+                id: org.organizationId,
+                name: org.organizationFullName,
+                address: `${org.cityName}, ул. ${org.streetName}, дом ${org.houseNumber}`,
+                street : `${org.streetName}, ${org.houseNumber}`,
+                city: org.cityName,
+            }));
+            setServices(formattedServices)
+        } catch (error) {
+            console.error("Ошибка при загрузке данных:", error);
+        } finally {
+            setIsLoading(false)
+        }
+    };
 
     useEffect(() => {
-        // Пример запроса в БД или API:
-        // fetch(`/api/services?category=${encodeURIComponent(categoryName)}`)
-        //   .then((res) => res.json())
-        //   .then((data) => setServices(data))
-        //   .catch((err) => console.error(err));
+        findOrganization()
+    }, [categoryName, selectedCity])
 
-        // Пока что - заглушка
-        setServices([
-            { id: 1, name: "Авангард", address: "Московское шоссе, 176" },
-            { id: 2, name: "АвтоАдмирал", address: "ул.Рыбинская, 55" },
-            { id: 3, name: "Автопилот", address: "ул.Ясеневая, 7" },
-            { id: 4, name: "АвтоСПА", address: "Походный проезд, 10" },
-            { id: 5, name: "АвтоГарант", address: "проспект Мира, 101" },
-            { id: 6, name: "АвтоЛюкс", address: "ул. Советская, 20" },
-            { id: 7, name: "БайкалАвто", address: "ул. Центральная, 5" },
-            { id: 8, name: "ТехноКар", address: "пер. Лесной, 8" },
-            { id: 9, name: "МастерМотор", address: "ул. Гоголя, 17" },
-            { id: 10, name: "АвтоДрайв", address: "ул. Кирова, 3" },
-            { id: 11, name: "Скорость", address: "проспект Ленина, 45" },
-            { id: 12, name: "АвтоСервис+", address: "ул. Парковая, 11" },
-            { id: 13, name: "ГлобусАвто", address: "ул. Пионерская, 14" },
-            { id: 14, name: "Форсаж", address: "ул. Транспортная, 6" },
-            { id: 15, name: "ТурбоМастер", address: "ул. Заводская, 22" },
-            { id: 16, name: "АвтоГуру", address: "ул. Академическая, 9" },
-            { id: 17, name: "ТехАвто", address: "ул. Строителей, 30" },
-            { id: 18, name: "МоторЛайн", address: "ул. Космонавтов, 7" },
-            { id: 19, name: "СервисАвто", address: "ул. Ленина, 99" },
-            { id: 20, name: "Пит-Стоп", address: "ул. Высотная, 19" },
-            { id: 21, name: "ЭлитАвто", address: "ул. Северная, 5" },
-            { id: 22, name: "Вихрь", address: "ул. Южная, 12" },
-            { id: 23, name: "Формула-1", address: "ул. Гаражная, 8" },
-            { id: 24, name: "ГарантСервис", address: "ул. Новая, 77" },
-            { id: 25, name: "ДрайвАвто", address: "ул. Озерная, 6" }
-        ]);
-    }, [categoryName]);
+    useEffect(() => {
+        const handleStorageChange = () => {
+            const newCity = getLocalJSON(serviceItem.selectedData, "city");
+            if (newCity !== selectedCity) {
+                setSelectedCity(newCity);
+                setCurrentPage(1); // Сбрасываем пагинацию
+            }
+        };
 
-    // Фильтрация по названию
-    const filteredServices = services.filter((service) =>
-        service.name.toLowerCase().includes(search.toLowerCase())
-    );
+        // Подписываемся на изменения в localStorage
+        window.addEventListener('storage', handleStorageChange);
+        
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, [selectedCity])
 
-    // Вычисление сервисов для текущей страницы
+    // При изменении поисковой строки
+    const handleSearchChange = (value) => {
+        setSearch(value);
+        setCurrentPage(1);
+    };
+
+    // Фильтрация: если есть выбранный город, можем фильтровать по нему
+    // + по названию организации (если в search нет пробела)
+    const filteredServices = services.filter(service => {
+        // Если есть выбранный город, проверяем совпадение
+        const cityMatch = selectedCity
+            ? service.city.toLowerCase() === selectedCity.toLowerCase()
+            : true;
+
+        // Поиск по названию (если пользователь ввёл текст)
+        const nameMatch = search
+            ? service.name.toLowerCase().includes(search.toLowerCase())
+            : true;
+
+        return cityMatch && nameMatch;
+    });
+
+    // Пагинация
     const indexOfLastService = currentPage * servicesPerPage;
     const indexOfFirstService = indexOfLastService - servicesPerPage;
     const currentServices = filteredServices.slice(indexOfFirstService, indexOfLastService);
 
-    // Обработчики для смены страницы
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    const pageCount = Math.ceil(filteredServices.length / servicesPerPage);
 
-    // Вычисляем количество страниц
-    const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(filteredServices.length / servicesPerPage); i++) {
-        pageNumbers.push(i);
-    }
+    // Смена страницы
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
         <div>
@@ -74,19 +98,22 @@ export function CategoryPage() {
                 <div className="content">
                     <h1>{categoryName}</h1>
                     <nav className="navigate">
-                        <Link to="/">Главная
-                        </Link>
+                        <Link to="/">Главная</Link>
                         {" — "}
                         <strong>{categoryName}</strong>
                     </nav>
 
-                    <SearchBar search={search} setSearch={setSearch} />
+                    {/* Поисковая строка */}
+                    <SearchBar search={search} setSearch={handleSearchChange} />
 
-                    {/* Список сервисов */}
-                    {currentServices.map((service) => (
+                    {/* Список организаций */}
+                    {isLoading ? <Loading/> :currentServices.map(service => (
                         <Link
                             key={service.id}
                             to={`/${encodeURIComponent(categoryName)}/${encodeURIComponent(service.name)}`}
+                            onClick={() => {
+                                addLocalJSON(serviceItem.selectedData, "street", service.street)
+                                addLocalJSON(serviceItem.serviceRequest,"organizationId", service.id)}}
                             className="category-service-item"
                         >
                             <div className="service-name">{service.name}</div>
@@ -96,13 +123,13 @@ export function CategoryPage() {
 
                     {/* Пагинация */}
                     <div className="pagination">
-                        {pageNumbers.map((number) => (
+                        {[...Array(pageCount).keys()].map(number => (
                             <button
-                                key={number}
-                                onClick={() => paginate(number)}
-                                className={currentPage === number ? 'active' : ''}
+                                key={number + 1}
+                                onClick={() => paginate(number + 1)}
+                                className={currentPage === number + 1 ? "active" : ""}
                             >
-                                {number}
+                                {number + 1}
                             </button>
                         ))}
                     </div>

@@ -1,5 +1,7 @@
 package com.agregator.Agregator.Configurrations;
 
+import com.agregator.Agregator.Entity.User;
+import com.agregator.Agregator.Repositories.UserRepository;
 import com.agregator.Agregator.Services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,6 +10,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -17,12 +21,15 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtService jwtService;
+    @Autowired
+    private UserRepository userRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
 
@@ -34,15 +41,37 @@ public class JwtFilter extends OncePerRequestFilter {
         logger.info("Extracted token: {}", token);
 
         if (token != null && jwtService.isValidToken(token)) {
-            String username = jwtService.extractUsername(token); // Извлекаем имя пользователя из токена
 
-            logger.info("Valid token, username: {}", username);
+            String username = jwtService.extractUsername(token); // Извлекаем имя пользователя из токена
+            Optional<User> user  =  userRepository.findByEmail(username);
+            if (user.isEmpty()) {
+                logger.warn("User {} не найден в базе данных. Токен не верен", username);
+                SecurityContextHolder.clearContext(); // Убираем аутентификацию
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Пользователь не найден");
+                return;
+            }
+
+
+            String role = jwtService.extractRole(token); // Извлекаем роль
+
+            if (!user.get().getRole().name().equals(role)){
+                logger.warn("User {} имеет  другую роль. Токен не верен", username);
+                logger.warn("role {}, roleinddb {} ",role,user.get().getRole());
+                SecurityContextHolder.clearContext(); // Убираем аутентификацию
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Пользователь сфальсифицирован");
+                return;
+            }
+
+            logger.info("Valid token, username: {}, ROLE: {}", username, role);
 
             // Если токен валиден, устанавливаем аутентификацию
-            Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
+            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+            Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
+
             logger.info("Current authentication: {}", currentAuth);
         }else {
             logger.warn("Invalid token or no token provided.");

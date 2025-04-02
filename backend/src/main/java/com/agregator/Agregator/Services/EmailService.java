@@ -26,6 +26,6 @@ public class EmailService {
         simpleMailMessage.setText("Ваш код подверждения: " + code);
 
 
-        emailSender.send(simpleMailMessage);
+        //emailSender.send(simpleMailMessage);
     }
 }
