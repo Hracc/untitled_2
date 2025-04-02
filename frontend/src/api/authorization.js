@@ -3,10 +3,10 @@ const urlAuthorization = {
     clientSendEmail: '/api/auth/send-code',
     clientVerify: '/api/auth/verify',
 
-    adminSendEmail: '/api/auth/admin/verify',
+    adminSendEmail: '/api/auth/admin/Send-code',
     adminVerify: '/api/auth/admin/verify',
 
-    organizationSendEmail: '/api/auth/Organization/verify',
+    organizationSendEmail: '/api/auth/Organization/Send-code',
     organizationVerify: '/api/auth/Organization/verify',
 }
 

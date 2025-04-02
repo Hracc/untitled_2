@@ -6,7 +6,7 @@
 
   h3 {
     background-color: $ultra-light-gray-color;
-    margin-top: 3rem;
+    margin-top: 2rem;
     padding: 0.75rem 0.25rem;
     font-weight: 500;
   }
@@ -16,6 +16,8 @@
     justify-content: space-between;
     margin-bottom: 1.25rem;
     align-items: end;
+
+
 
     input[type="text"],
     input[type="email"],
@@ -28,6 +30,11 @@
       border: none;
       border-radius: 0;
       font-size: 1rem;
+
+      &:disabled {
+        background-color: transparent;
+        color: inherit;
+      }
     }
     textarea {
       border: 1px solid $dark-gray-color;
@@ -50,7 +57,7 @@
   .policy-row {
     display: flex;
     align-items: center;
-    margin-bottom: 1rem;
+    margin: 2rem 0 1.5rem 0;
 
     input[type="checkbox"] {
       margin-right: 0.5rem;
@@ -77,6 +84,7 @@
     background-color: $primary-color;
     color: #fff;
     border: none;
+    margin: 1rem 0;
     padding: 0.75rem 1.5rem;
     cursor: pointer;
     border-radius: 0;

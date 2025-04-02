@@ -1,19 +1,21 @@
 package com.agregator.Agregator.DTO;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
-public class ConnectionRequestAdminDTO extends ConnectionRequestDTO {
+@AllArgsConstructor
+@NoArgsConstructor
+public class ConnectionRequestAdminDTO {
 
     private int connectionRequestId;
+    private String organizationName ;
 
-
-    public ConnectionRequestAdminDTO(int connectionRequestId, String RegNumber, LocalDate dateBegin, LocalDate dateEnd, String status, String addInfo) {
-        super(RegNumber, dateBegin, dateEnd, status, addInfo);
-        this.connectionRequestId = connectionRequestId;
-    }
+    private String RegNumber;
+    private LocalDate dateBegin;
+    private LocalDate dateEnd;
+    private String status;
+    private String addInfo;
 }

@@ -36,12 +36,36 @@ body {
 
 
 h1,h3 {
-  color: #222222;
+  color: $dark-gray-color;
 }
 h5 {
-  color: #666666;
+  color: $ligt-gray-color;
   font-weight: 300;
   margin: 0;
+}
+
+select {
+  height: 100%;
+  padding: 0.5rem;
+  border: none;
+  font-size: 1.25rem;
+  color: $ligt-gray-color;
+}
+.requests-filter {
+  h3 {
+    display: inline-block;
+    color: $ligt-gray-color;
+  }
+}
+.OrganizationFormHeader {
+
+  h3 {
+    display: inline-block;
+    color: $ligt-gray-color;
+  }
+  h5 {
+    padding: 0.5rem 0;
+  }
 }
 
 

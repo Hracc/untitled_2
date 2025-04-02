@@ -3,11 +3,11 @@ package com.agregator.Agregator.Services;
 import com.agregator.Agregator.DTO.ConnectionRequestDTO;
 import com.agregator.Agregator.DTO.CreateOrganizationDTO;
 import com.agregator.Agregator.DTO.OrganizationDTO;
+import com.agregator.Agregator.DTO.ServiceRequestDTO;
 import com.agregator.Agregator.Entity.*;
 import com.agregator.Agregator.Repositories.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +36,16 @@ public class OrganizationService {
     @Autowired
     private ConnectionRequestRepository connectionRequestRepository;
 
+    public ResponseEntity<OrganizationDTO> findCustomerByEmail(String email) {
+        Optional<Organization> organization = organizationRepository.findByResponsiblePersonEmail(email);
+        if (organization.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }else {
+            OrganizationDTO organizationDTO = convertToDTO(organization.get());
+            return ResponseEntity.ok(organizationDTO);
+        }
+    }
+
     // CRUD по организациям
     public List<OrganizationDTO> getAllOrganizations() {
         List<Organization> organizations = organizationRepository.findAll();
@@ -46,12 +57,11 @@ public class OrganizationService {
                 .orElseThrow(() -> new RuntimeException("Организация не найдена"));
     }
     @Transactional
-    public ResponseEntity<String> createOrganization(CreateOrganizationDTO organization) {
-        registrationService.registerOrganization(organization);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Организация создана");
+    public ResponseEntity<?> createOrganization(CreateOrganizationDTO organization) {
+        return registrationService.registerOrganization(organization);
     }
     @Transactional
-    public OrganizationDTO updateOrganization(int id, OrganizationDTO orgDetails) {
+    public ResponseEntity<?> updateOrganization(int id, OrganizationDTO orgDetails) {
         Organization organization = getOrganizationById(id);
         if(!orgDetails.getOrganizationFullName().isEmpty()) {
             organization.setOrganizationFullName(orgDetails.getOrganizationFullName());
@@ -75,7 +85,20 @@ public class OrganizationService {
             organization.setResponsiblePersonPatronymic(orgDetails.getResponsiblePersonPatronymic());
         }
         if(!orgDetails.getResponsiblePersonEmail().isEmpty()){
-            organization.setResponsiblePersonEmail(orgDetails.getResponsiblePersonEmail());
+            if (isValidEmail(orgDetails.getResponsiblePersonEmail())){
+                if (!isEmailExist(orgDetails.getResponsiblePersonEmail())){
+                    userRepository.findByEmail(organization.getResponsiblePersonEmail()).ifPresent(user -> {
+                        user.setEmail(orgDetails.getResponsiblePersonEmail());
+                        userRepository.save(user);
+                    });
+                    organization.setResponsiblePersonEmail(orgDetails.getResponsiblePersonEmail());
+
+                }else {
+                    return ResponseEntity.badRequest().body("Этот email уже занят");
+                }
+            }else {
+                return ResponseEntity.badRequest().body("Email не правильного вида");
+            }
         }
         if(!orgDetails.getResponsiblePersonName().isEmpty()){
             organization.setResponsiblePersonName(orgDetails.getResponsiblePersonName());
@@ -88,7 +111,7 @@ public class OrganizationService {
         }
         organizationRepository.save(organization);
         orgDetails.setId(id);
-        return orgDetails;
+        return ResponseEntity.ok(orgDetails);
     }
     @Transactional
     public void deleteOrganization(int id) {
@@ -175,6 +198,38 @@ public class OrganizationService {
         );
     }
 
+    public ResponseEntity<List<ServiceRequestDTO>> getServiceRequestsForOrganization(String email) {
+        // Находим организацию по email
+        int organizationId = organizationRepository.findByResponsiblePersonEmail(email)
+                .orElseThrow().getOrganizationId();
+
+        // Получаем все заявки для организации
+        List<ServiceRequest> requests = serviceRequestRepository.findByOrganization_OrganizationId(organizationId);
+
+        // Маппируем заявки в DTO
+        List<ServiceRequestDTO> dtoList = requests.stream()
+                .map(r -> new ServiceRequestDTO(
+                        r.getCustomer().getCustomerName(),
+                        r.getCustomer().getEmail(),
+                        r.getDateService().toLocalDate(),
+                        r.getAddInfo(),
+                        getServiceDetailsForRequest(r.getServiceRequestId())
+                ))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(dtoList);
+    }
+
+    private List<String> getServiceDetailsForRequest(int serviceRequestId) {
+        // Получаем все детали услуги для конкретной заявки
+        List<ServiceRequestDetail> requestDetails = serviceRequestDetailRepository.findByServiceRequest_ServiceRequestId(serviceRequestId);
+
+        // Возвращаем список имен выбранных услуг
+        return requestDetails.stream()
+                .map(srd -> srd.getServiceDetail().getServiceDetailName())
+                .collect(Collectors.toList());
+    }
+
     private OrganizationDTO convertToDTO(Organization organization) {
         OrganizationDTO dto = new OrganizationDTO();
         dto.setId(organization.getOrganizationId());
@@ -190,5 +245,18 @@ public class OrganizationService {
         dto.setResponsiblePersonPhoneNumber(organization.getResponsiblePersonPhoneNumber());
         dto.setAddInfo(organization.getAddInfo());
         return dto;
+    }
+
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        return Pattern.matches(emailRegex, email);
+    }
+
+    private boolean isEmailExist(String email){
+        if(userRepository.findByEmail(email).isPresent()){
+            return true;
+        }else {
+            return false;
+        }
     }
 }

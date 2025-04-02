@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect  } from "react";
 import "./OrganizationForm.scss";
 
-export function OrganizationForm() {
+import { postStatement } from "../api/organization/organization";
+
+export function OrganizationForm({ readOnly = false, initialData = null}) {
     const [fullName, setFullName] = useState("");
     const [shortName, setShortName] = useState("");
     const [inn, setInn] = useState("");
@@ -15,47 +17,83 @@ export function OrganizationForm() {
     const [additionalInfo, setAdditionalInfo] = useState("");
     const [acceptedPolicy, setAcceptedPolicy] = useState(false);
 
+    const fieldLengths = {
+        inn: 10,
+        kpp: 9,
+        ogrn: 13,
+        phone: 20
+    }
+
+    useEffect(() => {
+        if (initialData) {
+            setFullName(initialData.organizationFullName || "");
+            setShortName(initialData.organizationShortName || "");
+            setInn(initialData.inn || "");
+            setKpp(initialData.kpp || "");
+            setOgrn(initialData.ogrn || "");
+            setSurname(initialData.responsiblePersonSurname || "");
+            setName(initialData.responsiblePersonName || "");
+            setPatronymic(initialData.responsiblePersonPatronymic || "");
+            setEmail(initialData.responsiblePersonEmail || "");
+            setPhone(initialData.responsiblePersonPhoneNumber || "");
+            setAdditionalInfo(initialData.addInfo || "");
+        }
+    }, [initialData])
+
+    const handleNumberInput = (value, setFunction, field) => {
+        const maxLength = fieldLengths[field]
+        if (/^\d*$/.test(value) && value.length <= maxLength) {
+            setFunction(value)
+        }
+    }
+    
+
     // Проверяем, заполнены ли все обязательные поля
     const isFormValid = () => {
         // Все обязательные поля (кроме additionalInfo) и чекбокс
         return (
             fullName.trim() !== "" &&
             shortName.trim() !== "" &&
-            inn.trim() !== "" &&
-            kpp.trim() !== "" &&
-            ogrn.trim() !== "" &&
+            inn.length === fieldLengths.inn &&
+            kpp.length === fieldLengths.kpp &&
+            ogrn.length === fieldLengths.ogrn &&
             surname.trim() !== "" &&
             name.trim() !== "" &&
             email.trim() !== "" &&
-            phone.trim() !== "" &&
-            acceptedPolicy
+            phone.length >= 11
         );
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!isFormValid()) return;
-
-        // Сбор данных формы
-        const formData = {
-            fullName,
-            shortName,
-            inn,
-            kpp,
-            ogrn,
-            contact: {
-                surname,
-                name,
-                patronymic,
-                email,
-                phone
-            },
-            additionalInfo
+    
+        // Собираем данные формы в нужный формат JSON
+        const requestBody = {
+            organizationFullName: fullName,
+            organizationShortName: shortName,
+            inn: inn,
+            kpp: kpp,
+            ogrn: ogrn,
+            responsiblePersonSurname: surname,
+            responsiblePersonName: name,
+            responsiblePersonPatronymic: patronymic,
+            responsiblePersonEmail: email,
+            responsiblePersonPhoneNumber: phone,
+            addInfo: additionalInfo
         };
-
-        console.log("Отправка формы:", formData);
-        // Здесь можно вызвать API
+    
+        try {
+            // Отправка данных с использованием postStatement
+            console.log(requestBody)
+            await postStatement(requestBody);
+            console.log("Данные успешно отправлены");
+        } catch (error) {
+            console.error("Ошибка при отправке данных:", error);
+        }
     };
+
+
 
     return (
         <form className="organization-form" onSubmit={handleSubmit}>
@@ -69,6 +107,7 @@ export function OrganizationForm() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     required
+                    disabled={readOnly}
                 />
             </label>
 
@@ -80,6 +119,7 @@ export function OrganizationForm() {
                     value={shortName}
                     onChange={(e) => setShortName(e.target.value)}
                     required
+                    disabled={readOnly}
                 />
             </label>
 
@@ -89,8 +129,9 @@ export function OrganizationForm() {
                 <input
                     type="text"
                     value={inn}
-                    onChange={(e) => setInn(e.target.value)}
+                    onChange={(e) => handleNumberInput(e.target.value, setInn, "inn")}
                     required
+                    disabled={readOnly}
                 />
             </label>
 
@@ -100,8 +141,9 @@ export function OrganizationForm() {
                 <input
                     type="text"
                     value={kpp}
-                    onChange={(e) => setKpp(e.target.value)}
+                    onChange={(e) => handleNumberInput(e.target.value, setKpp, "kpp")}
                     required
+                    disabled={readOnly}
                 />
             </label>
 
@@ -111,8 +153,9 @@ export function OrganizationForm() {
                 <input
                     type="text"
                     value={ogrn}
-                    onChange={(e) => setOgrn(e.target.value)}
+                    onChange={(e) => handleNumberInput(e.target.value, setOgrn, "ogrn")}
                     required
+                    disabled={readOnly}
                 />
             </label>
 
@@ -126,6 +169,7 @@ export function OrganizationForm() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
+                    disabled={readOnly}
                 />
             </label>
 
@@ -137,6 +181,7 @@ export function OrganizationForm() {
                     value={surname}
                     onChange={(e) => setSurname(e.target.value)}
                     required
+                    disabled={readOnly}
                 />
             </label>
 
@@ -147,6 +192,8 @@ export function OrganizationForm() {
                     type="text"
                     value={patronymic}
                     onChange={(e) => setPatronymic(e.target.value)}
+
+                    disabled={readOnly}
                 />
             </label>
 
@@ -158,6 +205,7 @@ export function OrganizationForm() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    disabled={readOnly}
                 />
             </label>
 
@@ -167,11 +215,17 @@ export function OrganizationForm() {
                 <input
                     type="tel"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={(e) => {
+                        const value = e.target.value.replace(/[^0-9+\-()\s]/g, "");
+                        if (value.replace(/\D/g, "").length <= fieldLengths.phone) {
+                            setPhone(value);
+                        }
+                    }}
+                    pattern="[\d\s\-\+\(\)]{0,20}"
                     required
+                    disabled={readOnly}
                 />
             </label>
-
             {/* Дополнительная информация (необязательное) */}
             <label>
                 Доп. Информация
@@ -179,28 +233,18 @@ export function OrganizationForm() {
                     value={additionalInfo}
                     onChange={(e) => setAdditionalInfo(e.target.value)}
                     rows={3}
+                    disabled={readOnly}
                 />
             </label>
 
-            <div className="policy-row">
-                <input
-                    type="checkbox"
-                    id="privacy-policy"
-                    checked={acceptedPolicy}
-                    onChange={(e) => setAcceptedPolicy(e.target.checked)}
-                    required
-                />
-                <label htmlFor="privacy-policy">
-                    Принимаю условия{" "}
-                    <a href="/privacy-policy" target="_blank" rel="noreferrer">
-                        политики конфиденциальности
-                    </a>
-                </label>
-            </div>
 
-            <button type="submit" disabled={!isFormValid()}>
-                Отправить
-            </button>
+            {!readOnly && (
+                <button type="submit" 
+                disabled={!isFormValid()}
+                >
+                    Отправить
+                </button>
+            )}
         </form>
     );
 }
