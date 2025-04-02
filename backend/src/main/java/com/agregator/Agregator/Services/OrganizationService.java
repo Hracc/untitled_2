@@ -48,7 +48,7 @@ public class OrganizationService {
                 .orElseThrow(() -> new RuntimeException("Организация не найдена"));
     }
     @Transactional
-    public ResponseEntity<String> createOrganization(CreateOrganizationDTO organization) {
+    public ResponseEntity<?> createOrganization(CreateOrganizationDTO organization) {
         return registrationService.registerOrganization(organization);
     }
     @Transactional

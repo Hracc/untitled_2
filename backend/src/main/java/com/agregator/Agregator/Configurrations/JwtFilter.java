@@ -1,5 +1,6 @@
 package com.agregator.Agregator.Configurrations;
 
+import com.agregator.Agregator.Entity.User;
 import com.agregator.Agregator.Repositories.UserRepository;
 import com.agregator.Agregator.Services.JwtService;
 import jakarta.servlet.FilterChain;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -41,8 +43,8 @@ public class JwtFilter extends OncePerRequestFilter {
         if (token != null && jwtService.isValidToken(token)) {
 
             String username = jwtService.extractUsername(token); // Извлекаем имя пользователя из токена
-
-            if (userRepository.findByEmail(username).isEmpty()) {
+            Optional<User> user  =  userRepository.findByEmail(username);
+            if (user.isEmpty()) {
                 logger.warn("User {} не найден в базе данных. Токен не верен", username);
                 SecurityContextHolder.clearContext(); // Убираем аутентификацию
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Пользователь не найден");
@@ -51,6 +53,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
 
             String role = jwtService.extractRole(token); // Извлекаем роль
+
+            if (!user.get().getRole().name().equals(role)){
+                logger.warn("User {} имеет  другую роль. Токен не верен", username);
+                logger.warn("role {}, roleinddb {} ",role,user.get().getRole());
+                SecurityContextHolder.clearContext(); // Убираем аутентификацию
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Пользователь сфальсифицирован");
+                return;
+            }
 
             logger.info("Valid token, username: {}, ROLE: {}", username, role);
 
