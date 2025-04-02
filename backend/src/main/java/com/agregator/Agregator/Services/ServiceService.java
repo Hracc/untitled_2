@@ -136,6 +136,12 @@ public class ServiceService {
         Organization organization = organizationRepository.findById(dto.getOrganizationId())
                 .orElseThrow(() -> new RuntimeException("Организация не найдена"));
 
+        ConnectionRequest lastRequest = connectionRequestRepository
+                .findTopByOrganization_OrganizationIdOrderByDateEndDesc(organization.getOrganizationId());
+
+        if (lastRequest == null || !"Исполнен".equalsIgnoreCase(lastRequest.getStatus())) {
+            throw new RuntimeException("Последний запрос на подключение не исполнен.");
+        }
         // Проверка, доступно ли время для выбранной услуги с учётом длительности
         for (Integer serviceDetailId : dto.getServiceDetailId()) {
             boolean isAvailable = isTimeAvailable(dto.getOrganizationId(), dto.getDateTime(), serviceDetailId);

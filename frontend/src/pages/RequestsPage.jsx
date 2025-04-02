@@ -4,7 +4,7 @@ import "../styles.scss";
 import { Header } from "../components/Header.jsx";
 
 export function RequestsPage() {
-    // Фильтр статусов
+    // Фильтр статусов, включая "Все"
     const statuses = ["Все", "Новая", "В работе", "Исполнена", "Отклонена"];
     const [filterStatus, setFilterStatus] = useState("Все");
 
@@ -12,24 +12,25 @@ export function RequestsPage() {
     const [requests, setRequests] = useState([]);
     useEffect(() => {
         const sampleRequests = [
-            { id: 1, regNo: "001", createdDate: "2025-03-25", shortName: "Авангард", status: "Новая" },
-            { id: 2, regNo: "002", createdDate: "2025-03-24", shortName: "АвтоПлюс", status: "В работе" },
-            { id: 3, regNo: "003", createdDate: "2025-03-23", shortName: "Моечка", status: "Исполнена" },
-            { id: 4, regNo: "004", createdDate: "2025-03-22", shortName: "МирМасел", status: "Отклонена" },
+            { id: 1, regNo: "1", createdDate: "2025-03-25", shortName: "Авангард", status: "Новая" },
+            { id: 2, regNo: "2", createdDate: "2025-03-24", shortName: "АвтоПлюс", status: "В работе" },
+            { id: 3, regNo: "3", createdDate: "2025-03-23", shortName: "Моечка", status: "Исполнена" },
+            { id: 4, regNo: "4", createdDate: "2025-03-22", shortName: "МирМасел", status: "Отклонена" },
             // Можно добавить дополнительные данные
         ];
         setRequests(sampleRequests);
     }, []);
 
-    // Если выбран фильтр "все", не фильтруем, иначе фильтруем по статусу
+    // Если выбран фильтр "Все", не фильтруем, иначе фильтруем по статусу
     const filteredRequests =
         filterStatus === "Все"
             ? requests
             : requests.filter((req) => req.status === filterStatus);
 
     const navigate = useNavigate();
-    const handleRowClick = (reqId) => {
-        navigate(`/request/${reqId}`);
+    const handleRowClick = (regNo) => {
+        // Переход к маршруту /admin/requests/:regNo
+        navigate(`/admin/requests/${regNo}`);
     };
 
     return (
@@ -39,7 +40,7 @@ export function RequestsPage() {
                 <div className="content">
                     <h2>Список заявок</h2>
                     <div className="requests-filter">
-                        <label htmlFor="status-filter">Фильтр: </label>
+                        <label htmlFor="status-filter"><h3>Фильтр: </h3></label>
                         <select
                             id="status-filter"
                             value={filterStatus}
@@ -66,7 +67,7 @@ export function RequestsPage() {
                             <tr
                                 key={req.id}
                                 className="request-row"
-                                onClick={() => handleRowClick(req.id)}
+                                onClick={() => handleRowClick(req.regNo)}
                             >
                                 <td className="col-reg">{req.regNo}</td>
                                 <td className="col-date">{req.createdDate}</td>

@@ -35,7 +35,7 @@ public class AdminController {
     }
 
     @PostMapping("/Create/Customers")
-    public Customer createCustomer(@RequestBody CustomerRegistrationDTO customer) {
+    public ResponseEntity<?> createCustomer(@RequestBody CustomerRegistrationDTO customer) {
         return registrationService.registerCustomer(customer);
     }
 
@@ -65,12 +65,11 @@ public class AdminController {
 
     @PostMapping("Organization/create")
     public ResponseEntity<String>  createOrganization(@RequestBody CreateOrganizationDTO organization) {
-        registrationService.registerOrganization(organization);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Организация создана");
+        return registrationService.registerOrganization(organization);
     }
 
     @PutMapping("Organization/update/{id}")
-    public OrganizationDTO updateOrganization(@PathVariable int id, @RequestBody OrganizationDTO org) {
+    public ResponseEntity<?> updateOrganization(@PathVariable int id, @RequestBody OrganizationDTO org) {
         return organizationService.updateOrganization(id, org);
     }
 

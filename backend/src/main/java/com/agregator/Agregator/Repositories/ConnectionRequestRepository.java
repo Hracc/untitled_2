@@ -10,4 +10,5 @@ import java.util.List;
 public interface ConnectionRequestRepository extends JpaRepository<ConnectionRequest, Integer> {
     List<ConnectionRequest> findByOrganization_OrganizationId(int organizationId);
     List<ConnectionRequest> findByStatus(String status);
+    ConnectionRequest findTopByOrganization_OrganizationIdOrderByDateEndDesc(int organizationId);
 }

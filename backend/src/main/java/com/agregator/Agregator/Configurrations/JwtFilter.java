@@ -1,5 +1,6 @@
 package com.agregator.Agregator.Configurrations;
 
+import com.agregator.Agregator.Repositories.UserRepository;
 import com.agregator.Agregator.Services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,6 +26,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtService jwtService;
+    @Autowired
+    private UserRepository userRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
 
@@ -36,7 +39,17 @@ public class JwtFilter extends OncePerRequestFilter {
         logger.info("Extracted token: {}", token);
 
         if (token != null && jwtService.isValidToken(token)) {
+
             String username = jwtService.extractUsername(token); // Извлекаем имя пользователя из токена
+
+            if (userRepository.findByEmail(username).isEmpty()) {
+                logger.warn("User {} не найден в базе данных. Токен не верен", username);
+                SecurityContextHolder.clearContext(); // Убираем аутентификацию
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Пользователь не найден");
+                return;
+            }
+
+
             String role = jwtService.extractRole(token); // Извлекаем роль
 
             logger.info("Valid token, username: {}, ROLE: {}", username, role);

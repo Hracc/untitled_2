@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "./Modal.scss"; // Подключаем стили для Modal
 
 import { postClientEmail, postClientVerify } from "../api/authorization"
@@ -119,6 +120,8 @@ export function Modal({ isOpen, onClose }) {
                             политики конфиденциальности
                         </a>
                     </label>
+
+
                 </div>
 
                 {!emailSent ? (
@@ -147,6 +150,11 @@ export function Modal({ isOpen, onClose }) {
                         </button>
                     </>
                 )}
+
+                <Link to="partner" className="partner-link">
+                    Партнерам сервиса
+                </Link>
+
             </div>
         </div>
     );

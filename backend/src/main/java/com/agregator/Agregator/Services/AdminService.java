@@ -88,4 +88,6 @@ public class AdminService {
             return ResponseEntity.ok("Заявка переведена в статус "+Status+" администратором " + admin.getAggregatorSpecialistsId());
         }
     }
+
+
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./OrganizationForm.scss";
 
-export function OrganizationForm() {
+export function OrganizationForm({ readOnly = false }) {
     const [fullName, setFullName] = useState("");
     const [shortName, setShortName] = useState("");
     const [inn, setInn] = useState("");
@@ -27,8 +27,7 @@ export function OrganizationForm() {
             surname.trim() !== "" &&
             name.trim() !== "" &&
             email.trim() !== "" &&
-            phone.trim() !== "" &&
-            acceptedPolicy
+            phone.trim() !== ""
         );
     };
 
@@ -69,6 +68,7 @@ export function OrganizationForm() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     required
+                    disabled={readOnly}
                 />
             </label>
 
@@ -80,6 +80,7 @@ export function OrganizationForm() {
                     value={shortName}
                     onChange={(e) => setShortName(e.target.value)}
                     required
+                    disabled={readOnly}
                 />
             </label>
 
@@ -91,6 +92,7 @@ export function OrganizationForm() {
                     value={inn}
                     onChange={(e) => setInn(e.target.value)}
                     required
+                    disabled={readOnly}
                 />
             </label>
 
@@ -102,6 +104,7 @@ export function OrganizationForm() {
                     value={kpp}
                     onChange={(e) => setKpp(e.target.value)}
                     required
+                    disabled={readOnly}
                 />
             </label>
 
@@ -113,6 +116,7 @@ export function OrganizationForm() {
                     value={ogrn}
                     onChange={(e) => setOgrn(e.target.value)}
                     required
+                    disabled={readOnly}
                 />
             </label>
 
@@ -126,6 +130,7 @@ export function OrganizationForm() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
+                    disabled={readOnly}
                 />
             </label>
 
@@ -137,6 +142,7 @@ export function OrganizationForm() {
                     value={surname}
                     onChange={(e) => setSurname(e.target.value)}
                     required
+                    disabled={readOnly}
                 />
             </label>
 
@@ -147,6 +153,8 @@ export function OrganizationForm() {
                     type="text"
                     value={patronymic}
                     onChange={(e) => setPatronymic(e.target.value)}
+
+                    disabled={readOnly}
                 />
             </label>
 
@@ -158,6 +166,7 @@ export function OrganizationForm() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    disabled={readOnly}
                 />
             </label>
 
@@ -169,6 +178,7 @@ export function OrganizationForm() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     required
+                    disabled={readOnly}
                 />
             </label>
 
@@ -179,28 +189,16 @@ export function OrganizationForm() {
                     value={additionalInfo}
                     onChange={(e) => setAdditionalInfo(e.target.value)}
                     rows={3}
+                    disabled={readOnly}
                 />
             </label>
 
-            <div className="policy-row">
-                <input
-                    type="checkbox"
-                    id="privacy-policy"
-                    checked={acceptedPolicy}
-                    onChange={(e) => setAcceptedPolicy(e.target.checked)}
-                    required
-                />
-                <label htmlFor="privacy-policy">
-                    Принимаю условия{" "}
-                    <a href="/privacy-policy" target="_blank" rel="noreferrer">
-                        политики конфиденциальности
-                    </a>
-                </label>
-            </div>
 
-            <button type="submit" disabled={!isFormValid()}>
-                Отправить
-            </button>
+            {!readOnly && (
+                <button type="submit" disabled={!isFormValid()}>
+                    Отправить
+                </button>
+            )}
         </form>
     );
 }

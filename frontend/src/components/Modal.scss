@@ -58,6 +58,12 @@
   color: blue;
   text-decoration: none;
 }
+.partner-link {
+  display: block;
+  text-align: center;
+  color: $ligt-gray-color;
+  padding-top: 1rem;
+}
 
 .modal-send-btn, .modal-confirm-btn {
   background-color: $primary-color;
