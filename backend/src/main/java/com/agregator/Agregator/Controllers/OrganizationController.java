@@ -32,7 +32,6 @@ public class OrganizationController {
     @PostMapping("/create")
     public ResponseEntity<String> create(@RequestBody CreateOrganizationDTO dto) {
         try {
-            organizationService.createOrganization(dto);
             return organizationService.createOrganization(dto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при создании организации");
