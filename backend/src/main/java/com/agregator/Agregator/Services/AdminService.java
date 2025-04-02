@@ -69,10 +69,10 @@ public class AdminService {
                 .orElseThrow(() -> new RuntimeException("Заявка не найдена"));
 
         // Проверяем, что заявка еще не в работе
-        if ("В работе".equals(connectionRequest.getStatus())) {
-            return ResponseEntity.badRequest().body("Заявка уже в статусе 'В работе'");
+        if (Status.equals(connectionRequest.getStatus())) {
+            return ResponseEntity.badRequest().body("Заявка уже в этом статусе "+ Status);
         }
-        if ("Исполнено".equals(connectionRequest.getStatus())){
+        if (Status.equals("Иссполнено")){
             connectionRequest.setDateEnd(LocalDate.now());
         }
 
