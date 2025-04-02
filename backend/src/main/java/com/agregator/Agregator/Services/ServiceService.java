@@ -10,8 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 @Service
 @Slf4j
@@ -45,15 +44,18 @@ public class ServiceService {
                 .distinct()
                 .collect(Collectors.toList());
     }*/
-    public List<CityDTO> getCity(String city){
-        List<Address> addresses = addressRepository.findByCityName(city);
-        return  addresses.stream().map(
-                address -> new CityDTO(
-                        address.getCityName()
-                )
-        ).distinct()
-                .collect(Collectors.toList());
-    }
+   public List<CityDTO> getCity(String city){
+       List<Address> addresses = addressRepository.findByCityName(city);
+       return  addresses.stream().map(
+                       address -> new CityDTO(
+                               address.getCityName()
+                       )
+               ).distinct()
+               .collect(Collectors.collectingAndThen(
+                       Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(CityDTO::getCity))),
+                       ArrayList::new
+               ));
+   }
 
     public List<SearchOrganizationDTO> getOrganizationsByCityAndName(String cityName, String name) {
         List<Address> addresses = addressRepository.findByCityAndOrganizationName(cityName, name);

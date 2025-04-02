@@ -85,9 +85,9 @@ export function OrganizationForm({ readOnly = false, initialData = null}) {
     
         try {
             // Отправка данных с использованием postStatement
-            console.log(requestBody)
             await postStatement(requestBody);
-            console.log("Данные успешно отправлены");
+            window.alert("Заявка отправлена. Для её просмотра авторизируйтесь.")
+            window.location.replace("/partner")
         } catch (error) {
             console.error("Ошибка при отправке данных:", error);
         }

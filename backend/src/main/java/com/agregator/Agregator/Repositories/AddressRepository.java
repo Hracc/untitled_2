@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 
 public interface AddressRepository extends JpaRepository<Address, Integer> {
-    @Query("SELECT a FROM Address a WHERE LOWER(a.cityName) LIKE LOWER(CONCAT('%', :cityName, '%'))")
+    @Query("SELECT DISTINCT a FROM Address a WHERE LOWER(a.cityName) LIKE LOWER(CONCAT('%', :cityName, '%'))")
     List<Address> findByCityName(@Param("cityName") String cityName);
 
     @Query("SELECT a FROM Address a " +
