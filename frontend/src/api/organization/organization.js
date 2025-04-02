@@ -3,6 +3,11 @@ const urlOrganiztion = {
     sendStatement : '/api/organization/create',
     checkStatus : '/api/organization/Status',
     organization: '/api/organization/search',
+    info: '/api/organization/search',
+}
+
+export const getOrganizationInfo = () => {
+    return getWithToken(urlOrganiztion.info)
 }
 
 // Подать заявку

@@ -4,12 +4,12 @@ export const getUserRole = () => {
     const token = getCookie("token")
     
     if (!token) {
-      console.log("bruh")
+      return null
     }
   
     try {
       const decodedToken = jwtDecode(token)
-      console.log(decodedToken)
+      return decodedToken.role
     } catch (error) {
       console.error('Ошибка при декодировании токена:', error);
       return null;
