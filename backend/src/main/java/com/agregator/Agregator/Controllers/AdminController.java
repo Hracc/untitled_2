@@ -151,4 +151,8 @@ public class AdminController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return adminService.UpdateStatus(connectionRequestId, email, status);
     }
+    @GetMapping("Connection/status")
+    public ResponseEntity<ConnectionOrganizationDTO> getConnectionStatusByOrganization(@RequestParam int id){
+        return adminService.getConnectionStatusByOrganization(id);
+    }
 }

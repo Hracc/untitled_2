@@ -44,4 +44,8 @@ public class OrganizationController {
         List<ConnectionRequestDTO> statusList = organizationService.UpdateStatus(Email);
         return ResponseEntity.ok(statusList);
     }
+
+//    @PreAuthorize("hasRoke('ORGANIZATION')")
+//    @GetMapping("/all_servicerequest")
+//    public ResponseEntity
 }
