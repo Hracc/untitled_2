@@ -25,7 +25,6 @@ public class ServiceControler {
     public List<SearchOrganizationDTO> getOrganizationsByCity(@RequestParam String city) {
         return serviceService.getOrganizationsByCity(city);
     }*/
-    @PreAuthorize("hasRole('CUSTOMER')")
     @GetMapping("/CITY")
     public List<CityDTO> getListOfSity(@RequestParam String city){
         return serviceService.getCity(city);
