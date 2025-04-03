@@ -16,7 +16,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/Service")
-@PreAuthorize("hasRole('CUSTOMER')")
 public class ServiceControler {
     private static final Logger log = LoggerFactory.getLogger(ServiceControler.class);
     @Autowired
@@ -26,28 +25,31 @@ public class ServiceControler {
     public List<SearchOrganizationDTO> getOrganizationsByCity(@RequestParam String city) {
         return serviceService.getOrganizationsByCity(city);
     }*/
+    @PreAuthorize("hasRole('CUSTOMER')")
     @GetMapping("/CITY")
     public List<CityDTO> getListOfSity(@RequestParam String city){
         return serviceService.getCity(city);
     }
-
     @GetMapping("/OrganizationByCityAndName")
     public List<SearchOrganizationDTO> getOrganizationsByCity(@RequestParam String city, @RequestParam(required = false) String name) {
         log.info(city);
         log.info(name);
         return serviceService.getOrganizationsByCityAndName(city,name);
     }
+    @PreAuthorize("hasRole('CUSTOMER')")
     @GetMapping("/ServiceTypes")
     public List<ServiceType> getAllServiceType(){
         return serviceService.getAllServiceTypes();
     }
 
+    @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping("/details")
     public List<ServiceDetailDTO> getServiceDetailsByTypeCode(@RequestParam String typeCode) {
         log.info(typeCode);
         return serviceService.getServiceDetailsByTypeCode(typeCode);
     }
 
+    @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping("/createRequest")
     public ResponseEntity<String> createServiceRequest(@RequestBody CreateServiceRequestDTO serviceRequestDTO) {
         try {
