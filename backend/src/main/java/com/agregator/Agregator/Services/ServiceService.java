@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,6 +33,9 @@ public class ServiceService {
     private ServiceRequestDetailRepository serviceRequestDetailRepository;
     @Autowired
     private ConnectionRequestRepository connectionRequestRepository;
+    @Autowired
+    private EmailService emailService;
+
 
 
    /* public List<SearchOrganizationDTO> getOrganizationsByCity(String cityName) {
@@ -159,6 +163,7 @@ public class ServiceService {
         serviceRequest.setAddInfo(dto.getAddInfo());
         serviceRequestRepository.save(serviceRequest);
 
+        List<ServiceDetailForEmailDTO> stringList = new ArrayList<>();
         // Создание ServiceRequestDetail для каждого ServiceDetail
         for (Integer serviceDetailId : dto.getServiceDetailId()) {
             ServiceDetail serviceDetail = serviceDetailRepository.findById(serviceDetailId)
@@ -167,8 +172,18 @@ public class ServiceService {
             ServiceRequestDetail serviceRequestDetail = new ServiceRequestDetail();
             serviceRequestDetail.setServiceRequest(serviceRequest);
             serviceRequestDetail.setServiceDetail(serviceDetail);
+            stringList.add(new ServiceDetailForEmailDTO(serviceDetail.getServiceDetailName(), String.valueOf(serviceDetail.getServiceDetailCost())));
             serviceRequestDetailRepository.save(serviceRequestDetail);
         }
+
+        ServiceRequestForEmailDTO serviceRequestDTO = new ServiceRequestForEmailDTO();
+        serviceRequestDTO.setCustomerName(customer.getCustomerName());
+        serviceRequestDTO.setCustomerEmail(customerEmail);
+        serviceRequestDTO.setDateService(serviceRequest.getDateService().toLocalDate());
+        serviceRequestDTO.setAddInfo(serviceRequest.getAddInfo());
+        serviceRequestDTO.setServiceDetails(stringList);
+
+        emailService.sendServiceToEmail(organization.getResponsiblePersonEmail(),serviceRequestDTO);
     }
       
     @Transactional
