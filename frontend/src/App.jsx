@@ -7,13 +7,13 @@ import { Profile } from "./pages/Profile";
 import { OrganizationProfile } from "./pages/OrganizationProfile";
 import { OrganizationRegPage } from "./pages/OrganizationRegPage";
 import { RequestsPage } from "./pages/RequestsPage";
-import { TestOrganization } from "./pages_tests/TestOrganization";
 import { OrganizationFormPage } from "./pages/OrganizationFormPage";
 import { OrganizationRequestPage } from "./pages/OrganizationRequestPage";
 import { OrganizationPage } from "./pages/OrganizationPage";
 import { AdminPage } from "./pages/AdminPage";
 import { AdminProfile } from "./pages/AdminProfile";
 import { getUserRole } from "./api/jwt";
+// import { ProtectedRoute } from "./pages/Profile.jsx";
 import "./styles.scss";
 
 const ProtectedRoute = ({ element, allowedRoles }) => {
@@ -34,9 +34,9 @@ export default function App() {
         <Router>
             <Routes>
                 <Route path="/" element={<ProtectedRoute element={<Home />} allowedRoles={["CUSTOMER", "guest"]} />} />
-                <Route path="/:categoryName" element={<ProtectedRoute element={<CategoryPage />} allowedRoles={["CUSTOMER"]} />} />
-                <Route path="/:categoryName/:serviceName" element={<ProtectedRoute element={<ServiceDetailsPage />} allowedRoles={["CUSTOMER"]} />} />
-                <Route path="/cart" element={<ProtectedRoute element={<CartPage />} allowedRoles={["CUSTOMER"]} />} />
+                <Route path="/:categoryName" element={<ProtectedRoute element={<CategoryPage />} allowedRoles={["CUSTOMER", "guest"]} />} />
+                <Route path="/:categoryName/:serviceName" element={<ProtectedRoute element={<ServiceDetailsPage />} allowedRoles={["CUSTOMER", "guest"]} />} />
+                <Route path="/cart" element={<ProtectedRoute element={<CartPage />} allowedRoles={["CUSTOMER", "guest"]} />} />
                 <Route path="/profile" element={<ProtectedRoute element={<Profile />} allowedRoles={["CUSTOMER"]} />} />
                 
                 {/* Организации */}
@@ -50,9 +50,6 @@ export default function App() {
                 <Route path="/admin/profile" element={<ProtectedRoute element={<AdminProfile />} allowedRoles={["ADMINISTRATION"]} />} />
                 <Route path="/admin/requests" element={<ProtectedRoute element={<RequestsPage />} allowedRoles={["ADMINISTRATION"]} />} />
                 <Route path="/admin/requests/:regNo" element={<ProtectedRoute element={<OrganizationRequestPage />} allowedRoles={["ADMINISTRATION"]} />} />
-                
-                {/* Маршруты для тестирования */}
-                <Route path="/testO" element={<TestOrganization />} />
             </Routes>
         </Router>
     );

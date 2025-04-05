@@ -2,11 +2,13 @@ import { useLocation, Link } from "react-router-dom";
 import { Header } from "../components/Header";
 import "../styles.scss";
 import Calendar from "../components/Calendar.jsx";
+import { Modal } from "../components/Modal";
 import { useEffect } from "react";
 import React, { useState } from "react";
 
 import { serviceItem, postRequest } from "../api/client/services.js";
 import { addLocalJSON } from "../api/utils.js";
+import { getUserRole } from "../api/jwt.js";
 
 export function CartPage() {
     const location = useLocation();
@@ -18,8 +20,9 @@ export function CartPage() {
     };
 
     const [selectedDateTime, setSelectedDateTime] = useState(null);
-
     const { serviceName, address, category, offers } = cartData;
+    const [isModalOpen, setModalOpen] = useState(false);
+    const role = getUserRole
 
     const totalPrice = offers.reduce((sum, o) => sum + o.price, 0);
     const totalTime = offers.reduce((sum, o) => {
@@ -78,7 +81,11 @@ export function CartPage() {
                             onDateTimeSelect={setSelectedDateTime}
                         />
                         <button className="confirm-button" onClick={async () => {
-                            if (!selectedDateTime) {
+                            if (role != "CUSTOMER") {
+                                setModalOpen(true);
+                                return;
+                            }
+                            else if (!selectedDateTime) {
                                 alert("Выберите время");
                                 return;
                             }
@@ -95,6 +102,7 @@ export function CartPage() {
                         </button>
                     </div>
                 </div>
+                <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
             </div>
         </div>
     );

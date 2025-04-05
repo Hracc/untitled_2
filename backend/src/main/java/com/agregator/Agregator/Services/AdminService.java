@@ -72,7 +72,7 @@ public class AdminService {
         if (Status.equals(connectionRequest.getStatus())) {
             return ResponseEntity.badRequest().body("Заявка уже в этом статусе "+ Status);
         }
-        if (Status.equals("Исполнена") || Status.equals("Отклонена")){
+        if (Status.equals("Исполнено") || Status.equals("Отклонена")){
             connectionRequest.setDateEnd(LocalDate.now());
         }
 

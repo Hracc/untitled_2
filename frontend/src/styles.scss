@@ -19,6 +19,7 @@ body {
 }
 .content {
   background-color: white;
+  min-height: calc(100vh - 70px);
   width: 100%;
   padding: 2rem;
   font-size: 1.25rem;
