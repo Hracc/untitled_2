@@ -22,7 +22,7 @@ export function CartPage() {
     const [selectedDateTime, setSelectedDateTime] = useState(null);
     const { serviceName, address, category, offers } = cartData;
     const [isModalOpen, setModalOpen] = useState(false);
-    const role = getUserRole
+    const role = getUserRole()
 
     const totalPrice = offers.reduce((sum, o) => sum + o.price, 0);
     const totalTime = offers.reduce((sum, o) => {
@@ -82,6 +82,7 @@ export function CartPage() {
                         />
                         <button className="confirm-button" onClick={async () => {
                             if (role != "CUSTOMER") {
+                                console.log(role)
                                 setModalOpen(true);
                                 return;
                             }

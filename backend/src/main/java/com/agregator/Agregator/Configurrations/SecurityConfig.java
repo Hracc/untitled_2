@@ -21,11 +21,12 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable()) // Если API, можно отключить CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/index.html#/","/organization/**").permitAll() // Доступ без авторизации
-                        .requestMatchers("/Service/CITY","/Service/OrganizationByCityAndName","/Service/**").permitAll()
+                        .requestMatchers("/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/index.html").permitAll()
+                        .requestMatchers("/Service/createRequest").hasRole("CUSTOMER")
+                        .requestMatchers("/Service/**").permitAll()
                         .requestMatchers("/customer/**").hasRole("CUSTOMER")
                         .requestMatchers("/admin/**").hasRole("ADMINISTRATION")
-                        .anyRequest().authenticated() // Все остальные запросы требуют верификации
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                     //.addFilterBefore(new SessionAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
