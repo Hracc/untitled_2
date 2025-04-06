@@ -13,7 +13,9 @@ import { serviceItem } from "../api/client/services.js";
 
 export function Header({ onLoginClick }) {
     const [isCityModalOpen, setCityModalOpen] = useState(false);
-    const [selectedCity, setSelectedCity] = useState("");
+    const [selectedCity, setSelectedCity] = useState(
+        () => getLocalJSON(serviceItem.selectedData, 'city') || ""
+      );
     const [isAuthorization, setIsAuthorization] = useState(false);
     const navigate = useNavigate()
     const item = serviceItem.selectedData
@@ -77,18 +79,17 @@ export function Header({ onLoginClick }) {
                 <div className="header__buttons">
 
                     {/* Показываем кнопку выбора города только если роль CUSTOMER */}
-                    {role === "CUSTOMER" && (
-                        <button onClick={() => setCityModalOpen(true)} className="header__button city-button">
-                            {/* Иконка (Location) */}
-                            <span className="city-button-icon">
-                                <Location />
-                            </span>
-                            {/* Текст */}
-                            <span className="city-button-text">
-                                {selectedCity ? selectedCity : "Выбрать город"}
-                            </span>
-                        </button>
-                    )}
+                    {/* Кнопка выбора города */}
+                    <button onClick={() => setCityModalOpen(true)} className="header__button city-button">
+                        {/* Иконка (Location) */}
+                        <span className="city-button-icon">
+                            <Location />
+                        </span>
+                        {/* Текст */}
+                        <span className="city-button-text">
+                            {selectedCity ? selectedCity : "Выбрать город"}
+                        </span>
+                    </button>
 
                     {/* Кнопка входа/регистрации */}
                     <button onClick={handleProfileClick} className="header__button login-button">

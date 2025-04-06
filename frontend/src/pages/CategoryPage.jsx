@@ -8,6 +8,7 @@ import "../styles.scss";
 import { getOrganizations, serviceItem} from "../api/client/services"
 import { addLocalJSON, getLocalJSON } from "../api/utils"
 import { Loading } from "../components/Loading"
+import { Modal } from "../components/Modal"
 
 export function CategoryPage() {
     const { categoryName } = useParams();
@@ -16,6 +17,7 @@ export function CategoryPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true)
     const [selectedCity, setSelectedCity] = useState(getLocalJSON(serviceItem.selectedData, "city"))
+    const [isModalOpen, setModalOpen] = useState(false)
 
     const servicesPerPage = 10;
 
@@ -93,7 +95,7 @@ export function CategoryPage() {
 
     return (
         <div>
-            <Header />
+            <Header onLoginClick={() => setModalOpen(true)} />
             <div className="container">
                 <div className="content">
                     <h1>{categoryName}</h1>
@@ -134,6 +136,7 @@ export function CategoryPage() {
                         ))}
                     </div>
                 </div>
+                <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}></Modal>
             </div>
         </div>
     );

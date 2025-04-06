@@ -11,6 +11,8 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 @Service
 @Slf4j
@@ -31,6 +33,9 @@ public class ServiceService {
     private ServiceRequestDetailRepository serviceRequestDetailRepository;
     @Autowired
     private ConnectionRequestRepository connectionRequestRepository;
+    @Autowired
+    private EmailService emailService;
+
 
 
    /* public List<SearchOrganizationDTO> getOrganizationsByCity(String cityName) {
@@ -66,7 +71,7 @@ public class ServiceService {
                     List<ConnectionRequest> organizationRequests = connectionRequestRepository.findByOrganization_OrganizationId(organization.getOrganizationId());
                     // Проверяем, есть ли у организации хотя бы одна заявка с статусом "Исполнен"
                     return organizationRequests.stream()
-                            .anyMatch(request -> "Исполнен".equals(request.getStatus()));
+                            .anyMatch(request -> "Исполнена".equals(request.getStatus()));
                 })
                 .map(address -> new SearchOrganizationDTO(
                         address.getOrganization().getOrganizationId(),
@@ -141,7 +146,7 @@ public class ServiceService {
         ConnectionRequest lastRequest = connectionRequestRepository
                 .findTopByOrganization_OrganizationIdOrderByDateEndDesc(organization.getOrganizationId());
 
-        if (lastRequest == null || !"Исполнен".equalsIgnoreCase(lastRequest.getStatus())) {
+        if (lastRequest == null || !"Исполнена".equalsIgnoreCase(lastRequest.getStatus())) {
             throw new RuntimeException("Последний запрос на подключение не исполнен.");
         }
         // Проверка, доступно ли время для выбранной услуги с учётом длительности
@@ -161,6 +166,7 @@ public class ServiceService {
         serviceRequest.setAddInfo(dto.getAddInfo());
         serviceRequestRepository.save(serviceRequest);
 
+        List<ServiceDetailForEmailDTO> stringList = new ArrayList<>();
         // Создание ServiceRequestDetail для каждого ServiceDetail
         for (Integer serviceDetailId : dto.getServiceDetailId()) {
             ServiceDetail serviceDetail = serviceDetailRepository.findById(serviceDetailId)
@@ -169,8 +175,18 @@ public class ServiceService {
             ServiceRequestDetail serviceRequestDetail = new ServiceRequestDetail();
             serviceRequestDetail.setServiceRequest(serviceRequest);
             serviceRequestDetail.setServiceDetail(serviceDetail);
+            stringList.add(new ServiceDetailForEmailDTO(serviceDetail.getServiceDetailName(), String.valueOf(serviceDetail.getServiceDetailCost())));
             serviceRequestDetailRepository.save(serviceRequestDetail);
         }
+
+        ServiceRequestForEmailDTO serviceRequestDTO = new ServiceRequestForEmailDTO();
+        serviceRequestDTO.setCustomerName(customer.getCustomerName());
+        serviceRequestDTO.setCustomerEmail(customerEmail);
+        serviceRequestDTO.setDateService(serviceRequest.getDateService().toLocalDate());
+        serviceRequestDTO.setAddInfo(serviceRequest.getAddInfo());
+        serviceRequestDTO.setServiceDetails(stringList);
+
+        emailService.sendServiceToEmail(organization.getResponsiblePersonEmail(),serviceRequestDTO);
     }
       
     @Transactional

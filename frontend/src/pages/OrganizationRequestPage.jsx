@@ -70,7 +70,7 @@ export function OrganizationRequestPage() {
                                     </option>
                                 ))}
                             </select>
-                            <button
+                            <button className="confirm-button"
                             onClick={
                                 async() => {
                                 try {

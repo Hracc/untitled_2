@@ -53,6 +53,7 @@ export function Profile() {
                         </div>
                     ))}
                     <div className="profile-buttons">
+                        <span>
                         <button onClick={async () => {
                             try {
                                 await putCustomer(customer);
@@ -69,6 +70,7 @@ export function Profile() {
                                 window.location.href = "/"
                             }}
                         >Выйти</button>
+                        </span>
                         <button
                             onClick={async () => {
                                 try {

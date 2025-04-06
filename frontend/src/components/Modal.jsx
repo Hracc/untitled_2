@@ -151,10 +151,10 @@ export function Modal({ isOpen, onClose }) {
                     </>
                 )}
 
-                <Link to="partner" className="partner-link">
+                <Link to="/partner" className="partner-link">
                     Партнерам сервиса
                 </Link>
-                <Link to="admin" className="partner-link">
+                <Link to="/admin" className="partner-link">
                     Администрация
                 </Link>
             </div>

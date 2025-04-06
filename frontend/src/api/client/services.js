@@ -15,8 +15,14 @@ export const serviceItem = {
 
 // GET-запросы:
 // - типы запросов
-export const getServiceTypes = () => {
-    return getWithToken(urlService.serviceTypes);
+export const getServiceTypes = async () => {
+    const response = await fetch(urlService.serviceTypes, {
+        method: 'GET',
+    })
+    if (!response.ok) {
+        throw new Error(`Ошибка HTTP: ${response.status}`);
+    }
+    return response.json();
 }
 
 // - города
@@ -28,7 +34,13 @@ export const getCities = async () => {
 export const getOrganizations = async () => {
     const city  = localStorage.getItem('selectedCity') || ''
     const url = urlService.organizations.replace('city=', `city=${city}`)
-    return getWithToken(url);
+    const response = await fetch(url, {
+        method: 'GET',
+    })
+    if (!response.ok) {
+        throw new Error(`Ошибка HTTP: ${response.status}`);
+    }
+    return response.json();
 }
 
 // POST-запросы:
@@ -39,7 +51,6 @@ export const postServiceDetail = async (typeCode) => {
     const response = await fetch(url, {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${getTokenOrThrow()}`,
             'Content-Type': 'application/json',
         },
     })

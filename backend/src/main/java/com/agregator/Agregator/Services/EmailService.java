@@ -1,6 +1,8 @@
 package com.agregator.Agregator.Services;
 
 
+import com.agregator.Agregator.DTO.ServiceRequestDTO;
+import com.agregator.Agregator.DTO.ServiceRequestForEmailDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -24,6 +26,19 @@ public class EmailService {
         logger.info("отправка от "+simpleMailMessage.getFrom()+"к кому "+toAddress );
         simpleMailMessage.setSubject("Тестирование ученического проекта");
         simpleMailMessage.setText("Ваш код подверждения: " + code);
+
+
+        //emailSender.send(simpleMailMessage);
+    }
+
+    public void sendServiceToEmail(String toAddress, ServiceRequestForEmailDTO serviceRequestDTO) {
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+
+        simpleMailMessage.setFrom("chetvergovkirill@yandex.ru");
+        simpleMailMessage.setTo(toAddress);
+        logger.info("отправка от "+simpleMailMessage.getFrom()+"к кому "+toAddress );
+        simpleMailMessage.setSubject("Тестирование ученического проекта");
+        simpleMailMessage.setText("К вам записались: " + serviceRequestDTO);
 
 
         //emailSender.send(simpleMailMessage);
