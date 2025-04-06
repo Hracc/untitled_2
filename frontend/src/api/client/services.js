@@ -27,7 +27,13 @@ export const getServiceTypes = async () => {
 
 // - города
 export const getCities = async () => {
-    return getWithToken(urlService.cities);
+    const response = await fetch(urlService.cities, {
+        method: 'GET',
+    })
+    if (!response.ok) {
+        throw new Error(`Ошибка HTTP: ${response.status}`);
+    }
+    return response.json();
 }
 
 // - организации
