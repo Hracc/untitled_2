@@ -13,7 +13,6 @@ import { OrganizationPage } from "./pages/OrganizationPage";
 import { AdminPage } from "./pages/AdminPage";
 import { AdminProfile } from "./pages/AdminProfile";
 import { getUserRole } from "./api/jwt";
-// import { ProtectedRoute } from "./pages/Profile.jsx";
 import "./styles.scss";
 
 const ProtectedRoute = ({ element, allowedRoles }) => {
@@ -23,7 +22,7 @@ const ProtectedRoute = ({ element, allowedRoles }) => {
         return allowedRoles.includes("guest") ? element : <Navigate to="/" replace />;
     }
     if (!allowedRoles.includes(role)) {
-        const defaultRoute = role === "administration" ? "/admin/requests" : "/partner";
+        const defaultRoute = role === "ADMINISTRATION" ? "/admin/requests" : "/partner/form";
         return <Navigate to={defaultRoute} replace />;
     }
     return element;

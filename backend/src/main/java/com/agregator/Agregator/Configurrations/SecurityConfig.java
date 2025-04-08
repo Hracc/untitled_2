@@ -22,6 +22,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Если API, можно отключить CSRF
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/index.html").permitAll()
+                        .requestMatchers("/organization/create").permitAll()
                         .requestMatchers("/Service/createRequest").hasRole("CUSTOMER")
                         .requestMatchers("/Service/**").permitAll()
                         .requestMatchers("/customer/**").hasRole("CUSTOMER")

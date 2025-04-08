@@ -182,7 +182,7 @@ public class ServiceService {
         ServiceRequestForEmailDTO serviceRequestDTO = new ServiceRequestForEmailDTO();
         serviceRequestDTO.setCustomerName(customer.getCustomerName());
         serviceRequestDTO.setCustomerEmail(customerEmail);
-        serviceRequestDTO.setDateService(serviceRequest.getDateService().toLocalDate());
+        serviceRequestDTO.setDateService(serviceRequest.getDateService());
         serviceRequestDTO.setAddInfo(serviceRequest.getAddInfo());
         serviceRequestDTO.setServiceDetails(stringList);
 

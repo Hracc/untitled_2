@@ -1,68 +1,85 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Logo } from "./Logo";
 import { CityModal } from "./CityModal";
 import { Location } from "./Location";
 import { getUserRole } from "../api/jwt.js";
+import { Person } from "./Person.jsx";
+import { getTokenOrThrow, getLocalJSON } from "../api/utils.js";
+import { serviceItem } from "../api/client/services.js";
 
 import "./Header.scss";
-import {Person} from "./Person.jsx";
-import { getTokenOrThrow, getLocalJSON} from "../api/utils.js";
-import { serviceItem } from "../api/client/services.js";
 
 export function Header({ onLoginClick }) {
     const [isCityModalOpen, setCityModalOpen] = useState(false);
     const [selectedCity, setSelectedCity] = useState(
         () => getLocalJSON(serviceItem.selectedData, 'city') || ""
-      );
+    );
     const [isAuthorization, setIsAuthorization] = useState(false);
-    const navigate = useNavigate()
-    const item = serviceItem.selectedData
+    const [isAuthChecked, setIsAuthChecked] = useState(false); // добавлено
+    const navigate = useNavigate();
+    const item = serviceItem.selectedData;
+
+    const initialAuthState = (() => {
+        try {
+            const token = getTokenOrThrow();
+            return {
+                isAuthorized: true,
+                role: getUserRole()
+            };
+        } catch (error) {
+            return {
+                isAuthorized: false,
+                role: null
+            };
+        }
+    })();
 
     useEffect(() => {
         try {
-            const token = getTokenOrThrow()
-            setIsAuthorization(true)
+            const token = getTokenOrThrow();
+            setIsAuthorization(true);
         } catch (error) {
-            setIsAuthorization(false)
+            setIsAuthorization(false);
+        } finally {
+            setIsAuthChecked(true); // установка после проверки
         }
-        const cityFromStorage = getLocalJSON(item, 'city')
+
+        const cityFromStorage = getLocalJSON(item, 'city');
         setSelectedCity(cityFromStorage);
     }, []);
 
     const getDefaultRoute = () => {
         const role = getUserRole();
-    
-        return !role 
-            ? "/" 
+
+        return !role
+            ? "/"
             : role === "ADMINISTRATION"
             ? "/admin/requests"
             : role === "ORGANIZATION"
             ? "/partner/form"
             : "/";
-    }
+    };
 
     const handleProfileClick = () => {
         const role = getUserRole();
-    
+
         if (!role) {
             onLoginClick(); // Открывает модалку входа, если нет токена
         } else {
-            // Определяем дефолтный маршрут для роли
             const defaultRoute = role === "ADMINISTRATION"
                 ? "/admin/profile"
                 : role === "ORGANIZATION"
                 ? "/partner/profile"
                 : "/profile";
-    
+
             navigate(defaultRoute);
         }
-    }
+    };
 
     const handleCloseModal = () => {
         setCityModalOpen(false);
-        const cityFromStorage = getLocalJSON(item, 'city')
+        const cityFromStorage = getLocalJSON(item, 'city');
         setSelectedCity(cityFromStorage);
     };
 
@@ -78,26 +95,29 @@ export function Header({ onLoginClick }) {
                 </div>
                 <div className="header__buttons">
 
-                    {/* Показываем кнопку выбора города только если роль CUSTOMER */}
-                    {/* Кнопка выбора города */}
-                    <button onClick={() => setCityModalOpen(true)} className="header__button city-button">
-                        {/* Иконка (Location) */}
-                        <span className="city-button-icon">
-                            <Location />
-                        </span>
-                        {/* Текст */}
-                        <span className="city-button-text">
-                            {selectedCity ? selectedCity : "Выбрать город"}
-                        </span>
-                    </button>
+                    {/* Кнопка выбора города (только если роль CUSTOMER или не авторизован) */}
+                    {(!role || role === "CUSTOMER") && (
+                        <button onClick={() => setCityModalOpen(true)} className="header__button city-button">
+                            <span className="city-button-icon">
+                                <Location />
+                            </span>
+                            <span className="city-button-text">
+                                {selectedCity ? selectedCity : "Выбрать город"}
+                            </span>
+                        </button>
+                    )}
 
-                    {/* Кнопка входа/регистрации */}
-                    <button onClick={handleProfileClick} className="header__button login-button">
-                        <span className="login-button-icon">
-                            <Person />
-                        </span>
-                        <span className="login-button-text">{isAuthorization ? "Профиль" : "Вход или регистрация"}</span>
-                    </button>
+                    {/* Кнопка входа/профиля — только после завершения проверки авторизации */}
+                    {isAuthChecked && (
+                        <button onClick={handleProfileClick} className="header__button login-button">
+                            <span className="login-button-icon">
+                                <Person />
+                            </span>
+                            <span className="login-button-text">
+                                {isAuthorization ? "Профиль" : "Вход или регистрация"}
+                            </span>
+                        </button>
+                    )}
                 </div>
             </div>
 
